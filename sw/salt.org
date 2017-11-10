@@ -1,0 +1,29 @@
+* Salt
+** Create an AWS Instances
+   :PROPERTIES:
+   :dir: ~/learn/uni/project/sw/salt
+   :END:
+
+   Let the root directory be $SALT_ROOT/.
+   Create a file called ec2.map in location $SALT_ROOT/cloud.maps.d/
+
+   #+INCLUDE: "~/learn/uni/project/sw/salt/cloud.maps.d/ec2.map" :only-contents t
+
+   #+BEGIN_SRC sh
+   salt-cloud -m cloud.maps.d/ec2.map -P -y
+   #+END_SRC
+** Configure spark with mesos
+
+   - conf/spark-defaults.conf
+
+   spark.eventLog.enabled           true
+   spark.eventLog.compress          true
+   spark.eventLog.dir               /home/ubuntu/spark-events
+   spark.history.fs.logDirectory    /home/ubuntu/spark-events
+
+   - conf/spark-env.sh
+     export MESOS_NATIVE_JAVA_LIBRARY=/usr/local/lib/libmesos.so
+   export SPARK_EXECUTOR_URI=https://s3-ap-southeast-2.amazonaws.com/ramz/spark/spark-1.5.0-SNAPSHOT-bin-2.2.0.tgz
+   export MASTER=zk://54.153.226.244:2181/mesos
+   export SPARK_MESOS_DISPATCHER_HOST=172.31.3.8
+   export SPARK_LOCAL_DIRS=/mnt/spark/temp
