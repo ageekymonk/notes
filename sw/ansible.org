@@ -1,0 +1,79 @@
+* What is it good for
+1. Change Management
+   - It is the core functionality provided by ansible
+   - Users define the system's final state and ansible takes care of getting there
+   - It identifies idempotent changes
+2. Provisioning
+3. Automation
+4. Orchestration
+
+* Components
+  1. Inventory
+     - Defines Host, Roles
+  2. Modules
+     - Core of ansible
+     - It defines how the work to be done
+  3. Playbooks
+     - Set of tasks to be done
+  4. Ansible Configuration
+     - Global configuration for ansible
+  5. Python
+
+* Concepts
+  1. Variables
+     - Host Variables
+       User defined variables per host or group
+     - Fact Variables
+       Data gathered from the host
+     - Dynamic Variables
+       Data gathered by tasks or created at runtime
+  2. Execution Types
+     - Remote
+     - Local
+       Needed when the remote system cannot execute the python package.
+
+* Inventory
+  - Supports Group
+  - Supports Subgroup
+  - Variables
+  - Group based variables
+  - Host based variables
+  - Behavioural Parameters
+** Directory Structure
+   - /
+     - inventory
+     - group_vars
+       - all
+       - db
+     - host_Vars
+       - web1
+* Modules
+  - Types
+    1. Core Modules
+    2. Extras
+    3. Deprecated
+    4.
+
+* Playbooks
+  - include directives
+  - include_vars directive
+  - register
+  - prompt
+  - handler
+* Others
+** Host/Group Target Pattern
+   - OR Pattern
+     group1:group2
+   - NOT Pattern
+     !group1
+   - Wildcard pattern
+     (web*.ex.com)
+   - Regex pattern
+     (~web[0-9]+)
+   - AND Pattern
+     (group1:&group2)
+
+* commands
+  #+BEGIN_SRC bash
+  ansible "localhost" -m setup
+  #+END_SRC
