@@ -1,0 +1,399 @@
+* Shell Scripting
+** Variable
+   | Operation           | bash                         | zsh             | Notes                                                    |
+   |---------------------+------------------------------+-----------------+----------------------------------------------------------|
+   | Simple Usage        | $PARAMETER                   | $PARAMETER      | Simple Parameter invocation                              |
+   |                     | ${PARAMETER}                 | ${PARAMETER}    | It is useful when used like this ${PARAMETER}s           |
+   | Indirection         | ${!PARAMETER}                | ${(P)PARAMETER} | equivalent to eval \$${PARAMETER}                        |
+   | Case Modification   | ${PARAMETER^}                |                 | Modifies the first character to upper case               |
+   |                     | ${PARAMETER,}                |                 | Modifies the first character to lower case               |
+   |                     | ${PARAMETER^^}               |                 | Modifies all character to upper case                     |
+   |                     | ${PARAMETER,,}               |                 | Modifies all character to lower case                     |
+   |                     | ${PARAMETER~}                |                 | Toggles the first character case                         |
+   |                     | ${PARAMETER~~}               |                 | Toggles all the characters case                          |
+   | Expansion           | ${!PREFIX*}                  |                 | Expands to list of all variables with PREFIX             |
+   |                     | ${!PREFIX@}                  |                 |                                                          |
+   | Substring removal   | ${PARAMETER#PATTERN}         |                 | From beginning match and remove shortest match           |
+   |                     | ${PARAMETER%PATTERN}         |                 | From end match and remove shortest match                 |
+   |                     | ${PARAMETER##PATTERN}        |                 | From beginning match and remove longest match            |
+   |                     | ${PARAMETER%%PATTERN}        |                 | From end match and remove longest match                  |
+   | Search and Replace  | ${PARAMETER/PATTERN/STRING}  |                 | Replaces first occurance                                 |
+   |                     | ${PARAMETER//PATTERN/STRING} |                 | Replaces all occurrences                                  |
+   |                     | ${PARAMETER/#PATTERN/STRING} |                 | Starts from beginning portion of string                  |
+   |                     | ${PARAMETER/%PATTERN/STRING} |                 | Starts from end of string                                |
+   | String length       | ${#PARAMETER}                |                 | Gives the string length                                  |
+   | Substring Expansion | ${PARAMETER:OFFSET}          |                 | Gives substring starting from offset to end of string    |
+   |                     | ${PARAMETER:OFFSET:LENGTH}   |                 | Gives substring starting from offset to offset + length  |
+   | Default Value       | ${PARAMETER:-WORD}           |                 | If unset or null gives WORD otherwise value of PARAMETER |
+   |                     | ${PARAMETER-WORD}            |                 | If unset gives WORD otherwise value of PARAMETER         |
+   | Assign              | ${PARAMETER:=WORD}           |                 | If unset or null assigns WORD to PARAMETER               |
+   |                     | ${PARAMETER=WORD}            |                 | If unset assigns WORD to PARAMETER                       |
+   | Alternate Value     | ${PARAMETER:+WORD}           |                 | If unset or null does nothing. Else gives WORD           |
+   |                     | ${PARAMETER+WORD}            |                 | If unset does nothing. If set gives WORD                 |
+   | Display Error       | ${PARAMETER:?WORD}           |                 | If unset or null, exit code is non zero.                 |
+   |                     | ${PARAMETER?WORD}            |                 | If unset, exit code is non zero                          |
+** Array
+*** Types
+    1. Indexed Array
+       - Use Positive Integer as keys
+       - Sparse Arrays
+       -
+    2. Associative Array
+       - Use non empty strings as keys
+       - Unordered
+*** Operations
+    | Operation      | Syntax                    | Notes                                                                                                       |
+    |----------------+---------------------------+-------------------------------------------------------------------------------------------------------------|
+    | Declaration    | MYARRAY = ()              | Declares an indexed array and initializes it to be empty. This can also be used to empty an existing array. |
+    |                | MYARRAY[0]=               | sets the first element of an indexed array. If no array ARRAY existed before, it is created.                |
+    |                | declare -a MYARRAY        | Declares an indexed array MYARRAY. An existing array is not initialized.                                    |
+    |                | declare -A MYARRAY        | Declares an associative array MYARRAY. This is the one and only way to create associative arrays.           |
+    | Storing Values | ARRAY[N]=VALUE            |                                                                                                             |
+    |                | ARRAY[STRING]=VALUE       |                                                                                                             |
+    |                | ARRAY=VALUE               | By default the zeroth element is set to VALUE. In Assoc Array the value is assigned to string index "0".    |
+    |                | ARRAY+=(E1 E2 …)          | Append to ARRAY.                                                                                            |
+    |                | ARRAY=([S1]=E1 [S2]=E2 …) | Individual mass-setting for associative arrays. The named indexes (here: S1 and S2) are strings.            |
+    |                | ARRAY=([X]=E1 [Y]=E2 …)   | X and Y are arithmetic expressions                                                                          |
+    | Getting Values | ${ARRAY[N]}               |                                                                                                             |
+    |                | "${ARRAY[@]}"             | This expands to all elements. If quoted expands to all elements individually quoted                         |
+    |                | ${ARRAY[@]}               | This expands to all elements.                                                                               |
+    |                | "${ARRAY[*]}"             | This expands to all elements. If quoted expands to all elements quoted as a whole                           |
+    |                | ${ARRAY[*]}               | This expands to all elements.                                                                               |
+    | Metadata       | ${#ARRAY[N]}              | Expands to the length of an individual array member at index N                                              |
+    |                | ${#ARRAY[STRING]}         | Expands to the length of an individual associative array member at index STRING (stringlength)              |
+    |                | ${#ARRAY[@]}              | Expands to the number of elements in ARRAY                                                                  |
+    |                | ${#ARRAY[*]}              | Expands to the number of elements in ARRAY                                                                  |
+    |                | ${!ARRAY[@]}              | Expands to the indexes in ARRAY                                                                             |
+    |                | ${!ARRAY[*]}              | Expands to the indexes in ARRAY                                                                             |
+    | Destruction    | unset -v ARRAY            | Destroys a complete array                                                                                   |
+    |                | unset -v ARRAY[@]         | Destroys a complete array                                                                                   |
+    |                | unset -v ARRAY[*]         | Destroys a complete array                                                                                   |
+    |                | unset -v ARRAY[N]         | Destroys the array element at index N                                                                       |
+    |                | unset -v ARRAY[STRING]    | Destroys the array element of the associative array at index STRING                                         |
+    |                |                           |                                                                                                             |
+
+** declare
+   Dynamically assign value to variable
+   #+begin_src bash
+     foo=bar
+     declare $foo=baz
+     echo $bar
+   #+end_src
+
+   #+begin_src bash
+     location_name=$(networksetup -getcurrentlocation)
+     echo $location_name
+     proxy_name="${location_name}_HTTP_PROXY"
+     HTTP_PROXY=${!proxy_name}
+     echo $HTTP_PROXY
+   #+end_src
+
+   #+RESULTS:
+   | Home        |
+   | hello_world |
+** condition expression
+*** General If statement
+    Both of them below are equivalent
+    #+begin_src bash
+     if test -e /etc/passwd; then
+         echo "Alright man..." >&2
+     else
+         echo "Yuck! Where is it??" >&2
+         exit 1
+     fi
+    #+end_src
+
+    #+begin_src bash
+     if [ -e /etc/passwd ]; then
+         echo "Alright man..." >&2
+     else
+         echo "Yuck! Where is it??" >&2
+         exit 1
+     fi
+    #+end_src
+
+    The [] does not belong to if. It is equivalent to "test"
+
+*** AND and OR operator
+    && and || has same precedence
+    #+begin_src bash
+      if [ -n "$var"] && [ -e "$var"]; then
+         echo "\$var is not null and a file named $var exists!"
+      fi
+    #+end_src
+
+    This will not have short circuit behaviour. -a has precedence over -o
+    #+begin_src bash
+      if [ -n "$var" -a -e "$var" ] ; then
+          echo "\$var is not null and a file named $var exists"
+      fi
+    #+end_src
+** Group Command
+   #+begin_src bash
+     {
+         echo "PASSWD follows"
+         cat /etc/passwd
+         echo
+         echo "GROUPS follows"
+         cat /etc/group
+     } >output.txt
+
+   #+end_src
+** For Loop
+*** To loop through all the positional argument $@
+    #+begin_src bash
+     for <NAME>; do
+         <LIST>
+     done
+    #+end_src
+*** Generic For loop
+    #+begin_src bash
+      for <NAME> in <WORDS>; do
+          <LIST>
+      done
+    #+end_src
+
+    #+begin_src bash
+      for x in 1 2 3 4; do
+          echo $x
+      done
+    #+end_src
+
+** Redirection
+   - Redirection is setup before execution of command. Thats why sed s/x/y file > file does not work and it truncates the file.
+   -
+   -
+   | Syntax       | Notes                                                                                                           |
+   |--------------+-----------------------------------------------------------------------------------------------------------------|
+   | > filename   | Redirect stdout to filename                                                                                     |
+   | 1> filename  | Equivalent to 1>filename                                                                                        |
+   | 2> filename  | Redirect stderr to filename                                                                                     |
+   | 3> filename  | It will create a new descriptor 3 pointing to filename. There will not be any redirection from stdout or stderr |
+   | < filename   | Redirect stdin from file                                                                                        |
+   | 0< filename  | Same as < filename                                                                                              |
+   | 3< filename  | It will create a new descriptor 3 from filename.                                                                |
+   | 2>&1         | It is duplicating file descriptor 2 to point to what 1 was pointing.                                            |
+   | >file 2>&1   | Both 2 and 1 are pointing to same file                                                                          |
+   | 2>&1 > file  | 1 is pointing to file but 2 will be pointing to what 1 was pointing to before it is changed to file             |
+   | exec 2> file | Setup for script to redirect stderr to file                                                                     |
+   | exec 3< file | Setup for script to have a new descriptor 3 from file.                                                          |
+   | 2>&-         | Close stderr                                                                                                    |
+   | <&-          | Close stdin                                                                                                     |
+   |              |                                                                                                                 |
+** Colon Operator
+   The expression sets SOMETHING to value if it isn't already set.
+   #+begin_src bash
+     : ${SOMETHING='value'}
+   #+end_src
+
+   To ignore error of a command
+   #+begin_src bash
+     ls || true
+     ls || :
+   #+end_src
+** Arithmetic
+   Modulo
+   #+begin_src bash
+   counter=1
+   $((counter%10)
+   #+end_src
+** Here Document
+*** Generic
+    #+begin_src bash
+      cat > filename << EOF
+      $my_variable
+      EOF
+    #+end_src
+*** Substitution Turned off
+    #+begin_src bash
+      cat > filename << 'EOF'
+         $my_variable
+      EOF
+    #+end_src
+*** Suppress Leading Tabs
+    #+begin_src bash
+      cat > filename <<-EOF
+          $my_variable
+      EOF
+    #+end_src
+*** Anonymous here doc
+    #+begin_src bash
+      : <<TESTVARIABLES
+      ${HOSTNAME?}${USER?}${MAIL?}  # Print error message if one of the variables not set.
+      TESTVARIABLES
+    #+end_src
+* Shortcuts
+  | Command  | shortcuts                        |
+  |----------+----------------------------------|
+  | Ctrl + u | clear the entire line            |
+  | Ctrl + k | clear after the current position |
+  | Ctrl + w | clear word before cursor         |
+  |          |                                  |
+* Snippets
+** Check if the script is running interactively
+   #+begin_src bash
+     #!/bin/sh
+     if [ -t 0 ]; then
+         echo script running interactively
+     else
+         echo stdin coming from a pipe or file
+     fi
+
+
+     if [ -t 1 ] ; then
+       echo output going to the screen
+     else
+       echo output redirected to a file or pipe
+     fi
+   #+end_src
+
+   #+RESULTS:
+   : stdin coming from a pipe or file
+
+** Download all repos from bamboo projects
+   #+begin_src bash
+     for x in `curl  -u ramz:ramz -X GET -H "Content-Type: application/json" http://www.example.com/rest/api/1.0/projects/DCE/repos\?limit\=1000 | jq '.values[].links.clone[].href' | grep "ssh" | tr -d '"'`
+     do
+         git clone $x
+     done
+   #+end_src
+   #+begin_src bash
+     for x in `curl  -u ramz:ramz -X GET -H "Content-Type: application/json" http://www.example.com/rest/api/1.0/projects/PUPPET/repos\?limit\=1000 | jq '.values[].links.clone[].href' | grep "http" | tr -d '"'`
+     do
+         echo http://ramz:ramz@www.example.com/scm/puppet/${x##*/}
+     done
+
+   #+end_src
+
+** Template for returning value from function
+   #+begin_src bash
+     function myfunc()
+     {
+         local  __resultvar=$1
+         local  myresult='some value'
+         if [[ "$__resultvar" ]]; then
+             eval $__resultvar="'$myresult'"
+         else
+             echo "$myresult"
+         fi
+     }
+
+   #+end_src
+** Get status of all the repos
+   #+begin_src bash
+     find . -depth 1 -print -exec git --git-dir {}/.git --work-tree {}  status \;
+   #+end_src
+** Create a temp file for curl download
+   #+begin_src bash
+     temp = "$(mktemp)"
+     curl -Ss url > "$temp"
+   #+end_src
+** Create a temp directory
+   #+begin_src bash
+     tmpdir=$(mktemp -d /tmp/rc.XXXXXX)
+     cd "$tmpdir"
+     rm -rfv "$tmpdir"
+   #+end_src
+** Check if binary is available and use it
+   #+begin_src bash
+     if type yum >/dev/null 2>&1; then
+         sudo yum install something
+     else
+         echo "Not available"
+     fi
+   #+end_src
+** Check if directory is empty
+   #+begin_src bash
+   [ "$(ls -A /path/to/directory)" ] && echo "Not Empty" || echo "Empty"
+   #+end_src
+** substitute variable value if it has any variable
+   #+begin_src bash
+   KANA_BUILD_VERSION=$(eval "echo ${bamboo_KANA_BUILD_VERSION}")
+   #+end_src
+** Split String and take nth element
+   #+begin_src bash
+     N=3
+     STRING="one two three four"
+
+     arr=($STRING)
+     echo ${arr[N-1]}
+   #+end_src
+
+   #+RESULTS:
+   : three
+
+** Cat to file but escape all
+   #+begin_src bash
+   # This will not escape
+   cat > filename << EOF
+   $my_variable
+   EOF
+
+   # This will escape everything
+   cat > filename << 'EOF'
+   $my_variable
+   EOF
+
+   #+end_src
+** Check if variable is null
+   #+begin_src bash
+   [[ -z var1 ]] && echo "Variable is empty" && exit 1
+   #+end_src
+** Lower case the variable
+   #+begin_src bash
+   # method 1
+   ${VAR,,}
+   # method 2
+   echo ${VAR} | tr '[:upper:]' '[:lower:]'
+   #+end_src
+** To replace tabs
+   #+BEGIN_SRC bash
+   cat geeks.txt | tr ':[space]:' '\t' > out.txt
+   #+END_SRC
+** Compress files from find
+   #+BEGIN_SRC bash
+   find . -name *.png -type f -print | xargs tar -cvzf images.tar.gz
+   #+END_SRC
+** convert file from lowercase to uppercase
+   #+BEGIN_SRC bash
+   cat myfile | tr a-z A-Z > output.txt
+   #+END_SRC
+* Commands
+  | commmands | notes                              |   |
+  |-----------+------------------------------------+---|
+  | bindkey   | list all keyboard shortcuts in zsh |   |
+  | mapfile   | create an array from file input    |   |
+  | column    | To display output as column        |   |
+  | yes       | To send y to commands              |   |
+  | script    | To record your commandline         |   |
+  |           |                                    |   |
+* zsh
+** Rename multiple files
+   #+begin_src bash
+   autoload -U zmv
+   zmv 'kana1-(*)' 'kana2-$1'
+   #+end_src
+** Rename filename to lowercase/uppercase
+   #+BEGIN_SRC bash
+   autoload -U zmv
+   # uppercase all filenames
+   zmv '(*)' '${(U)1}'
+   # Lowercase all filenames
+   zmv '(*)' '${(L)1}'
+   #+END_SRC
+** Change the extensions
+   #+BEGIN_SRC bash
+   zmv -n '(*).txt' '$1.rtf'
+   #+END_SRC
+** Changing the file extension recursively
+   #+BEGIN_SRC bash
+   zmv -Q '(**/)(*).txt' '$1$2.rtf'
+   #+END_SRC
+** Renaming files serially
+   #+BEGIN_SRC bash
+   c=1 zmv '*.txt' '$((c++)).txt'
+   #+END_SRC
+** Change selective parts of filename
+   #+BEGIN_SRC bash
+   zmv '(*).txt' '${1//foo/bar}.txt'
+   #+END_SRC
