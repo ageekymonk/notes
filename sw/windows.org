@@ -1,0 +1,10 @@
+* Winrm
+** Kill a task in a server
+  #+begin_src bash
+    cd sde/scripts
+
+    echo "Stopping all Casmgr Services"
+    ./winrm -p Password1 Administrator@servername "taskkill /IM someexe.exe /F"
+
+    sleep 60
+  #+end_src
