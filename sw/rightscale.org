@@ -1,0 +1,12 @@
+* RSC
+** Get all deployment by name in an account
+   #+begin_src bash
+      rsc --host us-4.rightscale.com --account xxx --key yyy cm15 index deployments | jq -c '.[] | select(.name | test("somename-.*"))' | jq -c '.links[] | select(.rel == "servers") | .href'
+   #+end_src
+** Get all the server in the deployment
+   #+begin_src bash
+     rsc --host us-4.rightscale.com --account xxx --key yyy cm15 index deployments/111/servers | jq -c '.[].links[] | select(.rel =="self") | .href'
+
+     rsc --host us-4.rightscale.com --account xxx --key yyy cm15 servers deployments/111
+
+   #+end_src
