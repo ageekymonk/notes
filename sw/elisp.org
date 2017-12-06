@@ -1,0 +1,54 @@
+* Elisp
+** Autoloads
+   - Autoload provides user access to interactive functions without actually
+     loading the library upfront
+   - This helps in faster emacs start time
+   - Emacs package manager package.el automatically generates autoload files.
+   - package-initialize automatically loads autoloads files of all installed packages to make all autoloads available.
+   - Things to autoload are
+     1. definitions of major and minor modes
+     2. interactive commands by which a user would start to use a specific package
+     3. interactive commands which offer generic utilities
+*** To autoload a file when a function is called
+    #+BEGIN_SRC emacs-lisp
+    (autoload 'magit-status "magit" "Open a Magit status buffer" t nil)
+    (autoload function filename &optional docstring interactive type)
+    #+END_SRC
+*** To check if a function is an autoload function
+    #+BEGIN_SRC emacs-lisp
+    (autoloadp (symbol-function 'run-prolog))
+    (autoloadp (function-definition 'foo))
+    #+END_SRC
+*** Autoload cookies
+    The package manager and package initializer generates autoload files from
+    these autoload comments
+    #+BEGIN_SRC emacs-lisp
+    ;;;###autoload
+    (defun magit-status ()
+      "Open a Magit status buffer […]"
+      (interactive)
+      ;; some thing here
+     )
+    #+END_SRC
+*** Using in Emacs Extension points
+    #+BEGIN_SRC emacs-lisp
+    ;;;###autoload
+    (add-to-list 'auto-mode-alist '("\\.pp\\'" . puppet-mode))
+    #+END_SRC
+** Commands
+*** Template
+    #+BEGIN_SRC emacs-lisp
+    (defun my-command ()
+      "One sentence summary of what this command do.
+
+    More details here. Be sure to mention the return value if relevant.
+    Lines here should not be longer than 70 chars,
+    and don't indent them."
+      (interactive)
+      (let (var1 var2 …)
+        (setq var1 …)
+        (setq var2 …)
+        ;; do something …
+        ))
+    #+END_SRC
+** Doc String

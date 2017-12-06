@@ -77,3 +77,30 @@
   #+BEGIN_SRC bash
   ansible "localhost" -m setup
   #+END_SRC
+
+* Snippets
+  #+BEGIN_SRC
+  - include: ubuntu-install.yml
+- name: gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution|lower }}-{{
+              ansible_distribution_version }}.yml"
+        - "{{ ansible_distribution|lower }}-{{
+              ansible_distribution_release }}.yml"
+        - "{{ ansible_distribution|lower }}-{{
+              ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution|lower }}.yml"
+        - "{{ ansible_os_family|lower }}.yml"
+        - defaults.yml
+      paths:
+        - ../vars
+  #+END_SRC
+  #+BEGIN_SRC
+- name: ensure required packages are installed
+  action: "{{ package_info.pkg_mgr }}"
+  args: package_info.args
+  with_items: package_info.pkgs
+  when: package_info.pkgs|length > 0
+  #+END_SRC

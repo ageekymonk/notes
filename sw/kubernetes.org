@@ -1,0 +1,74 @@
+* kubernetes in Google
+  - Everything in google is in containers. Even the VM.
+  - Borg: Internal Container Scheduler. It was followed by Omega. Finally kubernetes
+  - Application Ops
+  - Cluster Ops
+  - Configuration Change: causes most unplanned outage
+  - Google Container Engine
+    + Managed kubernetes
+    + Runs stable k8s
+    + Runs on Container optimized OS, which is security hardened and has in place upgrades and downgrades
+    + Federated Ingress using Google Global Loadbalancer
+  - Google Compute Engine
+    + Faster Boot times. (~30s)
+    + Per minute Billing
+    + premptible VMs
+    + Multi region usage without poking holes (like VPC Peering)
+  - Google Container Registry
+    + Secure
+    + Private Docker Image
+    + CI/CD Integration with Jenkins, Spinnaker, ...
+  - Google Cloud Machine Learning is powered by Container Engine
+  - Pokemon go is powered by container engine
+  -
+* What is it
+  - Orchestration tool for managing containers across hosts
+  - Declarative not procedural
+  - Auto scales and self healing
+* Features
+  - Scheduling
+  - Lifecycle health
+  - Auto scaling
+  - Naming and discovery
+    Built in DNS service
+  - Load Balancing
+  - Storage Volumes
+  - Logging and monitoring
+  - Debugging and introspection
+  - Identity and authorization
+    RBAC
+  - Cluster Federation
+    + For cluster in different region and different service providers
+    + Active Passive Failure for cluster across service providers
+  - Scheduled Jobs
+  - Helm Package Manager
+  - Stateful Sets
+  - Alpha Clusters
+* Components
+  1. K8s Master
+  2. API Server
+  3. kubelet
+     It is an agent on every node
+  4. kubeproxy
+     Sends request to right kube regardless of which ever node receives
+  5. Pods
+  6. Node Pools
+     - Non homogenous machines grouped together
+     - Even can have different versions of k8s
+     -
+* To Research
+  - Prometheus
+  - sysdig
+  - datadog
+  - stackdriver
+  - App Armour
+
+
+
+* Commands
+** To get the kube dns ip
+   #+BEGIN_SRC bash
+   kubectl get svc --namespace=kube-system
+   #+END_SRC
+* Links
+  [[https://stevesloka.com/2017/05/19/access-minikube-services-from-host/][Access Minikube services from Host on OSX]]
