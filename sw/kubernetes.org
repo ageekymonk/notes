@@ -46,16 +46,60 @@
   - Alpha Clusters
 * Components
   1. K8s Master
-  2. API Server
-  3. kubelet
+     1. kube-apiserver
+        - Exposes REST API
+        - Front end to the control plane
+        - Consumes JSON (via manifest files)
+     2. Cluster Store
+        - Persistent Storage
+        - Stores Cluster State and config
+        - uses etcd
+        - Source of truth of the cluster
+     3. kube-controller-manager
+        - Controller of Controllers
+          - Node controller
+          - Endpoint controller
+          - Namespace controller
+     4. kube-scheduler
+        - Watches apiserver for new pods
+        - Assigns work to nodes
+  2. Nodes
+     1. kubelet
+        - kubernetes agent
+        - registers node with cluster
+        - watches apiserver
+        - instantiates pods
+        - exposes endpoint on :10255. /healthz, /spec, /pods
+     2. Container Engine
+        - Pluggable, can use rkt or docker
+     3. kube-proxy
+        - kubernetes networking
+        - Loadbalances all pods behind a service
+  3. API Server
+  4. kubelet
      It is an agent on every node
-  4. kubeproxy
+  5. kubeproxy
      Sends request to right kube regardless of which ever node receives
-  5. Pods
-  6. Node Pools
-     - Non homogenous machines grouped together
-     - Even can have different versions of k8s
-     -
+  6. Pods
+     - Fundamental Unit of deployment in kubernetes
+  7. Services
+     - only send to healthy pods
+     - can be configured for session affinity
+     - can point to things outside cluster
+     - Random Loadbalancing
+     - TCP/UDP
+  8. Deployments
+  9. Replication Sets
+  10. Replication Controller
+  11. Node Pools
+      - Non homogenous machines grouped together
+      - Even can have different versions of k8s
+      -
+* Terminology
+  - Declarative Model & Desired State
+    - Manifest file (yaml or json) specifies desired state
+  - Pods
+  -
 * To Research
   - Prometheus
   - sysdig

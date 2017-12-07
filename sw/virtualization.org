@@ -1,0 +1,19 @@
+* Hypvervisor Types
+** Paravirtualization
+   - Xen
+   - Early hardwares did not trap priviledged instructions in the guest operating
+     system. What xen did was to find out all those instructions that did not
+     trap and converted to instructions that did trap.
+   - This was linux only
+** HVM
+   - Intel & AMD fixed those instructions that did not trap, they also
+     reduced the number of priviledged instructions.
+   - This helped to run beyond linux
+   - Now on new hardware types, PV is not supported as it very slow
+
+* Hypervisor
+** Device Model
+
+* ENA
+  - Elastic Network adaptor
+  - Uses custom asic

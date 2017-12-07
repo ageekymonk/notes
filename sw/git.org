@@ -1,0 +1,180 @@
+* git                                                                   :git:
+** Terminology
+   1. Porcelin
+      All high level git commands that an end user uses
+   2. Plumbing
+      All low level git commands
+** .git directory
+   - Files
+     - objects
+     - refs
+     - HEAD
+     - branches
+     - config
+     - description
+     - hooks
+     - info
+     - index
+   - Objects directory stores all different versions of file
+   - Content Addressable Filesystem
+   - blobs, tree objects, commit objects
+   - DAG and Merkle Tree
+** Plumbing Commands
+*** hash-object
+    + Generate sha1 for git file
+    + Can be used to add a blob to the objects
+*** cat-file
+    + print the object file.
+*** update-index
+    + Update the index file.
+*** ls-files
+    - List files in index
+*** write-tree
+    + Write the index to the tree object
+*** commit-tree
+    + Create a commit tree from tree object
+*** update-ref
+    + Create a refs in the .git/refs directory
+*** gc
+    + compress the objects to packfile
+*** count-objects
+    + Count number of objects
+*** verify-pack
+    + Check what is in the pack file generated.
+*** fsck
+    + Do a filesystem check
+*** merge-base
+    + Find the common ancestor for two branches
+*** rev-parse
+    + Parse any revs to sha1
+*** tag -a
+    + annotated tag
+    + normal tag is just pointer to a commit
+    + annotated tag is an object.
+*** describe
+    + describe a commit with most recent tag from it
+*** show
+    + displays commit
+    + git show rev:file
+    +
+** Alias
+   #+begin_src bash
+     git config --global alias.unstage 'reset HEAD --'
+     git unstage fileA
+   #+end_src
+
+   #+begin_src bash
+     git config --global alias.ghprofile 'config user.email "ramzthecoder@gmail.com"'
+     git ghprofile
+   #+end_src
+
+** Disable https verify
+   #+begin_src bash
+     git config http.sslVerify false
+   #+end_src
+** Set upstream
+   #+begin_src bash
+     git remote add upstream https://github.com/getpelican/pelican-plugins.git
+   #+end_src
+** Fetch and Merge from upstream
+   #+begin_src bash
+     git fetch upstream
+     git checkout master
+     git rebase upstream/master
+   #+end_src
+
+** submodule init
+   #+begin_src bash
+     git submodule update --init --recursive
+   #+end_src
+** unmerge a specific file in merge
+   #+begin_src bash
+     git checkout -m FILE
+   #+end_src
+
+** https without password
+   Below will cache the username and password for long time
+   #+begin_src bash
+     git config --global credential.helper 'cache --timeout=3600000'
+   #+end_src
+
+** Reset local branch to remote head
+   #+begin_src bash
+     git reset --hard origin/master
+   #+end_src
+** Delete a remote tag
+   #+begin_src bash
+     git push origin :refs/tags/Microfocus_Working
+   #+end_src
+
+** Get git branch name for scripting
+   #+begin_src bash
+     git --git-dir /tmp/sde/.git rev-parse --abbrev-ref HEAD
+   #+end_src
+** clone a remote branch
+   #+begin_src bash
+     git init
+     git remote add -t BRANCH_NAME_HERE -f origin REMOTE_REPO_URL_PATH_HERE
+     git checkout BRANCH_NAME_HERE
+   #+end_src
+** git log with branch and tag
+   #+begin_src bash
+     git log --oneline --decorate --graph
+   #+end_src
+** reset
+   git reset
+   git reset -p
+** Show submodule status
+   #+begin_src bash
+   git config --global status.submoduleSummary true
+   #+end_src
+* gitflow
+* Features
+** worktree
+   git worktree add some-folder-name branchname
+   cd some-folder-name
+   run some git commands in the folder
+   cd ..
+   remove the folder if you are done with it
+   git worktree prune
+   The above command will remove any administrative files
+** rebase
+   1. --autostash
+** Fix a commit
+   #+begin_src bash
+   git commit -a --fixup 026b6b5
+   git rebase --interactive --autosquash master
+   #+end_src
+** Atomic Pushes
+   All Push to different branch and tags will all succeed or all fail
+** reset
+   #1) Move whatever branch HEAD points to (stop if --soft)
+   #2) THEN, make the Index look like that (stop here unless --hard)
+   #3) THEN, make the Working Directory look like that
+** Notes
+   A feature which can be used to add metadata to git commit
+** bundle
+   If you want to send your commit to someone via email as you dont have access to repository
+** Hooks
+*** Local Hooks
+*** Server side Hooks
+** rerere
+** bare repo
+** difftool
+   [diff "odt"]
+   binary = true
+   textconv = od2txt
+** bisect
+* Presentation
+** Git for Devops
+*** Agenda
+    1. Killer Features that you are not using
+    2. Must have bash aliases
+    3. Must have git aliases
+    4. Internals
+    5. Hooks
+    6. Tools
+*** Killer Features that you are not using
+    1. git alias
+    2. git log
+    3. Workflow
