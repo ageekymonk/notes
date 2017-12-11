@@ -1,0 +1,953 @@
+* AWS CLI
+** Search Images with Tags
+   #+begin_src bash
+     aws ec2 describe-images --filters "Name=tag:envs,Values=xxx" --profile xxx | jq -r .Images[].ImageId
+   #+end_src
+
+   #+RESULTS:
+** General pattern
+   - use =--query=  and =--output text= if you want to use the output of the
+     command.
+   - use [.fieldname] rather than .fieldname if you want newline separated
+     output.
+   -
+* Certification
+** Terminologies
+   * Regions
+   * Availability Zones
+   * Edge Location
+     - Datacenter which does not contain aws service
+     - Used to deliver content to other parts of the world (CDN)
+     - Allow caching of static file
+   * Elasticity
+     * Proactive cycle scaling
+     * Proactive Event based scaling
+     * Autoscaling on demand
+** Virtualization
+   1. HVM
+      - Hardware Virtual Machine
+      - Can use hardware extension for faster run
+      - Can use PV drivers for network and storage
+      - Recommended by AWS
+   2. PV
+      - Paravirtual
+      - Used to be faster than HVM but not now
+** Compute and Networking Services
+*** About EC2 Instances
+    - Ondemand vs Reserved Instances vs Spot Instances vs Dedicated Instances
+    - Types of Dedicated Instances
+      1. Dedicated Host
+      2. Dedicated Instance
+         - May share host with other instances from the same aws account
+    - High Performance Computing
+      - Jumbo Frames are supported on instance which has Enhanced Networking
+      - Enhanced Networking has SR-IOV (Single Route I/O Virtualization)
+      - Enhanced Networking is supported only on HVM instances not on PV Instances
+      - Placement Groups
+        - Cannot span multiple AZ
+        - Name should be unique across AWS
+        - Supported only on instances that support Enhanced Networking
+        - Existing instances cannot be moved to a placement group
+        - Placement groups cannot be merged
+        - Can span peered VPC
+        - Cannot explicitly reserve instances for a placement group
+**** Reserved Instances
+    - Types of Reserved Instances
+      1. Standard
+         - one year vs three year
+         - Change instance size within same instance type
+         - Can be sold in marketplace
+      2. Scheduled
+         - Reserve for only during a time
+      3. Convertible
+         - the capability to change the attributes of the RI as long as the
+           exchange results in the creation of Reserved Instances of equal or
+           greater value
+    - Attributes
+      - Instance Type
+      - Scope
+        1. AZ RI
+           1. When you purchase RI in a AZ, it provides capacity reservation
+        2. Regional RI
+           1. Regional Reserved Instances do not provide a capacity reservation.
+           2. Availability Zone flexibility
+           3. RI discount applies to instance usage regardless of size, within that instance family
+      - Tenancy
+      - Platform
+      - Can switch availability zones within the same region
+      - Instance type modifications are supported only for Linux
+      - For RedHat and SUSE the reserved instance cannot be modified
+      - Cannot change instance size of windows
+*** Instance Types
+    1. General Purpose
+       - T2
+         - Provides *Burstable* Performance
+           - 1 credit = 100% CPU for 1 minute
+           - Base Performance and number of credits per hour depends on the instance type
+         - Only has EBS Backed storage
+         - By default,every 1GiB of disk we get 3 IOPS as baseline. So this works similar to
+           CPU Credits. We can accrue
+         -
+       - M3
+         - SSD Storage => Fast but ephemeral. cannot detach and attach it to another instance
+         -
+       - M4
+         - Latest Generation
+         - Only has EBS Backed Storage
+         - EBS Optimized. Better Throughput
+    2. Compute Optimzied
+       - Lowest Cost / Performance
+       - Enhanced Networking and Clusteringz
+       - Types
+         - C3
+           - SSD Backed Storage
+         - C4
+           - Latest Generation
+           - EBS Optimized
+    3. Memory Optimized
+       - Lowest Cost / GB Ram and Memory Performance
+       - Types
+         - R3
+           - SSD Storage
+           - Enhanced Networking
+         - R4
+         - X1
+    4. GPU Optimized
+       - Types
+         - G3
+           - High Frequency Processors
+           - High Performance NVIDIA Processors
+           - Onboard Hardware Video Encoders
+           - Low latency Frame capture and encode
+         - P2
+    5. Storage Optimzied
+       - Types
+         - I2
+           - Very Fast SSD Backed Storage with High IOPS and High Random IOPS
+           - Supports TRIM
+           - Supports Enhanced Networking
+         - D2
+           - Very High HDD Performance
+
+*** EBS Volumes and snapshot
+    - Cannot be attached to instances on different availability zones
+    - Can be attached to only one instance at a time
+    - EBS encryption can only available for instance type above >=m3
+    - For instance type smaller than m3 use encrypted file system on EBS
+    - Types of EBS Storage
+      1. General Purpose SSD
+         - Min 1 GiB to 16384 GiB
+         - 3 IOPS per GiB
+      2. Provisioned IOPS
+         - Min 4 GiB to 16384 GiB
+         - Min 100 IOPS to 20000 IOPS
+      3. Magnetic
+         - Min 1 GiB to 1024 GiB
+    - Can create a volume based on a snapshot
+    - To move a volume from one az to another, create a snapshot and create a volume in new az from that snapshot
+    - Can degrade the performance of volume when taken snapshot. So take snapshot at non peak hours
+    - Snapshot stored in s3
+    -
+*** Placement Groups
+    - If an instance in placement group is stopped and started again it will continue to be in the placement group
+    - It is suggested to have all instance within a placement group to be started at the same time
+    - It is suggested to have all instance to be of same type within a placement group
+    - The instance should have 10G network capacity to take advantage of placement group
+    - Could receive a "Insufficient capacity error" when a new instance is added to a placement group,
+      instance is stopped and started again
+    - A placement group should we within a same availability zone
+    - An instance which was not launched instance in a placement group cannot be moved into a placement group
+*** ELB
+    - Types
+      1. Classic LB
+      2. Application LB
+    - Classic LB
+      - Region wide Load Balancer
+      - Internal or External LB
+      - Layer 4 and Layer 7
+      - SSL Termination and Processing
+      - Cookie based sticky session
+      - Supported Ports
+        - SMTP(25)
+        - HTTP/HTTPS
+        - 1024-65535
+      - Does not support Elastic IP
+      - Support Domain Zone Apex
+      - One SSL Certificate per ELB
+      - Wildcard certificate is supported
+    - Application LB
+      - Layer 7
+      - Region Wide
+      - Content based Routing
+      - Path based Routing
+      - Support for microservices and containers
+      - Better performance for real time streaming
+      - Deletion Protection
+      - Websockets
+      - HTTP/2
+      - Access Logs
+      - AWS WAF
+    - Autoscaling
+      - Deployed Region wise
+      - Can span across AZ
+      - Components
+        - Launch Configuration
+        - Auto scaling Groups
+        - Scaling Plans
+*** VPC
+**** About
+     - Logically Isolated Network
+     - Components
+       1. Subnets
+       2. Route Table
+       3. Internet Gateway
+       4. Elastic IP
+       5. Endpoints
+       6. NAT Gateway
+       7. Peering Connections
+       8. Network ACLs
+       9. Security Groups
+       10. VPN
+     - Reserved IP
+       - 5 IP Address in each subnet is reserved
+       - First 4 IP and Last IP of every subnet
+     - Subnet Types
+       1. Private
+       2. Public
+       3. VPN
+     - Subnet does not span AZ. 16 to 28 CIDR
+     - Security Groups
+       - Resource Level Traffic Firewall
+       - Ingress and Egress
+       - Stateful
+       - 100 SG per VPC, 50 lines in each SG and 5 SG per instance
+       - only does Destination port filtering.
+       - There is no source port filtering
+       - Allow rules only. There is no deny rule
+       - Inbound traffic is denied by default until you allow
+       - Outbound traffic is allowed until you add a single allow rule. Then it
+         becomes denied for everything except the allowed one
+     - NACL
+       - Source and Protocol Filtering
+       - Stateless
+       - Default is deny all
+       - Can have allow and deny rules
+       - one NACL per subnet
+       - Lower numbers are processed first. Stop at first match
+     - Private NAT Instance
+       - Supports Subnet NAT Failover
+       - Scaling is done manually
+       - Managed by us
+       - Remember to disable Source and Destination Check
+     - NAT Gateway
+       - AWS Provided
+       - HA is built in
+       - Support Burst up to 10Gbps
+       - Port Forwarding is not supported
+       - Traffic Metrics is not supported
+     - Endpoints
+       - Allows instances in VPC to access internet services like S3 without
+         going to internet from a VPC
+     - VPC Peering
+       - No transitive Peering
+       - Will work on same or different account
+       - 50 VPC Peers per VPC and can be increased to 125 by request
+       - DNS is supported now
+       - Security groups are not supported across peering (2014)
+       - In VPC Peering two VPCs should be in separate subnet but in same region
+       - In VPC Peering one VPC can peer with multiple VPCs with same subnet ???
+     - VPN
+       - Hardware Based VPN
+         - Port Redundancy
+         - There is a Virtual Private Gateway at AWS Side
+       - Direct Connect
+         - By default does not have Port Redundancy
+         - Private Connection between your datacenter to AWS Datacenter
+         - Predictable Bandwidth
+         - Each port is either 1Gbps or 10Gbps. Multiple ports can be bundled
+           for higher speed
+         - For lesser speed use APN (Amazon Partner Network)
+         - Supports VLAN Trunking (802.1Q)
+         - Can be partitioned into multiple VIFS (Virtual Interfaces)
+           - Private VIFS
+             - For accessing VPC
+           - Public VIFS
+             - For accessing Public services like S3
+       - VPN CloudHub
+         - Hardware based VPN
+         - Branch offices can directly connect to AWS VPC
+       - Software VPN
+     - VPN Gateways
+       - Virtual Private Gateway
+       - Customer Gateway
+     - Direct Connect
+       - Data transferred over Direct connect is billed at lower rate
+       - Reduced Latency
+       - Cannot access Public IP address
+       - Public VIF
+       - Private VIF
+       - Cross Connect is physical connection between your network and direct connect authorized partner
+       -
+**** Hybrid Architecture
+     - Create VPN Connection between Private DC and VPC
+       1. Create a VPN Gateway
+       2. Attach VPN Gateway to VPC
+       3. Create Customer Gateway connecting to a customer IP
+       4. Create a VPN Connection between VPN Gateway to Customer Gateway
+     - Direct Connect
+       - connect from colocated DC to AWS
+     - Create VPN Connection between VPC and another VPC
+*** Other Info
+    - There is a limit on number of running instances. It is 2x for number of stopped instances.
+    - You can request to increase limit
+    - metadata can be accessed from within aws using http://169.254.169.254/latest/metadata
+    - A subnet does not span across AZ. So each AZ has to have separate Subnet
+** Storage and Content Delivery
+*** About
+    - Instance Storage Types
+      1. Instance Store
+         - Ephemeral
+      2. EBS
+         - General Purpose SSD
+         - Provisioned IOPS
+         - Throughput optimized HDD
+         - Cold HDD
+         - Magnetic
+      3. EFS
+         - Network Attached Storage
+*** EBS
+    - Does not need to be attached to an instance
+    - Cannot be attached to more than one instance at a time
+    - Can be transferred between AZ
+    - Replicated across multiple servers in AZ
+    - Can encrypt boot volumes, data volumes and snapshot
+    - Annual Failure rate is 0.1 - 0.2 %
+    - SLA is 99.95%
+    - Volume data is replicated to multiple servers within AZ
+    - EBS Volume Types
+      1. General Purpose SSD
+      2. Provisioned IOPS
+      3. Magnetic
+    - Increasing IOPS than provided by using RAID. It is the function of the
+      guest OS
+    - EBS Optimized Instances are available. This can be used to improve the IO
+      performamce not the IOPS performance
+    - In General Purpose SSD
+      - you get within 10% of the baseline and burst
+        performance 99.9% of time
+      - Volume size is between 1 GB to 1 TB
+      - Small to medium DB
+      - Max IOPS 10000
+      - Max Throughpout 160MB/s
+      - Max IOPS/Instance 48000
+      - Max Throughput/Instance 800MB/s
+      - 3000 IOPS Burst for volume under 1000GB
+    - Provisioned IOPS
+      - In Provisioned IOPS, you get within 10% of the baseline 99.9% of time
+      - 4 GB to 1 TB
+      - Max IOPS/Volume 20000
+      - Max Throughpout 3200MB/s
+      - Max Throughput/Instance 800MB/s
+    - Snapshot
+      - Point in time snapshot
+      - Incremental
+      - Deleting a snapshot removes the blocks that are not used by any other snapshot
+      - Uses S3 for storage. But it does not use a bucket
+      - Used for resizing EBS Volumes
+      - Sharing EBS Snapshots
+      - Can be copied across regions
+      - Lazy Loading. Initial loading of EBS volume from Snapshot will be low as
+        it is loading from S3
+      - PreWarming EBS Volumes. Use dd to read or write.
+      - Can create AMI from EBS Volume
+*** EFS
+    - Petabyte scale filesystem for EC2 instances
+    - stored redundantly across AZ
+    - Many EC2 instances can be connected concurrently from multiple AZ
+    - 10 EFS per account per region
+    - NFS 4.0/4.1
+    - can connect to onpremise via Direct connect
+    - Best performance with linux kernel 4.0 or later
+    - Data encryption at rest using KMS
+
+*** S3
+    - Types
+      1. Standard
+         - 11 nines durability
+         - designed for 99.99 availability
+      2. Standard Infrequent Access
+         - 11 nines durability
+         - designed for 99.9 availability
+         - Min storage is 30 days
+         - Retrieval fee per GB
+      3. Reduced Redundancy Storage
+         - 99.99% durability
+         - designed for 99.99 availability
+         - Lower cost
+    - Features
+      - Not a filesystem
+      - Read after write consistency
+      - Region level storage
+      - Supports REST and SOAP Api
+      - Has server side data encryption at rest
+      - Synchronously stores data
+      - charge based on storage and data sent out of region
+      - Bucket names are unique across aws regions
+      - Min size 0 bytes and max 5 TB. After 5 G, you need to use multipart
+        upload. Above 100MB, Recommended to use multipart but you can use single
+        upload as well.
+      - Supports Transfer Acceleration
+      - Object Versioning
+        - stores all version including deleted and overwritten versions
+        - Once Versioning is enabled it can't be disabled.
+        - To disable versioning you need to emtpy the bucket and delete the bucket and recreate it
+        - We can suspend versioning, so that new versions are not created
+        - It is by default turned off
+      - Cross Region Replication
+      - Life Cycle Management
+      - MFA Delete
+      - Permissions
+      - Time Limited access to objects
+      - Requester Pay option
+      - Audit logs
+      - Event Notification
+    - Life Cycle Policies
+      - Allows an object to be sent to glacier for archival or delete after an interval
+    - Security
+      - All objects and buckets are private by default
+      - Can share accounts across accounts with ACL
+      - Signed URL
+        - Can give access to resource url for a limited time
+      - 4 levels of policies
+        - IAM Policies
+          - User level security
+          - Granular security configuration
+        - Bucket Policies
+          - Bucket level security
+          - Permission for anonymous user
+          - Restrict IP Address / HTTP Referer
+        - ACL Policies
+          - Legacy
+          - Bucket and object level security
+        - Query Signed Authentication (Pre signed URLs)
+          - Grant temporary access to s3 resources
+      -
+
+    - Used
+      - Serve static webpages. URL is bucketname.s2-website-<region>.amazonaws.com
+      - Serve as a origin to cloudfront CDN
+      - For redirecting to another URL the bucket name has to match subdomain
+    - Eventually consistent ???? TODO
+    - Permissions
+      - can be given access to other user account as well
+      - Each bucket can have policy
+
+*** Glacier
+    - Archival Storage
+    - 1000 Vaults per account
+    - 1 byte to 40 TB
+    - Minimal storage of 90 days
+    - 11 nines durability
+    - Retrieval fee per GB
+*** Amazon storage gateway
+    - Connects local datacenter to cloud based storage like s3
+    - Types
+      1. Gateway Cached Volumes
+         - Create a volume and mount it as iSCSI Device on the onpremise server
+         - The gateway will store the data written to the volume on S3
+      2. Gateway Stored Volumes
+         - Store data locally in storage volume
+         - Gateway will take periodic snapshots as incremental backup and store it in S3
+      3. Gateway Virtual Tape Library
+         - exposes iSCSI interface which your back solution can back the data through
+         - Virtual Tape Library is backed by S3
+         - Virtual Tape Shelf is backed by glacier
+*** Amazon Import/Export
+    - Take onpremise data and snail mail to aws. They will store it in S3/Glacier/EBS within a day
+    - They can ship back your data to you
+    -
+*** Amazon snowball
+*** Cloudfront
+    - Global Content Delivery Network
+    - Delivers content from origin location to edge location. Edge location caches files from origin location.
+    - Can be used for dynamic, static, streaming, interactive content
+    - Distribution Types
+      1. Web
+      2. RTMP
+    - Geo Restriction
+      - Blacklist or whitelist countries
+      - blacklisted countries see 403 error
+      - Custom error pages
+    - Zone Apex
+      - Route 53 alias mapping to cloudfront distribution
+      - Wildcard CNAME
+      - Support Subdomains
+      - SUpports Wildcard SSL Certificate
+      - Dedicated IP Custom SSL
+      - SNI Custom SSL
+    - Provides Invaliation API
+    -
+** Databases
+*** RDS
+    - Database Engine managed by AWS
+    - Supported Relational Databases: mysql, postgresql, Oracle, Sql server,
+      Aurora, Mariadb
+    - Aurora is homegrown mysql fork
+    - Does not allow access to underlying OS
+    - Min 5GB to 3 TB
+    - SSD or Provisioned IOPS
+    - Benefits
+      1. Automatic Minor update
+      2. Automatic Backups
+      3. Multi-AZ
+      4. Auto recovery in case of failure
+      5. Do not need to manage the OS
+    - Synchronous replication of data to backup
+    - Backups are deleted once the database is deleted
+    - We can take a snapshot of the database before it is deleted
+    - Read Replicas
+      - Asynchronous replication of data
+      - Can be created from other read replicas
+      - Monitor replication lag using cloudwatch
+      - Can promote a read replica to a primary instance
+      - mysql: relicate to other regions
+      - mysql: replicate to rds from our mysql instance
+      - can be used in
+    - Oracle and Mysql
+      - Supports included licenses
+      - Supports BYOL
+    - Backups
+      - Automated
+        - Volume snapshot of entire DB Instance not just db
+        - one day backup retained by default
+        - Can be configured upto 35 days
+        - On deletion all automated snapshots are deleted
+      - Manual
+        - on deletion the manual snapshots are retained
+    - Restore
+      - Point in time during the retention period until last 5 mins
+    - Multi AZ
+      - Standby Instance available
+      - Snapshots are taken on the standby instance
+      - synchronous replication
+      - It is different from Read Replica
+    - Reserved Instance
+      - If modifed the following params then it loses reservation
+        1. DB Engine
+        2. DB Instance Class
+        3. Deployment Type
+        4. License Model
+        5. Region
+        6.
+
+*** Elasticache
+    - Inmemory cache engine
+    - Supported: memcached, redis
+    - Master Slave Replication and Multi AZ
+    - When to use Memcached instead of Redis
+      1. Multi threaded
+      2. Horizontal Scaling
+    - When not to use Memcached but use redis
+      1. Multi AZ
+      2. Backup and Restore
+      3. Pub/Sub Functionality
+      4. Sorting and Ranking
+      5. Advanced data types
+      6. Persistence
+*** DynamoDB
+    - Homegrown Nosql
+    - Fully Managed, Highly Available, Highly Scalable
+    - Automatic Synchronous replication to 3 AZ
+    - Backed by SSD
+    - Provides High Throughput and Low Latency
+    - Can add Elasticache infront of it
+    - Non ideal for
+      1. Prewritten Relational db apps
+      2. Has lots of joins and complex transactions
+      3. BLOB data
+      4. Large data with low IO rate
+    - Integration
+      - Amazon EMR
+      - Amazon Redshift
+      - Amazon Data Pipeline
+      - Amazon S3
+    - Stores structured data in tables and indexed by a primary key
+    - primary key can be single attribute hash key or composite hash-range key ???
+    - Supports secondary indexes
+    - Supports get for all item level changes occured in some time frame. It is
+      called stream
+    - Cross Region Replication
+    - Triggers to integrate with lambda
+    - Schema less
+    - Operations
+      - Query
+      - Scan
+*** Redshift
+    - Petabyte scale data warehousing
+    - Analyze all your data using existing BI tools
+    - HDD and SSD
+    - Architecture
+      - Has Leader Node which is just a SQL Endpoint
+      - Leader node stores
+        1. Metadata
+        2. Optimizes Query plan
+        3. coordinates query execution
+      - Compute Nodes
+        1. Local Columnar storage
+        2. Parallel / distributed execution of queries, loads, backups, restores
+           and resizes
+      - Continuous and incremental backups
+        - It can do across regions
+      - Security
+        - Load encrypted data from S3
+        - SSL encryption on flight
+        - encrypt data at rest
+** Route 53
+*** About
+    - World wide distributed DNS
+    - 100% SLA Uptime
+    - Public Hosted Zone
+    - Private Hosted Zone for Amazon VPC
+    - You cannot extend Route53 to manage on premises instances
+    - Cannot automatically register EC2 instance with private hosted zone
+    - Routing
+      - Single
+        - Associate an A Record with one or more IP addresses
+        - For multiple IP addresses, it will roundrobin
+        - Does not do health check
+      - Weighted
+        - Can specify Weights for each ip addresses
+      - Latency
+        - AWS will maintain the database of latency for all the servers from
+          different parts of the world
+        - Sends to lowest latency server
+      - Failover
+        - Switches to secondary if primary fails health check
+      - Geolocation
+        - Route to server based on location
+*** DNS Record Types
+    | Type  | Uses                      |
+    | A     | Address Record            |
+    | CNAME | Canonical Name Record     |
+    | MX    | Mail Exchange             |
+    | AAAA  | IPV6 Record               |
+    | TXT   | Text Record               |
+    | PTR   | Pointer Record            |
+    | SRV   | Service Locator           |
+    | SPF   | Sender Policy Framework   |
+    | SOA   | Start of Authority Record |
+    | NS    | Nameserver Record         |
+
+    - PTR is opposite of A Record
+    - SPF is to avoid spoofing. My email server will send from only these IP
+      address listed in SPF
+    - NS is the list of nameserver for your domain
+    - SOA is the first nameserver in the NS list.
+
+** Analytics
+*** Elastic Mapreduce (EMR)
+    - Hadoop Clustering tool
+    - Easily integrate with Redshift, DyanmoDB
+    - Full access to underlying OS
+    - Supports Hadoop, Spark, HBase, Presto, Flink
+    - 128 MB Chunks
+    - EMR Slave Node
+      1. Core Node
+         - runs task
+         - store data in HDFS
+      2. Task Node
+         - runs tasks
+*** Kinesis
+    - Can capture and store real time streams of data
+    - By default it is stored for 24 hours. It can be increased to 7 days
+    - Benefits
+      - Real time processing
+      - Parallel Processing
+      - Durable
+      - Scale
+    - Streams Terminology
+      - Producers
+        - can use Kinesis Streams API
+        - Kinesis Producer Library (KPL)
+        - Kinesis Agents
+      - Data Records
+        - Each data record has unique sequence number
+        - Max size of data blob is 1 MB after base64 decoding
+      - Shards
+        - Uniquely Identified Streams of Records in a stream
+        - A stream can have one or more shards
+        - Support 5 transactions per second for reads
+        - Max total read rate is 2 MB/s and 1 MB/s for write
+        - 1000 records per second for writes
+        - As data rate increases you need to increase the number of shards
+        - Partition key is for shard to partition a stream
+      - Consumers
+        - Also called as Kinesis stream application
+** App Services
+*** Simple Workflow (SWF)
+    - Useful for coordination of distributed tasks
+    - Track Workflow Executions
+    - Service can be used with onpremise servers
+    - Guarantees order of tasks that are executed
+    - No duplicate tasks
+    - Can last for an year
+    - Components
+      1. Decider
+         - Decides on the flow of the workflow
+      2. Activity
+         - Executes the activity and gives the results
+      3. Tasks
+         - Activity Task
+           Tells the worker to perform a function
+         - Decider Task
+           Tells the decider the state of workflow execution
+      4. Worker
+         - Can be EC2 instance or a person
+         - Receives tasks
+*** Simple Queue Service (SQS)
+    - Guarantees delivery of 1 message but does not guarantee no duplicates
+    - Short Polling and Long Polling
+    - Each message is 256KB of data
+    - Types of Queus
+      1. Standard
+         - Guarantees deliver of messages atleast once
+         - Does not guarantee on order
+      2. FIFO
+         - No duplicates
+         - FIFO
+*** Simple Notification Service (SNS)
+    - sending messages to endpoints
+    - Components
+      1. Topic
+         - Group of subscription that you send a message to
+      2. Subscription
+         - An endpoint
+         - Endpoints are http, https, email, sqs, Lambda, sms, Mobile app notification
+      3. Publisher
+         - Entity that triggers the send
+         - Human, S3 Event, Coudwatch Alarm
+*** API Gateway
+    - Fully managed API for your application
+    - Supports different envs like dev, stage, prd
+    - API Versioning
+    - Throttling
+    - Swagger is supported
+    -
+** Deployment Services
+*** Elastic Bean Stalk
+    - Deploying and Scaling Web Application
+    - Fault tolerant within a region but not between region
+    - By default the application is publicly accessible
+    - For Simple Applications
+    -
+*** Cloudformation
+** Management Services
+*** Identity Access Management (IAM)
+    - Central control of AWS Resources
+    - Consolidated Billing for users
+    - Ensure user access from only specific network
+    - Federate with SAML Providers
+    - Provides Roles
+    - Roles
+      - User/Resources to assume certain permissions
+    - Security Token Service
+    - Best practice for new account
+      - Do not login with root access
+      - Create admin User
+      - Use groups to create access for users
+      - Use MFA
+      - Set Password policy
+    - An EC2 instance can be given role when it is created and can have only one role
+*** CloudTrail
+      - Logging for API calls
+*** Cloudwatch
+      - Monitor AWS Services
+*** Directory Services
+
+** Development Services
+*** Kinesis
+    - Realtime data processing service which continuously captures and store data
+      and realtime streaming of the data for dashboards
+    - One shard = 1 MB/s. Scale number of shards as required
+    - Advantage
+      1. Realtime processing
+      2. Parallel Processing
+      3. Durable
+         - replicates data across three data center within a region
+         - Preserves data for 24 hours upto 7 days
+      4. Scalability
+         - scales from few MB to several TB per hour
+    - Workflow
+      1. Create a stream
+      2. Build producers to send data to the stream
+      3. Consumers consume concurrently
+** Security
+*** Root Account
+    1. Delete your root keys
+    2. Activate MFA on root account
+    3. Create Individual IAM Users
+    4. Use groups to assign permissions
+    5. Apply an IAM Password policy
+    6. Create a terraform user who has programmatic access
+    7. Add terraform user to admin group
+    8. Create a credential for terraform
+*** IAM
+**** About
+    - Identity and Access Management
+    - Users, Groups, Roles and Policies
+    - MFA
+    - API Access
+    - Cannot Nest Groups
+    - For EC2 Instance a role can be assigned only when it is launched
+    - AWS Security Token Service
+      - Federated Temporary access to AWS Resources
+      - Enterprise Identity Federation
+        - SAML 2.0
+          - LDAP, AD FS
+      - Web Identity Federation
+        - Google
+        - Twitter
+        - Amazon
+        - Facebook
+    - Use Access Advisor to find out overtly permissive policy
+**** Best Practices
+     1. Always create individual users
+     2. Configure a strong password policy
+     3. Rotate Security Credentials Regularly
+     4. Enable MFA for privileged users
+     5. Manage Permissions with group
+     6. Grant Least Privilege
+     7. Use IAM Roles to share access
+     8. Use IAM Roles for EC2 instances
+     9. Enable AWS CloudTrail to get logs of API Calls
+     10. Remove use of Root
+*** Web Application Firewall (WAF)
+*** DDos Mitigation
+*** security group
+    - Resource Level
+    - Ingress and Egress
+    - Stateful
+      - Return Traffic allowed
+    - Only destination port filtering. Does not have source port filtering
+    - 5 security group per resource
+    - 500 SG per VPC
+    - 50 Rules per SG
+    - All rules are denied unless specifically applied
+    - in EC2-Classic you cannot change sg once launched
+    - In VPC-EC2 you can change sg once launched
+    - Responses to Inbound traffic are allowed regardless of outbound rules(stateful)
+    - Responses to Outbound traffic are allowed regardless of inbound rules
+** Network Access Control List
+   - source and protocol Filtering
+   - Subnet level firewall
+   - Separate inbound and outbound rules
+   - Stateless
+   - one NACL per subnet
+   -
+** Monitoring
+*** Status Checks
+    1. System
+       - Involves AWS to fix the issue
+       - Examples:
+         - Loss of Network Connectivity
+         - Loss of System Power
+         - Software Issues on Physical Host
+         - Hardware Issues on Physical Host
+    2. Instance
+       - Examples
+         - Failed System Status Checks
+         - Incorrect networking or startup configuration
+         - Exhausted Memory
+         - Corrupted filesystem
+         - Incompatible Kernel
+*** Cloudwatch
+    - Monitoring service for aws resources
+    - Collects and Tracks metrics
+    - Collects and monitors log files
+    - Set Alarms
+    - Can react to changes in AWS Resources
+    - Metrics
+      - Some metrics are not shown by default as they can't find out from VM level.
+        For those metrics we need to run scripts inside the OS to measure and send
+        to AWS.
+    - Detailed Monitoring - 1 min interval but charged
+    - Basic Monitoring - 5 min interval but free
+    - By default the cloudwatch logs are stored indefinitely
+    - Alarm history is stored is 14 days
+    - Can store logs in CloudWatch Logs or external system like splunck or s3
+    -
+*** CloudTrail
+    - Log all actions taken on aws
+    - Since every action is api driven. Cloud Trail monitors it
+    - Recorded information includes
+      - Identity of API Caller
+      - Time of call
+      - Source address
+      - Request Params
+      - Response
+    - Not enabled by default.
+    - Can be enabled per region
+    -
+*** Trusted Advisor
+    - Service that help you reduce cost by specifying how to reduce cost,
+      increase performance and security
+    - Automated AWS Audits
+    -
+*** Flog Logs
+    - Information about IP Traffic to and from network interfaces
+    -
+** Cloudformation
+   - Templates and Stacks
+     - Template is the blueprint
+     - Stacks are resources deployed based on template
+   - Template
+     - File Format Version is mandatory
+     - List of resources and associated configuration values are mandatory
+     - everything is optional
+     - Template parameter limit is 60
+     - Output value limit is 60
+     - Intrinsic Functions ??
+     - Puppet and Chef Integration
+     - VPC Peering in same VPC account is supported
+   - But default automatic rollback is enabled
+   -
+** Configuration Management
+*** EC2 Systems Manager
+**** About
+     - Hybrid
+     - Cross Platform
+     - Scalable
+     - Run command
+       - Can create custom command by creating a json document
+     - State Manager
+       - Define and maintain consistent configuration of OS and applications
+     - Automation Service
+       - Automate common tasks using simplified workflow
+     - Parameter Store
+       - Centralized management of passwords and connections strings
+     - Maintainence Window
+     - Inventory Service
+     - Patch Manager
+*** AWS Opsworks
+    - Supports Chef and Puppet
+    - Terminology
+      - Stacks and Layers
+        - Stacks are containers of resources that you want to manage
+        - Stacks contains one or more layers
+        -
+
+** Disaster Recovery
+   - RTO
+     - Recovery Time Objective
+     - Time taken to restore regular operation after disaster
+   - RPO
+     - Recovery Point Objective
+     - Amount of data loss
+   - Pilot Light
+     - Minimal version of Application running on AWS
+   - Warm Standby
+     - Warm standby is a method of redundancy in which the secondary system
+       runs in the background of the primary system. Data is mirrored to the
+       secondary server at regular intervals,
+       which means that there are times when both servers do not contain the exact same data.
+   - Hot Standby
