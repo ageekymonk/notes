@@ -87,10 +87,8 @@
          - Only has EBS Backed storage
          - By default,every 1GiB of disk we get 3 IOPS as baseline. So this works similar to
            CPU Credits. We can accrue
-         -
        - M3
          - SSD Storage => Fast but ephemeral. cannot detach and attach it to another instance
-         -
        - M4
          - Latest Generation
          - Only has EBS Backed Storage
@@ -280,23 +278,32 @@
      - VPN Gateways
        - Virtual Private Gateway
        - Customer Gateway
+       - Two parallel ipsec tunnel for redundancy
+       - There can be only one virtual private gateway per vpc just like igw
+       - vpc can have both virtual private gateway and igw attached at the same time
+       - Create VPN Connection between Private DC and VPC
+         - Create a VPN Gateway
+         - Attach VPN Gateway to VPC
+         - Create Customer Gateway connecting to a customer IP
+         - Create a VPN Connection between VPN Gateway to Customer Gateway
      - Direct Connect
+       - Since Direct connect is a dedicated line, there is no internet access.
+         This means you cannot access public internet.
+       - You need two Direct connect for active active or active standby for ha
        - Data transferred over Direct connect is billed at lower rate
        - Reduced Latency
-       - Cannot access Public IP address
-       - Public VIF
-       - Private VIF
+       - Can connect to multiple VPC using multiple VIF
+       - Types of VIF
+         - Public VIF
+           - Allows access to public aws endpoints (s3, dynamodb). If there is no public VIF,
+             you cannot access it.
+         - Private VIF
+           - Used to connect the DC to the VPC
+           - Automatic Route discovery using BGP
+           - Requires Public and Private ASN Number
+           - Can communicate using only the private ip address inside vpc
        - Cross Connect is physical connection between your network and direct connect authorized partner
-       -
-**** Hybrid Architecture
-     - Create VPN Connection between Private DC and VPC
-       1. Create a VPN Gateway
-       2. Attach VPN Gateway to VPC
-       3. Create Customer Gateway connecting to a customer IP
-       4. Create a VPN Connection between VPN Gateway to Customer Gateway
-     - Direct Connect
        - connect from colocated DC to AWS
-     - Create VPN Connection between VPC and another VPC
 *** Other Info
     - There is a limit on number of running instances. It is 2x for number of stopped instances.
     - You can request to increase limit
@@ -369,7 +376,6 @@
     - can connect to onpremise via Direct connect
     - Best performance with linux kernel 4.0 or later
     - Data encryption at rest using KMS
-
 *** S3
     - Types
       1. Standard
@@ -431,17 +437,13 @@
           - Bucket and object level security
         - Query Signed Authentication (Pre signed URLs)
           - Grant temporary access to s3 resources
-      -
-
     - Used
       - Serve static webpages. URL is bucketname.s2-website-<region>.amazonaws.com
       - Serve as a origin to cloudfront CDN
       - For redirecting to another URL the bucket name has to match subdomain
-    - Eventually consistent ???? TODO
     - Permissions
       - can be given access to other user account as well
       - Each bucket can have policy
-
 *** Glacier
     - Archival Storage
     - 1000 Vaults per account
@@ -465,7 +467,6 @@
 *** Amazon Import/Export
     - Take onpremise data and snail mail to aws. They will store it in S3/Glacier/EBS within a day
     - They can ship back your data to you
-    -
 *** Amazon snowball
 *** Cloudfront
     - Global Content Delivery Network
@@ -482,11 +483,10 @@
       - Route 53 alias mapping to cloudfront distribution
       - Wildcard CNAME
       - Support Subdomains
-      - SUpports Wildcard SSL Certificate
+      - Supports Wildcard SSL Certificate
       - Dedicated IP Custom SSL
       - SNI Custom SSL
     - Provides Invaliation API
-    -
 ** Databases
 *** RDS
     - Database Engine managed by AWS
@@ -538,8 +538,6 @@
         3. Deployment Type
         4. License Model
         5. Region
-        6.
-
 *** Elasticache
     - Inmemory cache engine
     - Supported: memcached, redis
@@ -705,16 +703,21 @@
          - Can be EC2 instance or a person
          - Receives tasks
 *** Simple Queue Service (SQS)
-    - Guarantees delivery of 1 message but does not guarantee no duplicates
-    - Short Polling and Long Polling
-    - Each message is 256KB of data
+    - Short Polling(0 seconds) and Long Polling (1 - 20 seconds)
+    - Each message is max of 256KB of data. Minimum should be 1 byte.
+    - Max message retention time is 14 days. Default is 4 days
+    - Delivery Delay 0 seconds to 15 minutes
     - Types of Queus
       1. Standard
          - Guarantees deliver of messages atleast once
-         - Does not guarantee on order
+         - Does not guarantee on order. Best Effort
+         - 300 Message per second without batching. 3000 with batching
+         - Max 120,000 inflight message per queue
       2. FIFO
          - No duplicates
          - FIFO
+         - Max 20000 inflight message per queue
+         -
 *** Simple Notification Service (SNS)
     - sending messages to endpoints
     - Components
@@ -732,15 +735,15 @@
     - API Versioning
     - Throttling
     - Swagger is supported
-    -
+    - Can send to external other api
+    - Cache response with TTL
+    - Uses cloudfront for entry. It helps in DDoS
 ** Deployment Services
 *** Elastic Bean Stalk
     - Deploying and Scaling Web Application
     - Fault tolerant within a region but not between region
     - By default the application is publicly accessible
     - For Simple Applications
-    -
-*** Cloudformation
 ** Management Services
 *** Identity Access Management (IAM)
     - Central control of AWS Resources
@@ -822,7 +825,6 @@
      9. Enable AWS CloudTrail to get logs of API Calls
      10. Remove use of Root
 *** Web Application Firewall (WAF)
-*** DDos Mitigation
 *** security group
     - Resource Level
     - Ingress and Egress
@@ -843,7 +845,6 @@
    - Separate inbound and outbound rules
    - Stateless
    - one NACL per subnet
-   -
 ** Monitoring
 *** Status Checks
     1. System
@@ -874,7 +875,7 @@
     - Basic Monitoring - 5 min interval but free
     - By default the cloudwatch logs are stored indefinitely
     - Alarm history is stored is 14 days
-    - Can store logs in CloudWatch Logs or external system like splunck or s3
+    - Can store logs in CloudWatch Logs or external system like splunk or s3
     -
 *** CloudTrail
     - Log all actions taken on aws
@@ -887,12 +888,10 @@
       - Response
     - Not enabled by default.
     - Can be enabled per region
-    -
 *** Trusted Advisor
     - Service that help you reduce cost by specifying how to reduce cost,
       increase performance and security
     - Automated AWS Audits
-    -
 *** Flog Logs
     - Information about IP Traffic to and from network interfaces
     -
@@ -900,17 +899,57 @@
    - Templates and Stacks
      - Template is the blueprint
      - Stacks are resources deployed based on template
+     - Changesets are summary of your proposed changes when you update stack
    - Template
-     - File Format Version is mandatory
-     - List of resources and associated configuration values are mandatory
-     - everything is optional
-     - Template parameter limit is 60
-     - Output value limit is 60
-     - Intrinsic Functions ??
+#+BEGIN_SRC
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description:
+  String
+
+Metadata:
+  template metadata
+
+Parameters:
+  set of parameters
+
+Mappings:
+  set of mappings
+
+Conditions:
+  set of conditions
+
+Transform:
+  set of transforms
+
+Resources:
+  set of resources
+
+Outputs:
+  set of outputs
+     #+END_SRC
+     - Resources is the only mandatory section rest are all optional.
+     - Description should be between 0-1024 bytes. Cannot use parameters or functions.
+     - Metadata section to include arbitrary JSON or YAML objects that provide
+       details about the template
+     - During a stack update, you cannot update the Metadata section by itself. You can update it only when you include changes that add, modify, or delete resources.
+     - Max number of parameter in template should be 60
+     - Parameter is referenced in Resources using "Ref" intrinsic function
+     - Mappings section matches a key to a corresponding set of named values.
+       Use Fn::FindInMap to retrieve value in map
+     - Conditions section includes statements that define when a resource is created or when a property is defined
+     - Transforms are macros. Supported Transforms AWS::Serverless and AWS::Include
+     - Output section defines output values that can be used in other stacks.
+       This is done by Export.
+     - Output value limit is 60.
      - Puppet and Chef Integration
      - VPC Peering in same VPC account is supported
-   - But default automatic rollback is enabled
-   -
+     - But default automatic rollback is enabled
+     - AWS CloudFormation StackSets extends the functionality of stacks by
+       enabling you to create, update, or delete stacks across multiple accounts
+       and regions with a single operation.
+
 ** Configuration Management
 *** EC2 Systems Manager
 **** About
@@ -944,7 +983,7 @@
      - Recovery Point Objective
      - Amount of data loss
    - Pilot Light
-     - Minimal version of Application running on AWS
+     - Only Core part of Application running on AWS
    - Warm Standby
      - Warm standby is a method of redundancy in which the secondary system
        runs in the background of the primary system. Data is mirrored to the

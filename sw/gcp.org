@@ -1,0 +1,82 @@
+* Differences with AWS
+  1. Better UI
+  2. Cloud Shell
+  3. Faster Create Time
+  4.
+** Compute
+   1. Can have custom cpu and memory size
+   2. You can have read only disk attached to multiple instances
+   3. rest and cli options are given in the webpage
+   4. Shows cost in the page and even the breakup
+   5. You can select processor
+   6. You can add gpus
+   7. Custom Metadata is supported
+   8. Sustained usage it gives you discount
+   9. Shows snapshot size based on incremental snapshot
+   10. Restful UI
+** Network
+   1. Google does not support point to site VPN
+   2. Network and subnet can span regions and zones
+   3. VPC can span regions
+   4. Each region has an Internet gateway and VPN Gateway
+   5. We can make ephemeral ip to static.
+   6. Firewall can be created for network/instance
+   7. Firewall can allow deny based on ip, port and protocol
+   8.
+** Storage
+   1. Cloud storage Vs S3. All classes have save throughput, low latency and
+      high durability
+   2. Autoscale disk size from initial to no limit
+   3.
+* GCP
+** BigData
+*** Cloud Dataflow
+    - Data Processing Service
+    - Supports both batch and stream
+    -
+*** Cloud DataProc
+    - Hadoop and Spark
+    -
+*** Cloud Datalab
+    - Interactive tool for data exploration, analysis, visualization and machine learning
+    - Built on top of Jupyter
+    -
+*** Cloud Dataprep
+    - Explore, clean, and prepare data for analysis
+*** Cloud PubSub
+    - Messaging Middleware
+    -
+** ML
+*** Machine Learning Engine
+*** Cloud Natural Language API
+*** Cloud Translate API
+*** Cloud Speech API
+*** Cloud Video Intelligence
+** Storage
+*** BigTable
+    - NoSQL Analytics
+    - Terabytes to Petabytes
+    - High Volume Writes
+    - Latency in ms
+    -
+*** Cloud Storage
+    - Equivalent to S3
+    - Cannot nested Bucket
+    - For high performance it is better to have few buckets and lots of objects
+      inside it
+    - Max 5TB file size
+    - Storage Class
+      1. MultiRegional
+      2. Regional
+      3. Nearline
+      4. coldline
+    - All classes have same throughput, low latency, high durability. Difference
+      is in availability, storage durations,
+*** Cloud Datastore
+    - Supports ACID Transactions
+    - NoSQL
+    - 0 to terabytes
+*** SQL
+*** Spanner
+    - SQL
+    -
