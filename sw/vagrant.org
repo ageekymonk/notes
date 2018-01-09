@@ -1,0 +1,61 @@
+* OSX
+** Install
+   #+BEGIN_SRC bash
+   brew cask install vagrant
+   brew cask install vagrant-manager
+   brew cask install virtualbox
+   #+END_SRC
+* CLI
+** Start vagrant box
+   #+BEGIN_SRC bash
+   vagrant up <name>
+   #+END_SRC
+** Download a vagrant box
+   #+BEGIN_SRC bash
+   vagrant box add --insecure debian/jessie64
+   #+END_SRC
+* Vagrantfile
+** Simple vagrant file
+   #+BEGIN_SRC ruby
+    # -*- mode: ruby -*-
+    # vi: set ft=ruby :
+
+    Vagrant.configure(2) do |config|
+      config.vm.provider "virtualbox" do |vb|
+        vb.memory = "512"
+      end
+
+      config.vm.define "centos-7" do |machine|
+        machine.vm.box = "minimal/centos7"
+        machine.vm.provision "shell", inline: "yum update -y"
+      end
+    end
+   #+END_SRC
+* Plugins
+** [[https://github.com/vagrant-landrush/landrush][Landrush]]
+** [[https://github.com/fgrehm/vagrant-cachier][vagrant-cachier]]  (Did not work on centos)
+   - Install
+     #+BEGIN_SRC bash
+     vagrant plugin install vagrant-cachier
+     #+END_SRC
+   - Add the lines to your Vagrantfile
+     #+BEGIN_SRC
+       if Vagrant.has_plugin?("vagrant-cachier")
+         config.cache.scope = :box
+       end
+     #+END_SRC
+   - Create a VM and stop it
+     #+BEGIN_SRC bash
+     vagrant up centos-7
+     vagrant halt centos-7
+     #+END_SRC
+   - Add guest additions iso. The iso location on mac is
+     ==/Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso==.
+   - Bring up the vm and install the guest additions
+     #+BEGIN_SRC bash
+     yum update
+     mount /dev/cdrom /mnt
+     yum install gcc make build-essential kernel-devel
+     sg ./VBoxLinuxAdditions.sh
+     #+END_SRC
+** [[https://github.com/smdahlen/vagrant-hostmanager][vagrant-hostmanager]]
