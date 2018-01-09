@@ -165,6 +165,8 @@
    binary = true
    textconv = od2txt
 ** bisect
+* Reference
+  [[https://youtu.be/3IIaOj1Lhb0][git alias]]
 * Presentation
 ** Git for Devops
 *** Agenda

@@ -13,8 +13,6 @@
    -
 * Certification
 ** Terminologies
-   * Regions
-   * Availability Zones
    * Edge Location
      - Datacenter which does not contain aws service
      - Used to deliver content to other parts of the world (CDN)
@@ -33,8 +31,9 @@
       - Paravirtual
       - Used to be faster than HVM but not now
 ** Compute and Networking Services
-*** About EC2 Instances
+*** EC2 Instances
     - Ondemand vs Reserved Instances vs Spot Instances vs Dedicated Instances
+    - Can modify Reserved Instance in the following ways
     - Types of Dedicated Instances
       1. Dedicated Host
       2. Dedicated Instance
@@ -51,14 +50,28 @@
         - Placement groups cannot be merged
         - Can span peered VPC
         - Cannot explicitly reserve instances for a placement group
+        - Types: cluster and spread
+        - Spread placement group has max of 7 instances per az per group
+        - Autoscaling can be used but you might get insufficient capacity error
+    - There is a limit on number of running instances. It is 2x for number of stopped instances.
+    - You can request to increase limit
+    - metadata can be accessed from within aws using http://169.254.169.254/latest/metadata
+    - A subnet does not span across AZ. So each AZ has to have separate Subnet
 **** Reserved Instances
     - Types of Reserved Instances
       1. Standard
-         - one year vs three year
+         - one year vs three year offering
          - Change instance size within same instance type
          - Can be sold in marketplace
       2. Scheduled
          - Reserve for only during a time
+         - Scheduled Reserved instances cannot be stopped of rebooted, however they
+           can be terminated and relaunched within minutes of termination
+         - after purchase cannot be modified, canceled or resold
+         - only supported instance types: C3, C4, M4, and R3
+         - required term is 365 days (one year).
+         - minimum required utilization is 1,200 hours per year
+         - purchase up to three months in advance
       3. Convertible
          - the capability to change the attributes of the RI as long as the
            exchange results in the creation of Reserved Instances of equal or
@@ -74,15 +87,38 @@
            3. RI discount applies to instance usage regardless of size, within that instance family
       - Tenancy
       - Platform
-      - Can switch availability zones within the same region
       - Instance type modifications are supported only for Linux
       - For RedHat and SUSE the reserved instance cannot be modified
-      - Cannot change instance size of windows
+      - Cannot change instance size of window
+    - Reserved Instances buying depends on
+      1. Platform (for example, Linux)
+      2. Instance type (for example, m1.small)
+      3. Availability Zone in which to run the instance
+      4. Term (time period) over which you want to reserve capacity
+      5. Tenancy You can reserve capacity for your instance to run in
+         single-tenant hardware or not
+      6. Offering
+    - Modifying Reserved Instances
+      1. Switch Availability Zones within the same region
+      2. Change between EC2-VPC and EC2-Classic
+      3. Change the instance size within the same instance type, given the
+         instance size footprint remains the same for e.g. four m1.medium
+         instances (4 x 2), you can turn it into a reservation for eight
+         m1.small instances (8 x 1) and vice versa. However, you cannot convert
+         a reservation for a single m1.small instance (1 x 1) into a reservation
+         for an m1.large instance (1 x 4).
+**** High Performance Computing
+     - C4 Instances for heavy workloads
+     - EBS Optimized instances for 500Mbps to 4000 Mbps throughput to EBS
+     - GPU Instances
+     - Placement Groups for taking advantage of low latency 10Gbps network.
+       Instances should support Enhanced Networking (SR-IOV)
+     - Enhanced Networking is supported in certain instance type only. HVM only.
 *** Instance Types
     1. General Purpose
        - T2
          - Provides *Burstable* Performance
-           - 1 credit = 100% CPU for 1 minute
+           - 1 credit = 100% CPU for 1 minute or 50% CPU for 2 minutes etc
            - Base Performance and number of credits per hour depends on the instance type
          - Only has EBS Backed storage
          - By default,every 1GiB of disk we get 3 IOPS as baseline. So this works similar to
@@ -173,6 +209,24 @@
       - Support Domain Zone Apex
       - One SSL Certificate per ELB
       - Wildcard certificate is supported
+      - When using http protocol, adds *X-Forwarded-For*, *X-Forwarded-Proto*,
+        *X-Forwarded-Port* header to give information about the client
+      - When using TCP protocol, ELB does not add any header. But if you want,
+        you can enable proxy protocol, then ELB adds human readable header to
+        give information about the client
+        #+BEGIN_SRC
+        PROXY_STRING + single space + INET_PROTOCOL + single space + CLIENT_IP + single space + PROXY_IP + single space + CLIENT_PORT + single space + PROXY_PORT + "\r\n"
+        #+END_SRC
+      - Termination Rule
+        - Default Rule
+          #+DOWNLOADED: https://docs.aws.amazon.com/autoscaling/latest/userguide/images/termination-policy-default-flowchart-diagram.png @ 2018-01-07 06:43:32
+          [[file:Certification/termination-policy-default-flowchart-diagram_2018-01-07_06-43-32.png]]
+        - OldestInstance
+        - NewestInstance
+        - OldestLaunchConfiguration
+        - ClosestToNextInstanceHour
+      - Uses Perfect Forward Secrecy, which is it is not possible to decode the
+        past sessions even if the long term key is compromised
     - Application LB
       - Layer 7
       - Region Wide
@@ -304,11 +358,11 @@
            - Can communicate using only the private ip address inside vpc
        - Cross Connect is physical connection between your network and direct connect authorized partner
        - connect from colocated DC to AWS
-*** Other Info
-    - There is a limit on number of running instances. It is 2x for number of stopped instances.
-    - You can request to increase limit
-    - metadata can be accessed from within aws using http://169.254.169.254/latest/metadata
-    - A subnet does not span across AZ. So each AZ has to have separate Subnet
+*** Migration to another region
+    - PEM Keys are unique to a region.
+    - Use automation or cloudformation template to update Autoscaling configuration
+    - Use a new ELB and update dns. Have a short TTL for it to get new dns faster
+    - SSL Certificates are global so you can use it across regions
 ** Storage and Content Delivery
 *** About
     - Instance Storage Types
@@ -331,12 +385,15 @@
     - Annual Failure rate is 0.1 - 0.2 %
     - SLA is 99.95%
     - Volume data is replicated to multiple servers within AZ
+    - I/O size is capped at 256 KiB for SSD volumes and 1,024 KiB for HDD volumes
     - EBS Volume Types
       1. General Purpose SSD
       2. Provisioned IOPS
       3. Magnetic
     - Increasing IOPS than provided by using RAID. It is the function of the
       guest OS
+    - RAID0 -> For increasing the IO. No redundancy
+    - RAID1 -> For redundancy. No increase in IO
     - EBS Optimized Instances are available. This can be used to improve the IO
       performamce not the IOPS performance
     - In General Purpose SSD
@@ -378,18 +435,7 @@
     - Data encryption at rest using KMS
 *** S3
     - Types
-      1. Standard
-         - 11 nines durability
-         - designed for 99.99 availability
-      2. Standard Infrequent Access
-         - 11 nines durability
-         - designed for 99.9 availability
-         - Min storage is 30 days
-         - Retrieval fee per GB
-      3. Reduced Redundancy Storage
-         - 99.99% durability
-         - designed for 99.99 availability
-         - Lower cost
+     [[file:images/s3-classes.png][s3 classes]]
     - Features
       - Not a filesystem
       - Read after write consistency
@@ -446,6 +492,7 @@
       - Each bucket can have policy
 *** Glacier
     - Archival Storage
+    - 4 TB per archive
     - 1000 Vaults per account
     - 1 byte to 40 TB
     - Minimal storage of 90 days
@@ -487,6 +534,10 @@
       - Dedicated IP Custom SSL
       - SNI Custom SSL
     - Provides Invaliation API
+*** Migration to another region
+    - Take a snapshot of volume and migrate the snapshot to another volume
+    - Use AMI Copy to another region
+    - Not all AZ have ebs optimized instance types. you need to check before
 ** Databases
 *** RDS
     - Database Engine managed by AWS
@@ -656,6 +707,7 @@
       2. Task Node
          - runs tasks
 *** Kinesis
+    - Development service
     - Can capture and store real time streams of data
     - By default it is stored for 24 hours. It can be increased to 7 days
     - Benefits
@@ -744,6 +796,90 @@
     - Fault tolerant within a region but not between region
     - By default the application is publicly accessible
     - For Simple Applications
+    - Full control of resources
+    - Integrates with VPC, IAM
+    - Multiple Environments supported
+    - Deploy using war file or git repository
+    - Cloudwatch Monitorig, Application server settings, Run other application
+      components, Access log files without logging into application servers
+*** EC2 Systems Manager
+**** About
+     - Hybrid
+     - Cross Platform
+     - Scalable
+     - Run command
+       - Can create custom command by creating a json document
+     - State Manager
+       - Define and maintain consistent configuration of OS and applications
+     - Automation Service
+       - Automate common tasks using simplified workflow
+     - Parameter Store
+       - Centralized management of passwords and connections strings
+     - Maintainence Window
+     - Inventory Service
+     - Patch Manager
+*** AWS Opsworks
+    - Supports Chef and Puppet
+    - Terminology
+      - Stacks and Layers
+        - Stacks are containers of resources that you want to manage
+        - Stacks contains one or more layers. Example Web application layer,
+          database layer
+*** Cloudformation
+    - Templates and Stacks
+      - Template is the blueprint
+      - Stacks are resources deployed based on template
+      - Changesets are summary of your proposed changes when you update stack
+    - Template
+       #+BEGIN_SRC
+      ---
+      AWSTemplateFormatVersion: "2010-09-09"
+
+      Description:
+        String
+
+      Metadata:
+        template metadata
+
+      Parameters:
+        set of parameters
+
+      Mappings:
+        set of mappings
+
+      Conditions:
+        set of conditions
+
+      Transform:
+        set of transforms
+
+      Resources:
+        set of resources
+
+      Outputs:
+        set of outputs
+           #+END_SRC
+      - Resources is the only mandatory section rest are all optional.
+      - Description should be between 0-1024 bytes. Cannot use parameters or functions.
+      - Metadata section to include arbitrary JSON or YAML objects that provide
+        details about the template
+      - During a stack update, you cannot update the Metadata section by itself. You can update it only when you include changes that add, modify, or delete resources.
+      - Max number of parameter in template should be 60
+      - Parameter is referenced in Resources using "Ref" intrinsic function
+      - Mappings section matches a key to a corresponding set of named values.
+        Use Fn::FindInMap to retrieve value in map
+      - Conditions section includes statements that define when a resource is created or when a property is defined
+      - Transforms are macros. Supported Transforms AWS::Serverless and AWS::Include
+      - Output section defines output values that can be used in other stacks.
+        This is done by Export.
+      - Output value limit is 60.
+      - Puppet and Chef Integration
+      - VPC Peering in same VPC account is supported
+      - But default automatic rollback is enabled
+      - AWS CloudFormation StackSets extends the functionality of stacks by
+        enabling you to create, update, or delete stacks across multiple accounts
+        and regions with a single operation.
+
 ** Management Services
 *** Identity Access Management (IAM)
     - Central control of AWS Resources
@@ -825,6 +961,17 @@
      9. Enable AWS CloudTrail to get logs of API Calls
      10. Remove use of Root
 *** Web Application Firewall (WAF)
+*** Security Token Service (STS)
+    - Can be used to give temporary access credentials
+    - endpoint is [[https://sts.amazonaws.com]]
+    - Max time for the key is 12 hours
+    - [[https://169.254.169.254/latest/meta-data/iam/security-credentials/role-name]]
+    - Identity Federation with custom identity broker
+      [[file:Certification/enterprise-authentication-with-identity-broker-application.diagram_2018-01-08_20-02-49.png]]
+    - Identity Federation with SAML
+      [[file:Certification/saml-based-sso-to-console.diagram_2018-01-08_19-59-00.png]]
+    - Identity Federation with Web Identity Providers
+      [[file:Certification/aws-may-webinar-series-getting-started-with-aws-identity-and-access-management-25-638_2018-01-08_20-00-39.jpeg]]
 *** security group
     - Resource Level
     - Ingress and Egress
@@ -839,6 +986,29 @@
     - In VPC-EC2 you can change sg once launched
     - Responses to Inbound traffic are allowed regardless of outbound rules(stateful)
     - Responses to Outbound traffic are allowed regardless of inbound rules
+*** KMS
+    - Per region
+    - create and control encryption keys
+    - Uses Hardware HSM to protect keys
+    - Supports only symmetric encryption. Same secret key for both encryption
+      and decryption
+    - Customer Master Key (CMK)
+      - Logical key that represents top of the customer's key hierarchy
+      - It has an alias
+      - If another key is not specified CMK is used for encryption
+      - Supports key rotation
+    - Quorum based access. No amazon employee can get access to CMK
+    - Access control using IAM
+    - Low latency and high throughput
+    - KMS is made of domains and domain is a regionally defined set of KMS servers
+    - To delete there is a wait period from 7 days to 30 days. default is 30 days
+    -
+*** DDOS Attack
+    - Types of attack
+      1. udp flood
+      2. http flood
+      3. syn flood
+    -
 ** Network Access Control List
    - source and protocol Filtering
    - Subnet level firewall
@@ -876,7 +1046,12 @@
     - By default the cloudwatch logs are stored indefinitely
     - Alarm history is stored is 14 days
     - Can store logs in CloudWatch Logs or external system like splunk or s3
-    -
+    - EC2 can store logs in cloudwatch
+      1. Create a role where ec2 instance is allowed to write logs to cloudwatch
+      2. Install awslogs package
+      3. edit /etc/awslogs/awscli.conf and /etc/awslogs/awslogs.conf
+      4. service awslogs start
+      5.
 *** CloudTrail
     - Log all actions taken on aws
     - Since every action is api driven. Cloud Trail monitors it
@@ -888,6 +1063,11 @@
       - Response
     - Not enabled by default.
     - Can be enabled per region
+    - Used for
+      1. Security Analysis
+      2. Compliance Aid
+      3. Track and Monitor
+      4. Troubleshoot
 *** Trusted Advisor
     - Service that help you reduce cost by specifying how to reduce cost,
       increase performance and security
@@ -895,86 +1075,6 @@
 *** Flog Logs
     - Information about IP Traffic to and from network interfaces
     -
-** Cloudformation
-   - Templates and Stacks
-     - Template is the blueprint
-     - Stacks are resources deployed based on template
-     - Changesets are summary of your proposed changes when you update stack
-   - Template
-#+BEGIN_SRC
----
-AWSTemplateFormatVersion: "2010-09-09"
-
-Description:
-  String
-
-Metadata:
-  template metadata
-
-Parameters:
-  set of parameters
-
-Mappings:
-  set of mappings
-
-Conditions:
-  set of conditions
-
-Transform:
-  set of transforms
-
-Resources:
-  set of resources
-
-Outputs:
-  set of outputs
-     #+END_SRC
-     - Resources is the only mandatory section rest are all optional.
-     - Description should be between 0-1024 bytes. Cannot use parameters or functions.
-     - Metadata section to include arbitrary JSON or YAML objects that provide
-       details about the template
-     - During a stack update, you cannot update the Metadata section by itself. You can update it only when you include changes that add, modify, or delete resources.
-     - Max number of parameter in template should be 60
-     - Parameter is referenced in Resources using "Ref" intrinsic function
-     - Mappings section matches a key to a corresponding set of named values.
-       Use Fn::FindInMap to retrieve value in map
-     - Conditions section includes statements that define when a resource is created or when a property is defined
-     - Transforms are macros. Supported Transforms AWS::Serverless and AWS::Include
-     - Output section defines output values that can be used in other stacks.
-       This is done by Export.
-     - Output value limit is 60.
-     - Puppet and Chef Integration
-     - VPC Peering in same VPC account is supported
-     - But default automatic rollback is enabled
-     - AWS CloudFormation StackSets extends the functionality of stacks by
-       enabling you to create, update, or delete stacks across multiple accounts
-       and regions with a single operation.
-
-** Configuration Management
-*** EC2 Systems Manager
-**** About
-     - Hybrid
-     - Cross Platform
-     - Scalable
-     - Run command
-       - Can create custom command by creating a json document
-     - State Manager
-       - Define and maintain consistent configuration of OS and applications
-     - Automation Service
-       - Automate common tasks using simplified workflow
-     - Parameter Store
-       - Centralized management of passwords and connections strings
-     - Maintainence Window
-     - Inventory Service
-     - Patch Manager
-*** AWS Opsworks
-    - Supports Chef and Puppet
-    - Terminology
-      - Stacks and Layers
-        - Stacks are containers of resources that you want to manage
-        - Stacks contains one or more layers
-        -
-
 ** Disaster Recovery
    - RTO
      - Recovery Time Objective
@@ -990,3 +1090,20 @@ Outputs:
        secondary server at regular intervals,
        which means that there are times when both servers do not contain the exact same data.
    - Hot Standby
+
+** Billing
+   - Bulk and Volume discounts span across accounts in consolidated billing
+   - Ability to view bills per account
+   - Use roles for IAM account across multiple linked AWS Accounts
+   - All Linked accounts on a consolidated bill can receive the hourly cost benefit of EC2 Reserved Instances purchased by any other account
+   - Best practices
+     - Never run any resource in the consolidated payee account
+     -
+** TO Research
+   - ACL and IAM permissions for S3 objects
+   - Signed URLS for S3
+   - Temporary IAM credentials
+     - 1 to 12 hours limit
+       [[https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_request.html]]
+   - AWS Cloudconfig
+   -
