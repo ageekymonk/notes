@@ -1,0 +1,141 @@
+* Rules
+** Masculine and Feminine Nouns
+   - Masculine Nouns
+     1. Ends with 'o'
+     2. Ends with an accented vowel (á, é, í, ó, ú)
+     3. Ends with -ma
+     4. Consonant other than 'd' and 'z'
+     5. e
+   - Feminine Nouns
+     1. Ends with 'a'
+     2. Ends with 'd'
+     3. Ends with 'z'
+     4. Ends with -ión
+   - There are exceptions to those rules as well.
+   - Masculine Exceptions
+   - Feminine Exceptions
+** Verb Conjugation
+*** Present Tense
+   - Verbs that End in -ar
+     | Subject      | -ar Endings | Example  | Translation              |
+     |--------------+-------------+----------+--------------------------|
+     | yo           | -o          | hablo    | i speak                  |
+     | tú           | -as         | hablas   | you speak (informal)     |
+     | usted        | -a          | habla    | you speak (formal)       |
+     | él, ella     | -a          | habla    | he/she speaks            |
+     | nosotros     | -amos       | hablamos | we speak                 |
+     | vosotros     | -áis        | habláis  | you all (informal) speak |
+     | ustedes      | -an         | hablan   | you all (formal) speak   |
+     | ellos, ellas | -an         | hablan   | they speak               |
+   - Verbs that End in -er
+     | Subject      | -ar Endings | Example | Translation |
+     |--------------+-------------+---------+-------------|
+     | yo           | -o          |         |             |
+     | tú           | -es         |         |             |
+     | usted        | -e          |         |             |
+     | él, ella     | -e          |         |             |
+     | nosotros     | -emos       |         |             |
+     | vosotros     | -éis        |         |             |
+     | ustedes      | -en         |         |             |
+     | ellos, ellas | -en         |         |             |
+   - Verbs that End in -ir
+     | Subject      | -ar Endings | Example | Translation |
+     |--------------+-------------+---------+-------------|
+     | yo           | -o          |         |             |
+     | tú           | -es         |         |             |
+     | usted        | -e          |         |             |
+     | él, ella     | -e          |         |             |
+     | nosotros     | -imos       |         |             |
+     | vosotros     | -ís         |         |             |
+     | ustedes      | -en         |         |             |
+     | ellos, ellas | -en         |         |             |
+*** Past Tense
+   - Verbs that End in -ar
+     | Subject      | -ar Endings | Example  | Translation              |
+     |--------------+-------------+----------+--------------------------|
+     | yo           | -é          | hablé    | i speak                  |
+     | tú           | -aste       | hablas   | you speak (informal)     |
+     | usted        | -ó          | habla    | you speak (formal)       |
+     | él, ella     | -ó          | habla    | he/she speaks            |
+     | nosotros     | -amos       | hablamos | we speak                 |
+     | vosotros     | -asteis     | habláis  | you all (informal) speak |
+     | ustedes      | -aron       | hablan   | you all (formal) speak   |
+     | ellos, ellas | -aron       | hablan   | they speak               |
+   - Verbs that End in -er and -ir
+     | Subject      | -ar Endings | Example | Translation |
+     |--------------+-------------+---------+-------------|
+     | yo           | -í          |         |             |
+     | tú           | -iste       |         |             |
+     | usted        | -ió         |         |             |
+     | él, ella     | -ió         |         |             |
+     | nosotros     | -imos       |         |             |
+     | vosotros     | -isteis     |         |             |
+     | ustedes      | -ieron      |         |             |
+     | ellos, ellas | -ieron      |         |             |
+** Relative Pronouns
+   | Word            | Translation               | Examples |
+   |-----------------+---------------------------+----------|
+   | que             | that / which / who / whom |          |
+   | quien / quienes | who / whom / whoever      |          |
+   |                 |                           |          |
+* Verbs
+
+  | Verb       | translation                           | type of verb | Present conjugation                                              | Past Conjugation |
+  |------------+---------------------------------------+--------------+------------------------------------------------------------------+------------------|
+  | decir      | to say / to tell                      | irregular    | digo/dices/dice/decimos/decís/dicen                              |                  |
+  | despertar  | to wake up                            | irregular    | despierto/despiertas/despierta/despertamos/despertáis/despiertan |                  |
+  | dormir     | to sleep                              | irregular    | duermo/duermes/duerme/dormimos/dormís/duermen                    |                  |
+  | estar      | to be                                 | irregular    | estoy/estás/está/estamos/estáis/están                            |                  |
+  | hacer      | to do / to make                       | irregular    | hago/haces/hace/hacemos/hacéis/hacen                             |                  |
+  | pensar     | to think                              | irregular    | pienso/piensas/piensa/penamos/pensáis/piensan                    |                  |
+  | poder      | to be able to                         | irregular    | puedo/puedes/puede/podemos/podéis/pueden                         |                  |
+  | querer     | to want / to love                     | irregular    | quiero/quieres/quiere/queremos/queréis/quieren                   |                  |
+  | saber      | to know / to taste                    | irregular    | sé/sabes/sabe/sabemos/sabéis/saben                               |                  |
+  | seguir     | to follow                             | irregular    | sigo/sigues/sigue/seguimos/seguís/siguen                         |                  |
+  | ser        | to be                                 | irregular    | soy/eres/es/somos/sois/son                                       |                  |
+  | tener      | to have / to be                       | irregular    | tengo/tienes/tiene/tenemos/tenéis/tienen                         |                  |
+  | volver     | to return                             | irregular    | vuelvo/vuelves/vuelve/volvemos/volvéis/vuelven                   |                  |
+  | alquilar   | to rent                               |              | alquilo/alquilas/alquila/alquilamos/alquiláis/alquilan           |                  |
+  | pasar      | to pass / to happen / to come in (it) |              |                                                                  |                  |
+  | pesar      | to weight                             |              |                                                                  |                  |
+  | ganar      | to win                                |              | gano/ganas/gana/ganamos/ganáis/ganan                             |                  |
+  | cambiar    | to change                             |              |                                                                  |                  |
+  | establecer | to establish                          |              |                                                                  |                  |
+  | jugar      | to play                               |              | juego/juegas/juega/jugamos/jugáis/juegan                         |                  |
+  | alcanzar   | to reach                              |              |                                                                  |                  |
+  | contar     | to count / to tell                    |              | cuento/cuentas/cuenta/contamos/contáis/cuentan                   |                  |
+  | pagar      | to pay                                |              |                                                                  |                  |
+  | mejorar    | to improve                            |              |                                                                  |                  |
+  | utilizar   | to use                                |              |                                                                  |                  |
+  | recordar   | to remember                           | irregular    | recuerdo/recuerdes/recuerde/recordamos/recordáis/recuerdan       |                  |
+  | recibir    | to receive / to welcome               |              |                                                                  |                  |
+  | dejar      | to let / to leave (something behind)  |              |                                                                  |                  |
+  | caer       | to fall                               | irregular    | caigo/caes/cae/caemos/caéis/caen                                 |                  |
+  | dar        | to give                               | irregular    | doy/das/da/damos/dais/dan                                        |                  |
+  | resolver   | to solve                              | irregular    | resuelvo/resuelves/resuleve/resolvemos/resolvéis/resuelven       |                  |
+  |            |                                       |              |                                                                  |                  |
+* Words
+  | Word       | Translation                 | Comment                                     | Example                                                        |
+  |------------+-----------------------------+---------------------------------------------+----------------------------------------------------------------|
+  | qué        | who / that / whom / which / |                                             |                                                                |
+  | dejar de   | stop                        |                                             |                                                                |
+  | a pesar de | despite                     |                                             |                                                                |
+  | de         | from                        | To indicate origin                          | Mis padres vienen de Nicaragua                                 |
+  | de         | of                          | To indicate material / To express posession | Esta mesa está hecha de plástico / Esa no es la casa de Susana |
+  |            | of                          | To indicate quality                         | La comida era de gran calidad                                  |
+  |            | in                          | used to indicate time                       | Es mejor trabajar de mañana                                    |
+  |            | of                          | relation                                    | las calles de Madrid / en el día de hoy                        |
+  | contar con | to count on                 |                                             | Puedes contar con ella                                         |
+  | en eso     | on that                     |                                             | En eso tenemos que mejorar                                     |
+  |            |                             |                                             |                                                                |
+* Adverb
+  | Word  | Translation  | Example            |
+  |-------+--------------+--------------------|
+  | cerca | close / near | Mi casa está cerca |
+  |       |              |                    |
+
+* Nouns
+
+  | Word  | Translation | Example |
+  |-------+-------------+---------|
+  | techo | ceiling     |         |
