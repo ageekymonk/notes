@@ -21,6 +21,11 @@
      * Proactive cycle scaling
      * Proactive Event based scaling
      * Autoscaling on demand
+   * Cipher Suite
+     * Authentication
+     * Encryption
+     * Message Authentication
+     * Key Exchangen algorithms
 ** Virtualization
    1. HVM
       - Hardware Virtual Machine
@@ -42,17 +47,6 @@
       - Jumbo Frames are supported on instance which has Enhanced Networking
       - Enhanced Networking has SR-IOV (Single Route I/O Virtualization)
       - Enhanced Networking is supported only on HVM instances not on PV Instances
-      - Placement Groups
-        - Cannot span multiple AZ
-        - Name should be unique across AWS
-        - Supported only on instances that support Enhanced Networking
-        - Existing instances cannot be moved to a placement group
-        - Placement groups cannot be merged
-        - Can span peered VPC
-        - Cannot explicitly reserve instances for a placement group
-        - Types: cluster and spread
-        - Spread placement group has max of 7 instances per az per group
-        - Autoscaling can be used but you might get insufficient capacity error
     - There is a limit on number of running instances. It is 2x for number of stopped instances.
     - You can request to increase limit
     - metadata can be accessed from within aws using http://169.254.169.254/latest/metadata
@@ -191,6 +185,16 @@
       instance is stopped and started again
     - A placement group should we within a same availability zone
     - An instance which was not launched instance in a placement group cannot be moved into a placement group
+    - Cannot span multiple AZ
+    - Name should be unique across AWS
+    - Supported only on instances that support Enhanced Networking
+    - Existing instances cannot be moved to a placement group
+    - Placement groups cannot be merged
+    - Can span peered VPC
+    - Cannot explicitly reserve instances for a placement group
+    - Types: cluster and spread
+    - Spread placement group has max of 7 instances per az per group
+    - Autoscaling can be used but you might get insufficient capacity error
 *** ELB
     - Types
       1. Classic LB
@@ -227,10 +231,12 @@
         - ClosestToNextInstanceHour
       - Uses Perfect Forward Secrecy, which is it is not possible to decode the
         past sessions even if the long term key is compromised
+      - Enable cross zone load balancing for equal distribution of traffic
+        across all hosts in all az.
     - Application LB
       - Layer 7
       - Region Wide
-      - Content based Routing
+      - supports host header (content based routing)
       - Path based Routing
       - Support for microservices and containers
       - Better performance for real time streaming
@@ -239,6 +245,10 @@
       - HTTP/2
       - Access Logs
       - AWS WAF
+      - Cross Zone Load Balancing is always enabled
+    - Network Load Balancer
+      - Supports Static/Elastic IP
+      - Preserve Source IP Address
     - Autoscaling
       - Deployed Region wise
       - Can span across AZ
@@ -307,11 +317,20 @@
        - DNS is supported now
        - Security groups are not supported across peering (2014)
        - In VPC Peering two VPCs should be in separate subnet but in same region
-       - In VPC Peering one VPC can peer with multiple VPCs with same subnet ???
      - VPN
+       - Software VPN
        - Hardware Based VPN
          - Port Redundancy
          - There is a Virtual Private Gateway at AWS Side
+         - Two parallel ipsec tunnel for redundancy
+         - There can be only one virtual private gateway per vpc just like igw
+         - vpc can have both virtual private gateway and igw attached at the same time
+         - Create VPN Connection between Private DC and VPC
+           - Create a VPN Gateway
+           - Attach VPN Gateway to VPC
+           - Create Customer Gateway connecting to a customer IP
+             [[file:Certification/Branch_Offices_diagram_2018-01-10_21-53-19.png]]
+             [[file:Certification/Multiple_VPN_Tunnels_diagram_2018-01-10_21-56-02.png]]
        - Direct Connect
          - By default does not have Port Redundancy
          - Private Connection between your datacenter to AWS Datacenter
@@ -328,18 +347,6 @@
        - VPN CloudHub
          - Hardware based VPN
          - Branch offices can directly connect to AWS VPC
-       - Software VPN
-     - VPN Gateways
-       - Virtual Private Gateway
-       - Customer Gateway
-       - Two parallel ipsec tunnel for redundancy
-       - There can be only one virtual private gateway per vpc just like igw
-       - vpc can have both virtual private gateway and igw attached at the same time
-       - Create VPN Connection between Private DC and VPC
-         - Create a VPN Gateway
-         - Attach VPN Gateway to VPC
-         - Create Customer Gateway connecting to a customer IP
-         - Create a VPN Connection between VPN Gateway to Customer Gateway
      - Direct Connect
        - Since Direct connect is a dedicated line, there is no internet access.
          This means you cannot access public internet.
@@ -356,6 +363,13 @@
            - Automatic Route discovery using BGP
            - Requires Public and Private ASN Number
            - Can communicate using only the private ip address inside vpc
+       - Direct Connect Gateways
+         - to connect your AWS Direct Connect connection over a private virtual
+           interface to one or more VPCs in your account that are located in the
+           same or different regions
+           [[file:Certification/dx-gateway-diagram_2018-01-10_22-45-13.png]]
+       - To connect to remote region you can create Public VIF and create as
+         VPN. This will use amazon backbone for the VPN connection.
        - Cross Connect is physical connection between your network and direct connect authorized partner
        - connect from colocated DC to AWS
 *** Migration to another region
@@ -386,10 +400,6 @@
     - SLA is 99.95%
     - Volume data is replicated to multiple servers within AZ
     - I/O size is capped at 256 KiB for SSD volumes and 1,024 KiB for HDD volumes
-    - EBS Volume Types
-      1. General Purpose SSD
-      2. Provisioned IOPS
-      3. Magnetic
     - Increasing IOPS than provided by using RAID. It is the function of the
       guest OS
     - RAID0 -> For increasing the IO. No redundancy
@@ -464,8 +474,32 @@
       - Audit logs
       - Event Notification
     - Life Cycle Policies
-      - Allows an object to be sent to glacier for archival or delete after an interval
+      - Allows an object to be sent to glacier for archival or delete after an
+        interval
+    - Versioning
+      - unversioned, version-enabled, version-suspended
+      - Objects stored in your bucket before you set the versioning state have a
+        version ID of null. When you enable versioning, existing objects in your
+        bucket do not change. What changes is how Amazon S3 handles the objects
+        in future requests.
+    - Cross Region replication
+      - should have replication enabled on both source and destination
     - Security
+      - Can set encryption on bucket.
+      - Objects are encrypted using SSE (Server side Encryption) using SSE-S3 or
+        SSE-KMS or SSE-C
+      - SSE is for data encryption at rest
+      - If the default encryption is enabled but there is no header in the
+        request with the key details default keys will be used
+      - If there is a key in the header then the encryption key is used for
+        encrypting the object
+      - SSE-S3
+        - S3 Mananged Key
+        - Encrypts each object with unique key
+        - It encrypts the key with the master key that it rotates regularly
+        - Uses AES-256
+      - SSE-KMS
+        - Uses CMK (Customer Master Key) to encrypt s3 data
       - All objects and buckets are private by default
       - Can share accounts across accounts with ACL
       - Signed URL
@@ -478,13 +512,17 @@
           - Bucket level security
           - Permission for anonymous user
           - Restrict IP Address / HTTP Referer
+          - Limited to 20KB
         - ACL Policies
           - Legacy
           - Bucket and object level security
+          - Can give permission to other accounts. cannot give to same account users.
+          - Cannot grant conditional permissions neither an explicit deny
         - Query Signed Authentication (Pre signed URLs)
           - Grant temporary access to s3 resources
     - Used
-      - Serve static webpages. URL is bucketname.s2-website-<region>.amazonaws.com
+      - Serve static webpages. URL is
+        bucketname.s2-website-<region>.amazonaws.com
       - Serve as a origin to cloudfront CDN
       - For redirecting to another URL the bucket name has to match subdomain
     - Permissions
@@ -500,6 +538,17 @@
     - Retrieval fee per GB
 *** Amazon storage gateway
     - Connects local datacenter to cloud based storage like s3
+    - Storage Gateway Types
+      [[file:Certification/file-gateway-concepts-diagram_2018-01-13_22-07-13.png]]
+      1. File Gateway
+      2. Volume Gateway
+         1. Cached Volume
+            [[file:Certification/aws-storage-gateway-cached-diagram_2018-01-13_22-12-29.png]]
+         2. Stored Volume
+            [[file:Certification/aws-storage-gateway-stored-diagram_2018-01-13_22-12-46.png]]
+      3. Tape Gateway
+         - archive backup data in Amazon Glacier
+           [[file:Certification/Gateway-VTL-Architecture2-diagram_2018-01-13_22-14-40.png]]
     - Types
       1. Gateway Cached Volumes
          - Create a volume and mount it as iSCSI Device on the onpremise server
@@ -519,13 +568,10 @@
     - Global Content Delivery Network
     - Delivers content from origin location to edge location. Edge location caches files from origin location.
     - Can be used for dynamic, static, streaming, interactive content
+    - s3 does not support query string but cloudfront does.
     - Distribution Types
       1. Web
       2. RTMP
-    - Geo Restriction
-      - Blacklist or whitelist countries
-      - blacklisted countries see 403 error
-      - Custom error pages
     - Zone Apex
       - Route 53 alias mapping to cloudfront distribution
       - Wildcard CNAME
@@ -534,6 +580,54 @@
       - Dedicated IP Custom SSL
       - SNI Custom SSL
     - Provides Invaliation API
+    - Dynamic content & Whole Site CDN
+      - PUT and POST request is not cached in CDN
+      - DELETE request is not cached and it does not invalidate the cache
+      - For dynamic content use 0 TTL. When TTL is 0, cdn makes a HEAD request
+        to check if the content is modified.
+      - Device Detection based on user agent header
+      - Geo Targeting
+    - Reporting
+      - Access Logs are sent to s3 buckets
+      - Cache statistics
+      - Reports
+        - popular objects
+        - devices, browsers, operating system
+        - Top Referers
+    - Security
+      - Signed URLS
+        - URLS with expiry date to content
+      - Signed Cookies
+        - More flexible.
+      - Geo Restriction
+        - Blacklist or whitelist countries
+        - blacklisted countries see 403 error
+        - Custom error pages
+      - HTTP to HTTPS Redirect
+      - AWS WAF
+      - Generic SSL or content SSL
+      - Use Origin Access Identity on cloudfront so content is only served by
+        cloudfront not via s3 url
+    - Performance
+      - Adjust TTL with different origins using URL Patterns based on frequency
+        of access and frequency of change
+      - If multiple request for same object, cloudfront lets first request to
+        finish so that it can use the cached object.
+    - Video Streaming
+      - Types
+        1. On demand
+           - mp4 over rtmp
+           - Other media types use web cdn.
+        2. Pre recorded
+           - mp4 over rtmp
+           - Other media types use web cdn.
+        3. Live Streaming
+           - web cdn not rtmp cdn
+      - Signed URLs only worked for on demand and pre recorded and stored in S3.
+      - Signed Cookies can be used for live streaming (Progressive Downloads)
+      - Cloudfront video streaming supports only RTMP
+      - Need to use web download distribution for other video types like HLS
+
 *** Migration to another region
     - Take a snapshot of volume and migrate the snapshot to another volume
     - Use AMI Copy to another region
@@ -557,7 +651,8 @@
     - Backups are deleted once the database is deleted
     - We can take a snapshot of the database before it is deleted
     - Read Replicas
-      - Asynchronous replication of data
+      - Asynchronous replication of data to read replicas
+      - If security is enabled then the read replicas has to be in the same region
       - Can be created from other read replicas
       - Monitor replication lag using cloudwatch
       - Can promote a read replica to a primary instance
@@ -589,6 +684,35 @@
         3. Deployment Type
         4. License Model
         5. Region
+    - Replication
+      - From RDS to on premise
+      - From on premise to RDS
+    - Oracle DB
+      - Oracle RAC is not supported by RDS because AWS does not support multicast.
+      - We can run Oracle RAC by using a Tunnel between all the nodes in the
+        cluster
+      - Can use RMAN to export data from on premise to S3
+      - RMAN is not supported in RDS so need to use RDS Snapshot
+      - Oracle DB import is done by Oracle Data pump
+    - MSSQL
+      - Read Replicas are not supported
+      - multi region disaster recovery and backups require import/export tools
+        provided by sql server
+      - Can copy rds snapshot from one region to another region
+    - Security
+      - Encryption of data at rest
+      - If encrypted the snapshot, logs, backups, read replicas are encrypted
+      - Encryption can only be enabled at creation time
+      - Cross region replicas and copying snapshot to another region will not
+        work as the keys are specific to region
+      - Transparent Data Encryption
+        - Automatically encrypts the data before writing to the storage device
+        - Native feature of Oracle and SQL Server
+        - In Oracle the key needs to be stored outside of KMS. It can integrate
+          with HSM for this
+        - In SQL Server, the key is managed by RDS after enabling TDE
+      - SSL Endpoints can be used
+
 *** Elasticache
     - Inmemory cache engine
     - Supported: memcached, redis
@@ -596,6 +720,10 @@
     - When to use Memcached instead of Redis
       1. Multi threaded
       2. Horizontal Scaling
+      3. When using DB as a source like mariaDB/mysql
+      4. does not have its own persistence
+      5. write through and lazy loading supported
+      6. every node should be same instance type
     - When not to use Memcached but use redis
       1. Multi AZ
       2. Backup and Restore
@@ -603,6 +731,21 @@
       4. Sorting and Ranking
       5. Advanced data types
       6. Persistence
+      7. acts replacement for db
+      8. persistence is disabled by default
+      9. Scale by adding read replicas
+    - Caching Strategies
+      - Lazy Loading
+        - more common in memcached
+        - if there is a request first checked in elasticache if there is a miss,
+          it is requested from db and updated the elasticache
+        - It is good strategy for frequently accessed data
+      - Write through
+        - updated when written to the db
+        - good strategy when there is not many writes
+        - Lot of data stored in memory, many could be infrequently accessed
+      - Adding TTL
+        - this can be used in both lazy loading and write through
 *** DynamoDB
     - Homegrown Nosql
     - Fully Managed, Highly Available, Highly Scalable
@@ -621,32 +764,58 @@
       - Amazon Data Pipeline
       - Amazon S3
     - Stores structured data in tables and indexed by a primary key
-    - primary key can be single attribute hash key or composite hash-range key ???
+    - primary key can be single attribute hash key (now it is called as
+      partition primary key) or composite hash-range key (partition primary
+      key + Sort key)
     - Supports secondary indexes
     - Supports get for all item level changes occured in some time frame. It is
       called stream
     - Cross Region Replication
     - Triggers to integrate with lambda
     - Schema less
-    - Operations
+    - Operations for searching
       - Query
+        searches the index
       - Scan
+        grep every item
+    - Global Secondary Index
+      - using different secondary partition key and sort key
+    - Local Secondary Index
+      - using same partition key as primary key but different sort key
+    - Multiregion replication
+      - for RPO and RTO we can use data pipeline to transfer data to secondary region
+    - Dynamodb streams
+      - powered by kinesis
+      - from the dynamodb table log is written to kinesis
 *** Redshift
-    - Petabyte scale data warehousing
+    - Petabyte scale data warehousing for storing large amounts of data for BI applications
     - Analyze all your data using existing BI tools
+    - Redshift nodes are all within single availability zone
+    - Redshift nodes are continuously backed to s3. In case of node failure, the
+      data is restored from s3
     - HDD and SSD
+    - Does not support spot instance
+    - Shutting down a cluster will create a snapshot and delete the cluster
+    - delete a cluster will not create a snapshot
+    - There is not shutdown for cost saving purpose. Cluster is running or deleted.
     - Architecture
       - Has Leader Node which is just a SQL Endpoint
       - Leader node stores
         1. Metadata
         2. Optimizes Query plan
         3. coordinates query execution
+        4. Distributes the query in parallel to all cluster nodes
+        5. Results from all the cluster nodes are organized and sent to client
       - Compute Nodes
         1. Local Columnar storage
         2. Parallel / distributed execution of queries, loads, backups, restores
            and resizes
       - Continuous and incremental backups
-        - It can do across regions
+        - can take snapshot and create a new cluster from that. The snapshot is
+          stored in s3
+        - Automatic and manual snapshot are available.
+        - The snapshots can be copied across regions
+        - Supports automatic and manual copy of snapshots across regions
       - Security
         - Load encrypted data from S3
         - SSL encryption on flight
@@ -696,16 +865,27 @@
 ** Analytics
 *** Elastic Mapreduce (EMR)
     - Hadoop Clustering tool
-    - Easily integrate with Redshift, DyanmoDB
+    - Easily integrate with Redshift, DyanmoDB, data pipeline
     - Full access to underlying OS
     - Supports Hadoop, Spark, HBase, Presto, Flink
     - 128 MB Chunks
-    - EMR Slave Node
-      1. Core Node
+    - Hadoop Components
+      - HDFS
+      - Map reduce
+      - Hadoop Data services
+        - Hive
+        - Pig
+    - EMR Cluster Components
+      1. Master Node
+         - manages data distribution to core nodes
+         - manages task nodes
+      2. Core Node
          - runs task
          - store data in HDFS
-      2. Task Node
+      3. Task Node
          - runs tasks
+      4. EMRFS
+         - use EMRFS instead of HDFS. store data in s3
 *** Kinesis
     - Development service
     - Can capture and store real time streams of data
@@ -733,6 +913,23 @@
         - Partition key is for shard to partition a stream
       - Consumers
         - Also called as Kinesis stream application
+*** Data Pipeline
+    - automating transfer or transformation of data
+    - Move data from and to other services
+    - Components
+      - Task Runners
+        - an application polling the pipeline for task and performs the task
+        - can be a prebuilt template that launches ec2 instance, or use existing
+          ec2 instance or on premise server
+      - Data nodes
+        - The location and type of data the pipeline uses for input and output
+        - example: dynamodb, mysql, redshift, s3
+      - Activities
+        - This defines what is to be done
+      - Preconditions
+        - condition that should be satisfied to execute a pipeline
+      - Resources
+        - computational resources like EMR, EC2
 ** App Services
 *** Simple Workflow (SWF)
     - Useful for coordination of distributed tasks
@@ -741,24 +938,22 @@
     - Guarantees order of tasks that are executed
     - No duplicate tasks
     - Can last for an year
+    - Each workflow runs in an AWS resource called a domain,
+    -
     - Components
-      1. Decider
-         - Decides on the flow of the workflow
-      2. Activity
-         - Executes the activity and gives the results
-      3. Tasks
+      1. Tasks
          - Activity Task
            Tells the worker to perform a function
          - Decider Task
            Tells the decider the state of workflow execution
-      4. Worker
+      2. Worker
          - Can be EC2 instance or a person
-         - Receives tasks
+         - Receives and performas tasks
 *** Simple Queue Service (SQS)
     - Short Polling(0 seconds) and Long Polling (1 - 20 seconds)
     - Each message is max of 256KB of data. Minimum should be 1 byte.
     - Max message retention time is 14 days. Default is 4 days
-    - Delivery Delay 0 seconds to 15 minutes
+    - Delivery Delay 0 seconds to 15 minutes. Message is not visible until then
     - Types of Queus
       1. Standard
          - Guarantees deliver of messages atleast once
@@ -769,7 +964,9 @@
          - No duplicates
          - FIFO
          - Max 20000 inflight message per queue
-         -
+    - Job Observer Pattern
+      - cloudwatch alarm to trigger when the sqs queue reaches a threshold
+      -
 *** Simple Notification Service (SNS)
     - sending messages to endpoints
     - Components
@@ -790,6 +987,21 @@
     - Can send to external other api
     - Cache response with TTL
     - Uses cloudfront for entry. It helps in DDoS
+*** Elastic Transcoder
+    - Convert media files on s3
+    - Convert different formats (HTTP Live Streaming HLS), quality levels, resolutions, apply captions,
+      create mp3 from video, watermark video files
+    - can use S3 RRS to stored the results of transcoding as we have the source
+      files and we can get the output any time from source
+    - Components
+      - Jobs
+        - can create upto 30 different video types
+        - we configure video settings, presets for videos, encoding
+      - Pipelines
+        - Pipelines are where jobs are submitted
+        - we configure source and destination s3 bucket
+      - presets
+        - these are configuration for videos
 ** Deployment Services
 *** Elastic Bean Stalk
     - Deploying and Scaling Web Application
@@ -800,7 +1012,7 @@
     - Integrates with VPC, IAM
     - Multiple Environments supported
     - Deploy using war file or git repository
-    - Cloudwatch Monitorig, Application server settings, Run other application
+    - Cloudwatch Monitoring, Application server settings, Run other application
       components, Access log files without logging into application servers
 *** EC2 Systems Manager
 **** About
@@ -825,6 +1037,9 @@
         - Stacks are containers of resources that you want to manage
         - Stacks contains one or more layers. Example Web application layer,
           database layer
+    - Rolling Deployment
+    - Blue Green Deployment
+    - Supports both on premise and aws
 *** Cloudformation
     - Templates and Stacks
       - Template is the blueprint
@@ -879,6 +1094,13 @@
       - AWS CloudFormation StackSets extends the functionality of stacks by
         enabling you to create, update, or delete stacks across multiple accounts
         and regions with a single operation.
+      - Nested Templates are supported
+      - CloudFormation can backup or retain resources or snapshot when the cloudformation
+        template is deleted
+      - You can use intrinsic functions only in specific parts of a template.
+        Currently, you can use intrinsic functions in resource properties,
+        outputs, metadata attributes, and update policy attributes. You can also
+        use intrinsic functions to conditionally create stack resources.
 
 ** Management Services
 *** Identity Access Management (IAM)
@@ -897,12 +1119,14 @@
       - Use MFA
       - Set Password policy
     - An EC2 instance can be given role when it is created and can have only one role
-*** CloudTrail
-      - Logging for API calls
-*** Cloudwatch
-      - Monitor AWS Services
 *** Directory Services
-
+    - AD Connector
+      - Hosted Proxy service
+      - Nothing is stored
+      - Increased latency
+    - Simple AD
+      - Fully hosted AD
+      - Setup Master Controller and sync to onpremise
 ** Development Services
 *** Kinesis
     - Realtime data processing service which continuously captures and store data
@@ -967,11 +1191,19 @@
     - Max time for the key is 12 hours
     - [[https://169.254.169.254/latest/meta-data/iam/security-credentials/role-name]]
     - Identity Federation with custom identity broker
+      - calls AssumeRole or GetFederationToken
+      - GetFederationToken is the key is valid for longer duration and does not
+        support MFA
+      - Assume role the key is valid for short durationa and support MFA
+      #+attr_html: :width 600px
       [[file:Certification/enterprise-authentication-with-identity-broker-application.diagram_2018-01-08_20-02-49.png]]
-    - Identity Federation with SAML
+    - Identity Federation with SAMLG
+      #+attr_html: :width 600px
       [[file:Certification/saml-based-sso-to-console.diagram_2018-01-08_19-59-00.png]]
     - Identity Federation with Web Identity Providers
-      [[file:Certification/aws-may-webinar-series-getting-started-with-aws-identity-and-access-management-25-638_2018-01-08_20-00-39.jpeg]]
+      - Can replace AssumeRoleWithWebIdentity call by using cognito
+        #+attr_html: :width 600px
+        [[file:Certification/aws-may-webinar-series-getting-started-with-aws-identity-and-access-management-25-638_2018-01-08_20-00-39.jpeg]]
 *** security group
     - Resource Level
     - Ingress and Egress
@@ -997,6 +1229,13 @@
       - It has an alias
       - If another key is not specified CMK is used for encryption
       - Supports key rotation
+      - It can only encrypt 4096 of data directly
+    - Data Key
+      - Used to encrypt large objects directly
+    - Envelope Encryption
+      - Uses this to protect data
+      - practice of encrypting data using data key and encrypting the data key
+        using Key Encryption Key (KEK)
     - Quorum based access. No amazon employee can get access to CMK
     - Access control using IAM
     - Low latency and high throughput
@@ -1009,12 +1248,6 @@
       2. http flood
       3. syn flood
     -
-** Network Access Control List
-   - source and protocol Filtering
-   - Subnet level firewall
-   - Separate inbound and outbound rules
-   - Stateless
-   - one NACL per subnet
 ** Monitoring
 *** Status Checks
     1. System
@@ -1073,8 +1306,21 @@
       increase performance and security
     - Automated AWS Audits
 *** Flog Logs
-    - Information about IP Traffic to and from network interfaces
-    -
+    - Can be enabled per subnet, interface or vpc
+      - Information about IP Traffic to and from network interfaces
+      - Can be enabled at VPC level, subnet level or interface level
+      - Each event of flow log contains
+        1. flow log version
+        2. aws account id
+        3. network interface id
+        4. src ip
+        5. network interface ip
+        6. destination ip
+        7. src port
+        8. destination port
+        9. number of packets
+        10. number of bytes
+        11. action accepted or rejected
 ** Disaster Recovery
    - RTO
      - Recovery Time Objective
@@ -1100,10 +1346,6 @@
      - Never run any resource in the consolidated payee account
      -
 ** TO Research
-   - ACL and IAM permissions for S3 objects
-   - Signed URLS for S3
-   - Temporary IAM credentials
-     - 1 to 12 hours limit
-       [[https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_request.html]]
-   - AWS Cloudconfig
-   -
+   - Moving Oracle DB from onpremise to AWS
+   - IDS/IDP
+     -
