@@ -92,6 +92,8 @@
   | dejar      | to let / to leave (something behind)  |              |                                                                  |                  |                    |
   | despertar  | to wake up                            | irregular    | despierto/despiertas/despierta/despertamos/despertáis/despiertan |                  |                    |
   | dormir     | to sleep                              | irregular    | duermo/duermes/duerme/dormimos/dormís/duermen                    |                  |                    |
+  | entender   | to understand                         | irregular    | entiendo/entiendes/entiende/entendemos/entendéis/entienden       |                  |                    |
+  | esperar    | to wait / to hope                     |              | espero/esperas/espera/esperamos/esperais/esperan                 |                  |                    |
   | establecer | to establish                          |              |                                                                  |                  |                    |
   | estar      | to be                                 | irregular    | estoy/estás/está/estamos/estáis/están                            |                  |                    |
   | ganar      | to win                                |              | gano/ganas/gana/ganamos/ganáis/ganan                             |                  |                    |
@@ -104,6 +106,7 @@
   | pagar      | to pay                                |              |                                                                  |                  |                    |
   | pasar      | to pass / to happen / to come in (it) |              |                                                                  |                  |                    |
   | pensar     | to think                              | irregular    | pienso/piensas/piensa/penamos/pensáis/piensan                    |                  |                    |
+  | perder     | to lose                               | irregular    | pierdo/pierdes/pierde/perdemos/perdéis/pierden                   |                  |                    |
   | pesar      | to weight                             |              |                                                                  |                  |                    |
   | poder      | to be able to                         | irregular    | puedo/puedes/puede/podemos/podéis/pueden                         |                  |                    |
   | querer     | to want / to love                     | irregular    | quiero/quieres/quiere/queremos/queréis/quieren                   |                  |                    |
@@ -119,6 +122,7 @@
   | volver     | to return                             | irregular    | vuelvo/vuelves/vuelve/volvemos/volvéis/vuelven                   |                  |                    |
   | ir         | to go                                 | irregular    | voy/vas/va/vamos/vais/van                                        |                  |                    |
   | poner      | to put                                | irregular    | pongo/pones/pone/ponemos/ponéis/ponen                            |                  |                    |
+  | buscar     | to look for                           |              | busco/buscas/busca/buscamos/buscáis/buscan                       |                  |                    |
   |            |                                       |              |                                                                  |                  |                    |
 * Words
   | Word       | Translation                 | Comment                                     | Example                                                        |
@@ -137,6 +141,8 @@
   | ir a       | going to                    |                                             |                                                                |
   | pensar en  | think about                 |                                             |                                                                |
   | ti         | you                         |                                             |                                                                |
+  | La gente   | People                      |                                             |                                                                |
+  |            |                             |                                             |                                                                |
 * Adverb
   | Word  | Translation  | Example            |
   |-------+--------------+--------------------|
@@ -149,4 +155,5 @@
   |-------+-----------------+---------|
   | techo | ceiling         |         |
   | bano  | bathroom / bath |         |
+  | llave | key             |         |
   |       |                 |         |
