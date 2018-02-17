@@ -1,0 +1,38 @@
+* News                                                          :elfeed:news:
+** [[https://news.ycombinator.com/rss][HackerNews]]                                                            :hn:
+* SW                                                              :elfeed:sw:
+** Emacs                                                              :emacs:
+*** [[http://planet.emacsen.org/atom.xml][Planet Emacsen]]
+** Tech News                                                       :technews:
+*** [[https://medium.com/feed/hacker-daily][Hacker Noon]]
+*** [[http://feeds.feedburner.com/HighScalability][High Scalability]]
+*** [[http://www.infoq.com/rss/rss.action][InfoQ]]
+** Tech Blogs                                                     :techblogs:
+   [[https://www.joelonsoftware.com/feed/][Joel Spolsky]]
+* Comics                                                      :elfeed:comics:
+** [[https://xkcd.com/rss.xml][xkcd]]
+** [[http://wdr1.com/blog/calvin_and_hobbes.rdf][Calvin and Hobbes]]
+** [[http://feeds.feedburner.com/zenpencils][zen pencils]]
+** [[http://www.phdcomics.com/gradfeed.php][PHD Comics]]
+** [[http://www.thebeardly.com/feeds/posts/default][Beardly]]
+** [[http://theoatmeal.com/feed/rss][Oatmeal]]
+* Blogs                                                        :elfeed:blogs:
+** [[http://www.markshuttleworth.com/feed][Mark Shuttleworth]]
+** [[http://runtrails.blogspot.com/feeds/posts/default][Scott Dunlop]]                                                     :running:
+* Puzzles                                                    :puzzles:elfeed:
+** [[http://dailybrainteaser.blogspot.com/feeds/posts/default][Daily Brain Teaser]]
+** [[http://geeksforgeeks.org/?feed=rss][Geeks For Geeks]]
+* Photography                                            :elfeed:photography:
+** [[http://www.copenhagencyclechic.com/feeds/posts/default][Cycle Chic]]
+** [[http://feeds.feedburner.com/DigitalPhotographySchool][Digital Photography School]]
+* Psychology                                              :elfeed:psychology:
+** [[http://feeds.feedburner.com/becomingminimalistcom][Becoming Minimalist]]
+** [[http://feeds.feedburner.com/Frugalwoods][Frugalwoods]]
+** [[http://feeds.feedburner.com/theminimalists/Hztx][The Minimalists]]
+** [[http://feeds.feedburner.com/zenhabits][Zen Habits]]
+** [[http://tinybuddha.com/feed/][Tiny Buddha]]
+** [[http://youarenotsosmart.com/feed/][You are not so smart]]
+** [[http://www.bakadesuyo.com/feed/][Barking up the wrong tree]]
+* Quotes                                                      :elfeed:quotes:
+** [[http://www.quotationspage.com/data/mqotd.rss][Motivational Quotes]]
+** [[http://www.quotationspage.com/data/qotd.rss][Quote of the day]]

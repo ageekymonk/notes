@@ -81,12 +81,15 @@
 * Verbs
   | Verb       | translation                           | type of verb | Present conjugation                                              | Past Conjugation | Future Conjugation |
   |------------+---------------------------------------+--------------+------------------------------------------------------------------+------------------+--------------------|
+  | abrir      | to open                               |              |                                                                  |                  |                    |
   | alcanzar   | to reach                              |              |                                                                  |                  |                    |
   | alquilar   | to rent                               |              | alquilo/alquilas/alquila/alquilamos/alquiláis/alquilan           |                  |                    |
   | caer       | to fall                               | irregular    | caigo/caes/cae/caemos/caéis/caen                                 |                  |                    |
   | cambiar    | to change                             |              |                                                                  |                  |                    |
+  | cerrar     | to close                              | irregular    | cierro/cierras/cierra/cerramos/cerrais/cierran                   |                  |                    |
   | conseguir  | to get                                | irregular    | consigo/consigues/consigue/conseguimos/consegius/consiguen       |                  |                    |
   | contar     | to count / to tell                    |              | cuento/cuentas/cuenta/contamos/contáis/cuentan                   |                  |                    |
+  | creer      | to believe                            |              |                                                                  |                  |                    |
   | dar        | to give                               | irregular    | doy/das/da/damos/dais/dan                                        |                  |                    |
   | decir      | to say / to tell                      | irregular    | digo/dices/dice/decimos/decís/dicen                              |                  |                    |
   | dejar      | to let / to leave (something behind)  |              |                                                                  |                  |                    |
@@ -100,12 +103,14 @@
   | hacer      | to do / to make                       | irregular    | hago/haces/hace/hacemos/hacéis/hacen                             |                  |                    |
   | jugar      | to play                               |              | juego/juegas/juega/jugamos/jugáis/juegan                         |                  |                    |
   | lograr     | to be able to / to reach (achieve)    |              | logro/logras/logra/logramos/lográis/logran                       |                  |                    |
+  | llamar     | to call                               |              |                                                                  |                  |                    |
   | mantener   | to hold / to support                  | irregular    | mantengo/mantienes/mantiene/mantenemos/manteneis/mantienen       |                  |                    |
   | mejorar    | to improve                            |              |                                                                  |                  |                    |
+  | mirar      | to look at                            |              |                                                                  |                  |                    |
   | oír        | to hear                               | irregular    | oigo/oyes/oye/oímos/oís/oyen                                     |                  |                    |
   | pagar      | to pay                                |              |                                                                  |                  |                    |
   | pasar      | to pass / to happen / to come in (it) |              |                                                                  |                  |                    |
-  | pensar     | to think                              | irregular    | pienso/piensas/piensa/penamos/pensáis/piensan                    |                  |                    |
+  | pedir      | to ask for / to order                 | irregular    | pido/pides/pide/pedimos/pedis/piden                              |                  |                    |
   | perder     | to lose                               | irregular    | pierdo/pierdes/pierde/perdemos/perdéis/pierden                   |                  |                    |
   | pesar      | to weight                             |              |                                                                  |                  |                    |
   | poder      | to be able to                         | irregular    | puedo/puedes/puede/podemos/podéis/pueden                         |                  |                    |
@@ -116,6 +121,7 @@
   | saber      | to know / to taste                    | irregular    | sé/sabes/sabe/sabemos/sabéis/saben                               |                  |                    |
   | seguir     | to follow                             | irregular    | sigo/sigues/sigue/seguimos/seguís/siguen                         |                  |                    |
   | ser        | to be                                 | irregular    | soy/eres/es/somos/sois/son                                       |                  |                    |
+  | servir     | to serve                              | irregular    | sirvo/sirves/sirve/servimos/servis/sirven                        |                  |                    |
   | tener      | to have / to be                       | irregular    | tengo/tienes/tiene/tenemos/tenéis/tienen                         |                  |                    |
   | utilizar   | to use                                |              |                                                                  |                  |                    |
   | ver        | to see                                | irregular    | veo/ves/ve/vemos/veis/ven                                        |                  |                    |
