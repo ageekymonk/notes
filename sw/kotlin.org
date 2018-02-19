@@ -1,0 +1,18 @@
+* kotlin
+** Features
+   - val vs var
+   - string templates
+   - if is an expression
+   - null handling
+   - when statement
+   - try expression
+   - for loop ranges
+   - function expression
+   - Named Parameters and Default Parameters in functions
+   - Infix Functions and Operator Functions
+   - Tail recursive Functions
+   - Sealed classes, data classes
+   - let
+   - lateinit
+   - return labels
+   -

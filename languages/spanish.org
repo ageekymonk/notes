@@ -82,8 +82,12 @@
   | Verb       | translation                           | type of verb | Present conjugation                                              | Past Conjugation | Future Conjugation |
   |------------+---------------------------------------+--------------+------------------------------------------------------------------+------------------+--------------------|
   | abrir      | to open                               |              |                                                                  |                  |                    |
+  | acabar     | to finish                             |              |                                                                  |                  |                    |
   | alcanzar   | to reach                              |              |                                                                  |                  |                    |
   | alquilar   | to rent                               |              | alquilo/alquilas/alquila/alquilamos/alquiláis/alquilan           |                  |                    |
+  | aprender   | to learn                              |              |                                                                  |                  |                    |
+  | aumentar   | to increase                           |              |                                                                  |                  |                    |
+  | ayudar     | to help                               |              |                                                                  |                  |                    |
   | caer       | to fall                               | irregular    | caigo/caes/cae/caemos/caéis/caen                                 |                  |                    |
   | cambiar    | to change                             |              |                                                                  |                  |                    |
   | cerrar     | to close                              | irregular    | cierro/cierras/cierra/cerramos/cerrais/cierran                   |                  |                    |
@@ -122,6 +126,7 @@
   | seguir     | to follow                             | irregular    | sigo/sigues/sigue/seguimos/seguís/siguen                         |                  |                    |
   | ser        | to be                                 | irregular    | soy/eres/es/somos/sois/son                                       |                  |                    |
   | servir     | to serve                              | irregular    | sirvo/sirves/sirve/servimos/servis/sirven                        |                  |                    |
+  | superar    | to exceed/to surpass/to beat          |              |                                                                  |                  |                    |
   | tener      | to have / to be                       | irregular    | tengo/tienes/tiene/tenemos/tenéis/tienen                         |                  |                    |
   | utilizar   | to use                                |              |                                                                  |                  |                    |
   | ver        | to see                                | irregular    | veo/ves/ve/vemos/veis/ven                                        |                  |                    |
@@ -148,7 +153,7 @@
   | pensar en  | think about                 |                                             |                                                                |
   | ti         | you                         |                                             |                                                                |
   | La gente   | People                      |                                             |                                                                |
-  |            |                             |                                             |                                                                |
+  | acabar de  | just , finish               |                                             |                                                                |
 * Adverb
   | Word  | Translation  | Example            |
   |-------+--------------+--------------------|
