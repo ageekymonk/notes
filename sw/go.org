@@ -1,0 +1,4 @@
+* golang
+** Features
+   1. Compiled & Statically Typed language
+   2.
