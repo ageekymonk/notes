@@ -1,0 +1,116 @@
+* Networking
+  - Three pillars of networking
+    1. CNM
+       - Container Network Model
+       - Design for Docker Networking
+       - Competing standard is CNI. This is for kubernetes.
+       - Components
+         1. Sandbox
+            - Platform agnostic concept. In linux it is namespace
+         2. Endpoint
+            - This is network interface
+         3. Network
+            - Connected Endpoints
+    2. Libnetwork
+       - Real world implementation of CNM
+       - Pluggable architecture
+       - Control Plane and Management Plane
+    3. Drivers
+       - Different network types for libnetwork are implemented by drivers
+       - Data Plane
+       - Local Drivers are shipped by docker, Remote drivers are by 3rd party
+  - Network Drivers
+    1. bridge
+    2. host
+    3. none
+    4. overlay
+    5. macvlan
+    6. ipvlan
+  - Bridge Driver
+    - Default driver
+    - bridge network is the docker0 network which is present in all docker hosts. This is the default.
+    - Single Host Networking
+    - Useful for local development
+    - External access to containers are done via port mapping
+    - Bridge is also called vswitch / virtual switch
+    - similar to default bridge, docker0, but with additional features
+    - Also we can create docker_gwbridge and use it for communication with swarm nodes on different hosts
+    - To create bridge network
+      #+BEGIN_SRC bash
+      docker network create -d bridge --subnet 10.0.0.1/24 ps-bridge
+      #+END_SRC
+  - overlay
+    - Can span multiple hosts
+    - Precondition to create overlay networks are
+      1. Needs access to key value store. Supports consul, etcd, zookeeper
+      2. cluster of hosts with connectivity to key value store
+      3. properly configured engine daemon on each host on the swarm
+    - Control plane is encrypted by default
+    - Data plane can also be optionally encrypted
+    - Overlay driver vxlan to build the overlay network
+    - End of each VXLan Tunnel is the VTEP (VXlan tunnel Endpoint)
+    - Can separate data plane and control plane into different network
+  - MACVLAN
+    - way to attach containers to existing networks and VLANs
+    - Ideal for apps that are not ready to be fully containerized
+    - Uses MACVLAN Network type
+    - Each container gets a HW Mac address and ip address on the underlay network
+    - Each container is visible on the underlay network
+    - Requires Promiscuous mode
+    - uses subinterfaces to process 802.1Q tags
+  - Service Discovery
+    - Service gets a Virtual IP (VIP) for loadbalancing
+    - Behind the scenes it uses IPVS for transport layer loadbalancing
+    - Name to IP Mapping are stored in Swarm KV Store
+    - Container DNS and Docker Engine DNS are used to resolve DNS
+    - Every container runs local DNS Resolver
+    - Every Docker engine runs a DNS service
+  - none network is used when the container does not need any network.
+  - host network adds the container to the host network stack. You will find the container to have network identical to host
+  - Default Network Drivers
+    - bridge
+
+* Docker Storage Drivers
+** OverlayFS
+   - Modern AUFS
+   - Simple and Faster than AUFS
+   - overlay driver uses OverlayFS to build and manage docker images and containers
+   - There is two version of overlay driver. overlay and overlay2
+   - Architecture
+     [[file:images/overlayfs.jpg]]
+   - Overlay driver works with single lower layer. So need hardlinks for implementation of multi layered images
+   - Overlay2 driver natively works with multiple lower layer images.
+
+* Best Practices
+  1. Use SSD
+  2. Use Data Volumes
+* Docker Swarm
+  - Components
+    1. Swarm Manager
+       - Filtering
+       - Scheduling
+    2. Discover services
+       - Example: consul, zookeeper, etcd
+  - Three scheduling stratergies
+    1. Random
+    2. Spread
+    3. Binpack
+       - Stopped containers are still considered for packing decision
+* To Ponder
+  - deis
+  - funktion
+  - parse
+  - calico
+  -
+* Namespaces
+** PID
+** Mount
+** Networks
+** IPC
+** UTS
+** User
+   - Root inside container is no longer a real system root
+   - Ranges used by user and group are in
+     /etc/subuid and /etc/subgid
+   - Flag to enable in docker daemon is
+     --userns-remap=default
