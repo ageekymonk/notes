@@ -1,0 +1,194 @@
+* OSX Commands
+** Required Softwares
+   1. Karabiner
+   2. Seil
+   3. Alfred
+   4. Slate
+   5. Controlplane
+   6. brew install gettext && brew link --force gettext
+   7. pyenv
+   8. pyenv-virtualenv
+   9. the_silver_searcher
+   10. jq
+   11. reattach-to-user-namespace
+   12. m-cli
+   13. ccat
+   14. watchmedo
+   15. powerline patched fonts
+   16.
+** Configurations
+***  Configure Karabiner
+    This configures Hyper key and use shift key to print paranthesis.
+    #+begin_src xml
+      <?xml version="1.0"?>
+      <root>
+          <item>
+          <name>Remap F19 to Hyper</name>
+          <appendix>OS X doesn't have a Hyper. This maps F19 to Control + Shift + Option + Command.</appendix>
+
+          <identifier>usercustom.f19_to_hyper</identifier>
+
+          <autogen>
+              --KeyToKey--
+              KeyCode::F19,
+
+              KeyCode::COMMAND_R,
+              ModifierFlag::OPTION_R | ModifierFlag::SHIFT_R | ModifierFlag::CONTROL_R
+          </autogen>
+      </item>
+
+      <item>
+          <name>Shifts to Parentheses</name>
+          <appendix>Shifts, when pressed alone, type parentheses.  When used with other keys they're normal shifts.</appendix>
+
+          <identifier>private.shifts_to_parens</identifier>
+
+          <!-- This is the basic mapping. -->
+          <autogen>--KeyOverlaidModifier-- KeyCode::SHIFT_R, ModifierFlag::SHIFT_R | ModifierFlag::NONE, KeyCode::SHIFT_R, KeyCode::KEY_0, ModifierFlag::SHIFT_L</autogen>
+          <autogen>--KeyOverlaidModifier-- KeyCode::SHIFT_L, ModifierFlag::SHIFT_L | ModifierFlag::NONE, KeyCode::SHIFT_L, KeyCode::KEY_9, ModifierFlag::SHIFT_R</autogen>
+
+          <!--
+              Remap the "rolls" of () and )( because it's too easy to hit one
+              before finishing the other, and there's no other reason to be
+              pressing both shift keys at once anyway
+          -->
+          <autogen>--KeyToKey-- KeyCode::SHIFT_L, ModifierFlag::SHIFT_R, KeyCode::KEY_0, ModifierFlag::SHIFT_L, KeyCode::KEY_9, ModifierFlag::SHIFT_L</autogen>
+          <autogen>--KeyToKey-- KeyCode::SHIFT_R, ModifierFlag::SHIFT_L, KeyCode::KEY_9, ModifierFlag::SHIFT_L, KeyCode::KEY_0, ModifierFlag::SHIFT_L</autogen>
+
+          <!--
+              Remap Rshift+Space to ') ', because when typing an end paren and
+              then a space I tend to hit space before I let go of rshift.
+          -->
+          <autogen>--KeyToKey-- KeyCode::SPACE, ModifierFlag::SHIFT_R, KeyCode::KEY_0, ModifierFlag::SHIFT_L, KeyCode::SPACE</autogen>
+      </item>
+      </root>
+
+    #+end_src
+** Apache
+*** Test configuration Apache
+
+    apachectl configtest
+
+*** Start Apache
+
+    apachectl start
+
+*** Stop Apache
+
+    apachectl stop
+
+** Install spark
+   https://spark.apache.org/downloads.html
+
+
+For the Scala shell:
+./bin/spark-shell
+
+For the Python shell:
+./bin/pyspark
+
+./sbin/start-master.sh
+
+./sbin/start-slave.sh spark://IIT-LAPTOP-169:7077
+
+
+
+Calculate Pi:
+
+./bin/run-example org.apache.spark.examples.SparkPi
+
+MLlib Correlations example:
+
+./bin/run-example org.apache.spark.examples.mllib.Correlations
+
+MLlib Linear Regression example:
+
+./bin/spark-submit
+--class org.apache.spark.examples.mllib.LinearRegression
+examples/target/scala-*/spark-*.jar data/mllib/sample_linear_regression_data.txt
+
+** Install hadoop
+   brew install hadoop
+** Install cx_oracle python
+   Download instant client from
+   http://www.oracle.com/technetwork/database/features/oci/index.html
+
+   unzip instantclient-basic-macos.x64-11.2.0.4.0.zip
+   unzip instantclient-sdk-macos.x64-11.2.0.4.0.zip
+
+   cd instantclient_11_2
+   mkdir ~/.virtualenvs/default/lib/oracle
+
+   cp -Rf * ~/.virtualenvs/default/lib/oracle
+
+   cd  ~/.virtualenvs/default/lib/oracle
+
+   ln -s libclntsh.dylib.11.1 libclntsh.dylib
+   ln -s libocci.dylib.11.1 libocci.dylib
+
+   export ORACLE_HOME=/Users/ramz.sivagurunathan/.virtualenvs/default/lib/oracle
+
+   export DYLD_LIBRARY_PATH=$ORACLE_HOME:$DYLD_LIBRARY_PATH
+   pip install cx_Oracle
+
+
+
+
+
+** How to set JAVA_HOME
+   export JAVA_HOME=$(/usr/libexec/java_home)
+** Trust a certificate in java
+   #+BEGIN_SRC bash
+   sudo cp cacerts cacerts.orig
+   sudo keytool -importcert -file your_cert_file_here -keystore cacerts
+   #+END_SRC
+** How to install gnuplot
+   brew install gnuplot --with-qt
+   brew linkapps qt
+   in gnuplot:
+   set terminal qt
+** Other Commands
+*** Flush DNS
+    dscacheutil -flushcache
+*** Scan wireless
+    /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s
+*** Prevent a system from sleeping
+    caffeinate -u -t 3600
+** Remove sleepimage and swapfile
+   #+begin_src
+   sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.dynamic_pager.plist
+   sudo rm /private/var/vm/swapfile*
+   sudo launchctl load -wF /System/Library/LaunchDaemons/com.apple.dynamic_pager.plist
+   #+end_src
+** screencapture
+   screencapture -T 10 -P image.png
+** Quit Finder
+   Run commands below. Now you can quit Finder
+   #+begin_src bash
+   defaults write com.apple.finder QuitMenuItem -bool YES
+   killall Finder
+   #+end_src
+
+** CNTLM
+  #+BEGIN_SRC bash
+  brew install cntlm
+  cntlm -H -u XXXXXX -d xyz
+  #+END_SRC
+
+** Route
+   Delete an existing route
+   #+BEGIN_SRC bash
+   sudo route -n delete 10/24 > /dev/null 2>&1
+   #+END_SRC
+
+   Add a route
+   #+BEGIN_SRC bash
+   sudo route -n add 10.0.0.0/24 $(minikube ip)
+   #+END_SRC
+** Resolver
+   #+BEGIN_SRC
+   nameserver 10.0.0.10
+domain svc.cluster.local
+search svc.cluster.local default.svc.cluster.local
+options ndots:5
+   #+END_SRC
