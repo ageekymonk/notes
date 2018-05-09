@@ -1,0 +1,35 @@
+* Tags
+** Meta Tags
+   - provides metadata about the html document
+   - Can be used by browsers, search engines
+   - Always goes inside head tag
+   - There should be a content attribute if there is a name attribute or http-equiv attribute
+*** Viewport
+    - width=device-width part sets the width of the page to follow the screen-width of the device
+    - initial-scale=1.0 part sets the initial zoom level when the page is first loaded by the browser
+    - 
+    #+BEGIN_SRC html
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    #+END_SRC
+*** Attributes in HTML5
+    1. charset
+       - value is generally utf-8 or some widely accepted character set
+    2. content
+    3. http-equiv
+       - content-type
+       - default-style
+       - refresh
+    4. name
+       - application-name
+       - author
+       - description
+       - generator
+       - keywords
+       - viewport
+*** Other Name Attribute Type
+    - robots
+    - 
+* Links
+  [[https://unsplash.com/][Free Images: Unsplash]]
+  [[https://pixabay.com][Free Images: pixabay]]
+

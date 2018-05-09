@@ -1,0 +1,195 @@
+* Devops
+** Terminologies
+*** Files and directories Manipulation
+   1. ls
+   2. cat
+   3. mkdir
+   4. rm
+   5. mv
+   6. more
+   7. less
+   8. head
+   9. tail
+   10. cp
+   11. cd
+   12. ln
+   13. touch
+   14. file
+
+*** Process
+   1. ps
+   2. kill
+   3. pkill
+   4. pgrep
+   5.
+
+*** Network
+   1. ifconfig
+   2. ping
+   3. curl
+   4. wget
+   5. netstat
+   6. dig
+   7. telnet
+   8. ssh
+   9. ftp
+   10. sftp
+   11. nc
+   12. rsync
+   13. scp
+   14. route
+   15. ip
+   16. traceroute
+   17. nslookup
+   18.
+
+*** Permissions
+*** System
+    1. dd
+    2. mount
+    3. umount
+    4. hostname
+    5. df
+    6. du
+    7. free
+    8. top
+    9. htop
+    10. dmesg
+*** Search and Extract Data
+   1. tr
+   2. cut
+   3. sed
+   4. awk
+   5. grep
+   6. sort
+   7. uniq
+   8. find
+   9. wc
+
+*** Administration
+   1. sudo
+   2. chmod
+   3. chown
+   4. users
+   5. groups
+   6. crontab
+   7. su
+   8. ssh-keygen
+   9. ssh-add
+   12. useradd
+   13. userdel
+   14. groupadd
+   15.
+
+*** Compression
+   1. gzip
+   2. gunzip
+   3. tar
+   4. untar
+   5. bzip2
+   6. bunzip2
+   7. cpio
+   8. zip
+   9. unzip
+   10.
+*** Package Management
+    1. yum
+    2. apt-get
+    3. apt-file
+    4. rpm
+    5. deb
+    6.
+*** Version Control
+    1. git
+*** Container
+    1. docker
+*** Shell
+   1. source
+   2. echo
+   3. which
+   4. man
+   5. date
+   6. su
+   7. bg
+   8. history
+   9. clear
+   10. exit
+   11. alias
+   12. whoami
+   13. uname
+   14. fg
+   15. export
+   16. command
+   17. whereis
+   18. tee
+   19. set
+   20. unset
+   21. watch
+   22.
+
+** Tools
+   | Purpose                     | Primary Options                                  | Secondary Options                                       | Notes |
+   |-----------------------------+--------------------------------------------------+---------------------------------------------------------+-------|
+   | Continuous Integration      | Jenkins, Bamboo                                  | Teamcity, Go                                            |       |
+   | Version Control             | git, mercurial                                   | svn                                                     |       |
+   | git hosting                 | github, bitbucket                                | gitlab                                                  |       |
+   | virtualization              | docker, vagrant                                  | vmware, xen                                             |       |
+   | linux for servers           | ubuntu, redhat, centos                           | debian                                                  |       |
+   | linux for desktops          | ubuntu, archlinux                                |                                                         |       |
+   | linux for Containers        | coreos, rancheros                                |                                                         |       |
+   | Log Monitoring and Analysis | ELK (Elasticsearch, Logstash, Kibana)            |                                                         |       |
+   | Testing Tools               | Jmeter, Selenium, SoapUI                         |                                                         |       |
+   | JVM Monitoring              | Newrelic, VisualJVM                              |                                                         |       |
+   | Java Build Tools            | Maven                                            | Ant                                                     |       |
+   | Bug Tracking                | Jira                                             | Bugzilla                                                |       |
+   | Monitoring                  | Nagios                                           |                                                         |       |
+   | Configuration Management    | Puppet, Chef                                     | Ansible, Salt                                           |       |
+   | Languages                   | Python, Java, Javascript                         | Ruby, Go                                                |       |
+   | Cloud Providers             | AWS, Google Cloud                                | Azure, DigitalOcean                                     |       |
+   | HTTP Servers                | Apache, Nginx                                    | Tomcat                                                  |       |
+   | Relational DB               | mysql, postgres                                  |                                                         |       |
+   | InMemory DB                 | Redis                                            |                                                         |       |
+   | AWS Features                | EC2, VPC, AMI, RDS, S3, ELB, Lambda, Cloudfront, | Glacier, Route 53, Cloudwatch, Cloudformation, EMR, SNS |       |
+   | VPN Server                  | Openvpn                                          |                                                         |       |
+   | Nosql DB                    | Cassandra, MongoDB                               |                                                         |       |
+   | Timeseries DB               | InfluxDB                                         |                                                         |       |
+   | config tools                | confd                                            |                                                         |       |
+   | Security                    | fail2ban                                         |                                                         |       |
+   |                             |                                                  |                                                         |       |
+** Docker
+*** Docker Toolbox
+**** Docker Machine
+***** Create a new machine
+     #+begin_src bash
+       docker-machine create  --driver virtualbox --virtualbox-cpu-count "2" --virtualbox-disk-size "8000" --virtualbox-memory "2048" host1
+     #+end_src
+
+** Continuous Integration
+*** Jenkins
+**** Install and Use
+     To test jenkins run in a docker container
+     #+begin_src bash
+       docker pull jenkinsci/jenkins
+       docker run -p 8080:8080 -p 50000:50000 jenkinsci/jenkins
+     #+end_src
+
+*** Bamboo
+**** Trigger branch plan from cli with parameters
+    #+begin_src bash
+      curl -sk  --user bamboo:password -H "Content-Type: application/xml"  -X POST "https://bamboo/rest/api/latest/queue/XXX?executeAllStages=1&bamboo.OPERATION=start"
+    #+end_src
+** Java Build Tools
+*** Maven
+**** Plugins
+***** Surefire
+***** Surefire-report
+***** Exec
+** Log Monitoring and Analysis
+** Security
+*** Fail2ban
+    Fail2ban scans log files (e.g. /var/log/apache/error_log) and bans IPs that show the malicious signs -- too many password failures, seeking for exploits, etc.
+    #+begin_src bash
+    sudo yum install epel-release
+    sudo yum install fail2ban
+    sudo systemctl enable fail2ban
+    #+end_src

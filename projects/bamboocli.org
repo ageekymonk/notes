@@ -1,0 +1,28 @@
+* Bamboo CLI
+** DONE Run Build Plan
+   CLOSED: [2016-10-09 Sun 18:12]
+   shinai build xxx param1=value1,param2=value2
+** DONE Get Build Status
+   CLOSED: [2016-10-09 Sun 18:12]
+   shinai status build plan-name param1=value1,param2=value2 --last N
+   shinai status deploy plan-name
+** DONE Get Latest Build Status
+   CLOSED: [2016-10-09 Sun 18:40]
+** DONE Get Last N build status
+   CLOSED: [2016-10-09 Sun 18:40]
+** DONE Get Latest Build Status with parameters
+   CLOSED: [2016-10-20 Thu 15:53]
+** DONE Print status as Table
+   CLOSED: [2016-10-31 Mon 14:59]
+** DONE Parse Alias for Names to get status
+   CLOSED: [2016-10-31 Mon 15:01]
+** TODO Parse Alias for params to get status
+** TODO Build Alias
+   - shinai alias list
+   - shinai alias add restart-tam --plankey xxx --params key1=value1,key2=value2
+** TODO Create Plan Branch with default Value
+** TODO Clone Bamboo Plan
+** TODO Export Plan
+** TODO Run Deploy Plan
+** TODO Import Plan
+** TODO Get Deployment Status

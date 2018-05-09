@@ -1,0 +1,76 @@
+#+SEQ_TODO: TODO(t) INPROGRESS(i) | DONE(d)
+
+* Personal Project Ideas
+** DONE HUGO Track Theme
+   CLOSED: [2017-02-24 Fri 08:19]
+** TODO Memory Peg Mobile App / Desktop App
+   - nodejs
+** TODO Org Mode Atom Editor
+   - nodejs
+   - react
+** TODO Pomodoro app for linux/osx/android
+** TODO Emacs Package for calendar using gcalcli
+** TODO Add a alfred workflow for adding events to calendar
+** TODO GOCD Notification Plugins
+   - Java
+   - Springboot
+** TODO Jenkins Plugin for displaying Build Version
+   - Groovy
+   - React
+** TODO Jenkins Plugin for deploy to environment
+   - Groovy
+   - React
+** TODO Contribute to Wuzz
+   - Go
+** TODO Walk Club Website
+   - React
+** TODO HUGO Themes
+   http://pencidesign.com/soledad/soledad-simple/
+   http://demo.onedesigns.com/graceunderpressure/journal/
+   All themes from Jekyll
+** TODO Journal App
+   - React
+** TODO Build your own website
+   - React
+* Better Apps
+** Automate App for developers
+*** My Pipe Dream
+   - Display Calendar with events
+   - Support for daily tasks
+   - Plan Your day notification
+   - Backlog for tasks
+   - Gesture for adding todo
+   - Desktop Application
+   - Reminder
+   - Sync with multiple calendars
+   - Bug tracking integration
+   - Pomodorro
+   - Auto Email, facebook/twitter post
+   - Habit Tracking
+   - Journal
+   - Integrate with Org Mode
+   - Import from other todo
+   - Categories for todo: work, personal, bills, shopping
+   - Integrate with external notification and events
+   - Reminders based on time, location
+   - Sync across devices
+   - Integrate with other apps like slack, sourcetree, github etc
+   - Monitor your personal website
+   - Alarm Clock
+   - Daily Puzzle, crossword, xkcd, calvin and hobbes, code, quotes, ...
+   - Share your list, reminder, ...
+   - Configurable Dashboard
+   - Command Center for your Desktop
+   - Save your Bills
+   - Export everything
+*** MVP To do list
+    1. To Do List with categories
+       + Groceries list
+    2. Add Groceries Items
+    3. Autocomplete Groceries item
+    4. Alexa Integration
+* Rejected Ideas
+** TODO Personalized tracking of offers
+   There is not much use with this. It is difficult to do with the changing websites.
+** TODO Add a docker plugin for Bamboo Deployment
+   Bamboo looks to be getting decommissioned and it is not worth the effort

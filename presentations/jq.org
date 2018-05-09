@@ -1,0 +1,19 @@
+* JQ in Depth
+** Dot
+** Empty
+** Map
+** try and error
+** Variables
+** Operators
+** Functions
+** Conditionals
+** Loops
+** Module
+  #+NAME: json1
+  #+BEGIN_EXAMPLE
+  {"a" : "test"}
+  #+END_EXAMPLE
+
+   #+BEGIN_SRC shell
+   ls
+   #+END_SRC

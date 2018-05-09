@@ -1,0 +1,102 @@
+#+OPTIONS: num:nil
+#+OPTIONS: toc:0
+#+REVEAL_HLEVEL: 1
+#+REVEAL_PLUGINS: (highlight notes)
+#+REVEAL_THEME: night
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/reveal.js/3.0.0/
+#+TITLE: Docker Networking
+#+AUTHOR: Ramz
+#+EMAIL: ramzthecoder@gmail.com
+* Agenda
+  1. What are containers ?
+  2.
+* What are containers
+  Namespace + Cgroups + Layered Filesystem = Containers
+* Network Namespace
+** What is it ?
+  - Partition the use of the network devices, addresses, ports, routes, firewall
+    rules into separate boxes within a single kernel
+  - Create a network namespace
+    #+BEGIN_SRC bash
+    ip netns add box1
+    ip netns exec ns1 /bin/bash
+    #+END_SRC
+
+    Creates /var/run/netns/box1
+
+** Virtual Ethernet
+   - pair of fake Ethernet devices that act as a pipe
+   - Traffic sent out on one interface arrives on other
+   - Create a Veth
+     #+BEGIN_SRC bash
+     sudo ip link add veth0 type veth peer name veth1
+     sudo ip link set veth1 netns box1
+
+     #+END_SRC
+
+** Simulating docker0 interface
+   - Creating a bridge
+     #+BEGIN_SRC bash
+     sudo ip link add name dockerx0 type bridge
+     sudo ip link set dockerx0 up
+     sudo ip link set veth0 master dockerx0
+     #+END_SRC
+
+* Network Drivers
+  #+BEGIN_SRC bash
+  docker network ls
+  #+END_SRC
+
+  #+BEGIN_SRC
+NETWORK ID          NAME                DRIVER              SCOPE
+b3821048db31        bridge              bridge              local
+32690e591f8e        host                host                local
+f292ac5fe63c        none                null                local
+
+  #+END_SRC
+** Bridge Driver
+   - Layer 2
+   - docker0 is the default bridge
+   #+BEGIN_SRC bash
+sudo mkdir /var/run/netns
+pid=$(docker inspect -f '{{.State.Pid}}' network-test)
+sudo ln -s /proc/$pid/ns/net /var/run/netns/<container_name>
+ip netns exec <container_name> ip addr
+   #+END_SRC
+
+* MacVLAN
+  - Single Physical interface can have multiple subinterfaces each with its own
+    physical address
+  - MAC VLAN Modes
+    1. MacVLAN Private
+    2. MacVLAN VEPA
+    3. MacVLAN Bridge
+    4. MacVLAN Passthru
+* VXLAN
+  - L2 traffic over UDP
+  - Port 4789
+  - L2/L3 resolution is via
+    1. Multicast
+       - simple
+       - But is not available in aws or other cloud
+    2. Point to point
+       - difficult to manage after 2 hosts
+    3. Manual
+       - flexible
+       - But need external central db and every host needs a daemon
+* Custom Network Plugins
+  1. Weave
+  2. Flannel
+* Docker overlay
+* Under the hood
+* CNI
+  - API to let container orchestration solutions like rancher, kubernetes to
+    configure the SDN
+  [[CNI][https://github.com/containernetworking/cni]]
+  - Types
+    - Networking
+    - IPAM (IP Address Management)
+* Thanks
+[[https://www.youtube.com/watch?v=b3XDl0YsVsg&t=369s][Docker Overlay Network]]
+http://www.pocketnix.org/posts/Linux%20Networking:%20MAC%20VLANs%20and%20Virtual%20Ethernets
+[[https://www.youtube.com/watch?v=4E_l-B988Ek][What is CNI]]

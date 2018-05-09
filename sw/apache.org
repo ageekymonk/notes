@@ -1,0 +1,50 @@
+* Apache Configurations
+** Reverse Proxy
+   + Forward transparently to the Internal Servers
+     =ProxyPass /analytics/ http://127.0.0.1:8080/=
+   + Allow the response from the Internal Servers to be forwarded to the Client
+     =ProxyPassReverse /analytics/ http://127.0.0.1:8080/=
+   + Alter the urls in links of the HTML Page so that user can click to the right page. 
+     Case 1: <a href="test"> </a>
+     #+BEGIN_SRC text
+     ProxyHTMLEnable On=
+     ProxyHTMLURLMap http://127.0.0.1:8080 /analytics
+     #+END_SRC
+     Case 2: <a href="/test"> </a>
+     #+BEGIN_SRC text
+     <Location /analytics/>
+        ProxyHTMLURLMap / /analytics/
+      </Location>
+     #+END_SRC
+   
+   + Complete example 
+
+   #+BEGIN_SRC text  
+     <VirtualHost *:80>
+       ServerName 10.10.2.53
+       RewriteEngine On
+       ProxyPreserveHost On
+       ProxyHTMLEnable On
+       LogLevel debug
+
+       ProxyPass /analytics/ http://127.0.0.1:8081/
+       ProxyPassReverse /analytics/ http://127.0.0.1:8081/
+       ProxyHTMLURLMap http://127.0.0.1:8081 /analytics
+
+       <Location /analytics/>
+         ProxyHTMLURLMap / /analytics/
+       </Location>
+       <Location /analytics/test>
+         Order deny,allow
+         deny from all
+         allow from 10.10.2.48/32
+       </Location>
+       ProxyPass / http://127.0.0.1:8080/
+       ProxyPassReverse / http://127.0.0.1:8080/
+       ProxyHtmlURLMap http://127.0.0.1:8080/ /
+
+       DocumentRoot "/Library/WebServer/Documents"
+     </VirtualHost>
+
+     #+END_SRC
+

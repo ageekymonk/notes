@@ -1,0 +1,14 @@
+#+SEQ_TODO: TODO(t) INPROGRESS(i) WAITING(w) | DONE(d)
+* Potential Projects for contribution
+** INPROGRESS docker puppetserver
+** INPROGRESS apk container
+** dash docset
+** docker puppetagent
+** docker puppet db
+** libhttp for openwrt
+** apk for ossec
+** yasnippet for makefile
+** Bamboo plugin for botkit
+** Rancher UI
+** docker
+** Personal Blog

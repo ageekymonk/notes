@@ -1,0 +1,1072 @@
+* OldLinux
+** DNS
+   #+begin_src bash
+   /etc/network/interfaces.d/xxx
+   dns-nameservers 8.8.8.8
+
+   sudo ifdown eth0 && sudo ifup eth0
+
+   #+end_src
+** Locale
+*** Set locale
+    locale
+    sudo locale-gen "en_US.UTF-8"
+    sudo dpkg-reconfigure locales
+
+** NTP                                                                  :ntp:
+*** Setup
+**** Centos
+     #+begin_src bash
+       #!/bin/bash
+       yum install ntp
+       systemctl start ntpd
+       systemctl enable ntpd
+     #+end_src
+*** Set Timezone
+**** Centos
+     #+begin_src bash
+       #!/bin/bash
+       rm -f /etc/localtime
+       ln -s /usr/share/zoneinfo/Australia/Sydney /etc/localtime
+     #+end_src
+**** Ubuntu
+     #+begin_src bash
+       #!/bin/bash
+       sudo rm /etc/localtime
+       sudo ln -s /usr/share/zoneinfo/America/New_York /etc/localtime
+       dpkg-reconfigure --frontend noninteractive tzdata
+     #+end_src
+**** Alpine
+     #+begin_src bash
+     cp /usr/share/zoneinfo/Europe/Brussels /etc/localtime
+     #+end_src
+*** Set time behind proxy
+    #+begin_src bash
+      10 6,7,19,20 * * * date -s "$(curl -x http://fwdpxyl001:3128 -sD - google.com | grep '^Date:' | cut -d' ' -f3-6)Z"
+    #+end_src
+** Others
+*** How to set Microsoft Core Font is Linux
+    Install liberation fonts
+    #+begin_src bash
+      #!/bin/bash
+      yum install -y liberation-mono-fonts
+      yum install -y liberation-narrow-fonts
+      yum install -y liberation-sans-fonts
+      yum install -y liberation-serif-fonts
+      yum install -y dejavu-lgc-sans-fonts
+      yum install -y dejavu-lgc-sans-mono-fonts
+      yum install -y dejavu-lgc-serif-fonts
+      yum install -y dejavu-sans-fonts
+      yum install -y dejavu-sans-mono-fonts
+      yum install -y dejavu-serif-font
+
+    #+end_src
+
+*** How to measure read speed of a disk
+    yum install hdparm
+    hdparm -Tt /dev/sda
+** Linux Services                                                  :services:
+*** How to install samba                                              :samba:
+    yum install -y samba-client
+    yum install -y samba
+    useradd linuxsmb
+    smbpasswd -a linuxsmb
+    groupadd smbusers
+    chown -R :smbusers /jirahome/
+    usermod -G smbusers linuxsmb
+
+    Edit the file /etc/samba/smb.conf
+    Change the workgroup
+    workgroup = mydomain.corp
+
+    Add to the end
+    [linuxsmb]
+    comment = Linux SMB Share
+    path = /jirahome
+    browsable = yes
+    guest ok = yes
+    read only = no
+    create mask = 0755
+
+
+    service smb restart
+
+*** How to write a systemd service
+    #+begin_verse
+    [Unit]
+    Description=Jira container
+    Requires=docker.service
+    After=docker.service
+
+    [Service]
+    Restart=always
+    ExecStart=/usr/bin/docker start jira-6.4.2-01-production
+    ExecStop=/usr/bin/docker stop -t 3600 jira-6.4.2-01-production
+
+    [Install]
+    WantedBy=multi-user.target
+    #+end_verse
+    sudo systemctl enable /etc/systemd/system/jira-production.service
+    sudo systemctl enable /etc/systemd/system/jira-production.service
+    sudo systemctl start jira-production.service
+    sudo systemctl stop jira-production.service
+
+*** How to avoid root login in ssh
+    PermitRootLogin no
+*** How to reload systemd
+    systemctl daemon-reload
+
+*** How to pgpool
+    http://cloud-engineering.forthscale.com/2013/03/how-to-install-pgpool-ii-on-postgresql.html
+    pg_stat_activity
+    - long running queries
+    connection cost
+
+    export http_proxy=http://10.139.234.40:8080
+    export https_proxy=https://10.139.234.40:8080
+    yum install http://www.pgpool.net/yum/rpms/3.4/redhat/rhel-7-x86_64/pgpool-II-release-3.4-1.noarch.rpm
+    yum install pgpool34
+
+    PGPool client connections port
+
+    port = 5432
+
+    PostgreSQL Master server
+
+    backend_hostname0 = 'pgpool-1'
+
+    PostgreSQL connection port
+
+    backend_port0 = 5432
+
+    Load balancing weight
+
+    backend_weight0 = 0
+
+    PostgreSQL data  path(on PostgreSQL server)
+
+    backend_data_directory0 = '/var/lib/postgresql/9.1/main'
+
+    PostgreSQL username and password (super  user)
+
+    sr_check_user = 'postgres'
+    sr_check_password = ''
+
+    Health check for PostgreSQL nodes period  in seconds
+
+    health_check_period = 10
+
+    PostgreSQL username and password (super  user)
+
+    health_check_user = 'postgres'
+    health_check_password = ''
+
+    User to run recovery script on PostgreSQL  server
+
+    recovery_user = 'postgres'
+    recovery_password = ''
+
+    Next we will setup user for PGPool Administration tool called PCP(later can be used in PGPoolAdmin). We need to encrypt user password to md5:
+    $ pg_md5 password
+
+
+    Edit pcp.conf and insert the new password along with username to the end of the file:
+    username:5f4dcc3b5aa765d61d8327deb882cf99
+
+
+    Next we need to add script for failover, that already configured in pgpool.conf. This script will check if the PostgreSQL server that failed is master or slave. In case of master fail it will put trigger on the slave and it will promote itself to master. Put this script at same location as all configuration files /usr/local/share/etc and give it execute permissions:
+    link to failover.sh
+    Create necessary directories
+    $ mkdir /var/run/pgpool
+    $ mkdir /var/log/pgpool
+
+    Set permissions to this directories for user that will run PGPool.
+    Now PGPool is fully configured and can be started. To start it just run PGPool command. By default it will run at same shell as your user and will print the log to STDOUT. Here is sample of command how to start PGPool as deamon and save the log to file:
+    $ pgpool -n -d > /tmp/pgpool.log 2>&1 &
+
+*** How to setup znc
+    1. Install relevant packages
+       apt-get install znc, znc-python
+    2. znc --makeconf
+
+** bash                                                                :bash:
+*** How to list all open files of a process
+    #+begin_src bash
+      lsof -p 351
+      lsof -c collectd
+      ls -l /proc/351/fd
+    #+end_src
+*** How to create a command_not_found_handler
+    #+BEGIN_SRC sh
+    command_not_found_handler() {
+    # Check if there is a container image with that name
+    if ! docker inspect --format '{{ .Author }}' "$1" >&/dev/null; then
+	echo "$0: $1: command not found"
+	return
+    fi
+
+    # Check that its really the name of the image, not a prefix
+    if docker inspect --format '{{ .Id }}' "$1" | grep -q "^$1" ;then
+	echo "$0: $1: command not found"
+	return
+    fi
+
+    docker run -i -t "$@"
+}
+
+
+    #+END_SRC
+*** How to run a string in bash                                      :script:
+    eval "some command string"
+*** How to test for file is present                                  :script:
+    #+begin_src bash
+    if [[ -f "$DEPLOY_USER_PUB_KEY" ]]
+    then
+    echo "FILE Found"
+    else
+    echo "FILE Not found"
+    fi
+    #+end_src
+*** How to stop on error in bash                                     :script:
+    set -e
+*** How to run a command in background and start another command after that :script:
+
+    ./run_prog1 & ./prog2 & ./prog3
+
+    All commands are run in background
+
+*** How to AWK                                                          :awk:
+    docker ps | awk 'match($NF, "confluence-(.*)-development",ver)  { print ver[1] }'
+    tail -n 10 out.txt  | awk '{ print "||" $1 "|" $2 "|" $3 "|" $4 "|" $5 "||" }'
+*** How to replace line in sed                                          :sed:
+    sed -i "s/OPTIONS='--selinux-enabled'/OPTIONS='--selinux-enabled -g \/docker'/g" /etc/sysconfig/docker
+
+    sed -i "s/Defaults\s\+requiretty/#Defaults    requiretty/g" /etc/sudoers
+
+    sed -i "s/^# %wheel\s\+ALL=(ALL)\s\+NOPASSWD:\s\+ALL/%wheel\tALL=(ALL)\tNOPASSWD: ALL/g" /etc/sudoers
+
+    sed -i "s/%wheel\s\+ALL=(ALL)\s\+ALL/# %wheel\tALL=(ALL)\tALL/g" /etc/sudoers
+
+*** How to rsync                                                      :rsync:
+    rsync -avhz -e ssh root@ululin024:/jirahome/ /jirahome/
+    rsync -avhz -rave "ssh -i pem" root@ululin024:/jirahome/ /
+
+    Remove any files that is not in src from dest
+    rsync -avhz --delete src dest
+
+    Exclude some directory to src
+    rsync --exclude "relativedir" src dest
+
+*** How to set proxy with username and password                       :proxy:
+    Password has @ and ( . Replaced it with %28 and %40
+    export http_proxy=http://sys_crowd_prod:Lkg%28%4069VxD@10.139.234.210:8080
+    export https_proxy=https://sys_crowd_prod:Lkg%28%4069VxD@10.139.234.210:8080
+
+*** How to zip files                                                    :zip:
+    zip filename file1 file2
+
+*** How to display date in some format
+    date +[%Y:%m:%d %H:%M:%S]
+
+*** How to mount windows share                                        :mount:
+    1. Install samba and cifs
+       #+begin_src shell
+       yum install samba cifs-utils
+       #+end_src
+    2. mount the windows volume
+       #+begin_src shell
+       mount -t cifs -o user=username //servername/PackageRepository /ace
+       #+end_src
+*** How to inplace sort and remove duplicates
+    sort -u -o file file
+*** How to avoid ssh asking accept hosts
+    Host *
+    StrictHostKeyChecking no
+*** How to pretty print a json
+    echo '{"json":"obj"}' | python -mjson.tool
+
+*** How to create a tar.gz of a directory
+    tar -zcvf filename.tar.gz /mydir
+*** How to return from function
+*** How to set proxy for curl
+    create a file called ~/.curlrc
+    proxy = hostname:port
+
+    #+begin_src bash
+function myfunc()
+{
+    local  myresult='some value'
+    echo "$myresult"
+}
+
+result=$(myfunc)   # or result=`myfunc`
+echo $result
+
+function myfunc()
+{
+    local  __resultvar=$1
+    local  myresult='some value'
+    eval $__resultvar="'$myresult'"
+}
+
+myfunc result
+echo $result
+
+function myfunc()
+{
+    local  __resultvar=$1
+    local  myresult='some value'
+    if [[ "$__resultvar" ]]; then
+        eval $__resultvar="'$myresult'"
+    else
+        echo "$myresult"
+    fi
+}
+
+myfunc result
+echo $result
+result2=$(myfunc)
+echo $result2
+
+    #+end_src
+
+*** How to create a new user with sudo access
+    useradd bamboo
+    Centos:
+    gpasswd -a bamboo wheel
+
+*** How to create a new user with sudo access and ssh keys setup for passwordless login
+    adduser demo
+    passwd demo
+    gpasswd -a demo wheel
+    su - demo
+    mkdir .ssh
+    chmod 700 .ssh
+    vi .ssh/authorized_keys
+    chmod 600 .ssh/authorized_keys
+
+*** How to create passwordless sudo
+    Centos
+    %wheel         ALL = (ALL) NOPASSWD: ALL
+*** How to pass environment variables to sudo
+    sudo var=val sh scriptname
+*** How to allow bamboo to run sudo
+    The error you will get is
+    sudo: sorry, you must have a tty to run sudo
+    Remove line Defaults    requiretty
+*** How to change crt, cer file to pem
+    ADD certs/iag.crt /tmp/iag.cer
+    RUN openssl x509 -inform pem -in /tmp/iag.cer -outform der -out /tmp/iag.pem \
+    && cp /tmp/iag.pem /etc/pki/ca-trust/source/anchors/iag.pemls \
+    && update-ca-trust
+
+    #+BEGIN_SRC bash
+    cp iag.crt /usr/local/share/ca-certificates/
+    update-ca-certificates
+    #+END_SRC
+*** How to perserve environment variable in sudo
+    sudo -E
+*** How to change shell
+    chsh -s /bin/zsh
+*** How to set java home
+    export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
+*** How to delete all files except latest 3
+    ls -t | tail -n +4 | xargs rm --
+
+*** How to extract rpm
+    #+begin_src bash
+      rpm2cpio file.rpm | cpio -i -d
+    #+end_src
+*** How to mount all entries in /etc/fstab without rebootm
+    #+begin_src bash
+      mount -a
+    #+end_src
+** postgresql                                                      :postgres:
+*** How to connect to postgres
+
+    /usr/pgsql-9.3/bin/psql -U <username> -d <database> -h <host>
+
+*** How to restore postgres db
+    pg_restore --username=confuser --host=localhost --port=5432 --password --exit-on-error --verbose --dbname=confluence ~/Conf_20150425_preupgrade.backup
+*** How to drop all tables in postgres db
+    drop schema public cascade
+    create public schema
+    PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -p $DB_PORT -U $DB_USERNAME $DB_NAME -t -c "drop schema public cascade"
+    PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -p $DB_PORT -U $DB_USERNAME $DB_NAME -t -c "create schema public"
+*** How to dump in postgresql
+
+    pg_dump --username=confuser --host=localhost --port=5432 --password  --verbose confluence -F c -f out.dump
+
+    without password prompt
+    PGPASSWORD="mypass" pg_dump --username=confuser --host=localhost --port=5432 -w --verbose confluence -F c -f out.dump
+
+*** Equivalent to oracle
+
+    | Oracle  | Postgres   |
+    |---------+------------|
+    | LISTAGG | STRING_AGG |
+    |         |            |
+*** Find all views
+    select * from information_schema.views WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
+    AND table_name !~ '^pg_';
+
+*** Drop all views
+
+
+    SELECT 'DROP VIEW ' || table_name || ';'
+    FROM information_schema.views
+    WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
+    AND table_name !~ '^pg_';
+
+*** How to do backup
+    1. Add wal archive
+    2. mv all wal files to remote location.
+    3. /usr/bin/psql -U postgres -W -c "select pg_start_backup('backup_${DATE}');" -p 15432 -h localhost
+    4. rsync the data folder to backup location with new date
+    5. /usr/bin/psql -U postgres -W -c "select pg_stop_backup();" -p 15432 -h localhost
+    6. start backing up the wal files to the new date
+
+*** How to restore
+    1. Remove the data folder contents
+    2. rsync the backed up data
+    3. rsync the wal logs back
+    4. remove /data/pg_xlog files
+    5. create recovery.conf
+       restore_command = 'cp /app_backup/pg_xlog/%f "%p"'
+       recovery_target_time = '2015-08-13 14:10:00 AEST'
+    6. Set permissions
+       chown postgres:postgres $DATA_DIR/recovery.conf
+       chmod 0600 $DATA_DIR/recovery.conf
+
+*** How to switch log
+    select pg_switch_xlog()
+** jira                                                                :jira:
+*** How to do database test in jira
+    java -cp ./atlassian-log-analysis-0.1.1.jar:/opt/jira/./atlassian-jira-6.4.2-standalone/lib/ojdbc6-11.2.0.2.0.jar \
+    com.atlassian.util.benchmark.JIRASQLPerformance jirauser password 'jdbc:oracle:thin:@//UALORA24:1525/CATL' oracle.jdbc.OracleDriver > out.txt
+
+    java -cp ./atlassian-log-analysis-0.1.1.jar:/opt/jira/atlassian-jira-6.4.2-standalone/lib/postgresql-9.0-801.jdbc4.jar \
+    com.atlassian.util.benchmark.JIRASQLPerformance jirauser Jir@_D3v 'jdbc:postgresql://ululin030:5432/jira' org.postgresql.Driver > out.txt
+
+*** How to fix import errors in jira
+    Jira does not handle \00 text ending well.
+
+    wget -c -O atlassian-xml-cleaner-0.1.jar https://confluence.atlassian.com/download/attachments/12079/atlassian-xml-cleaner-0.1.jar?version=1&modificationDate=1307570821061&api=v2
+    java -jar atlassian-xml-cleaner-0.1.jar entities.xml > entities-clean.xml
+
+    [[https://confluence.atlassian.com/display/JIRA/Removing%2Binvalid%2Bcharacters%2Bfrom%2BXML%2Bbackups][Clean XML Dumps for Postgres]]
+
+*** How to reindex via REST
+    curl -u admin_username:admin_password -X POST $JIRAURL/rest/api/2/reindex?type=FOREGROUND
+    curl -u admin_username:admin_password -X POST $JIRAURL/rest/api/2/reindex
+    Type could be one of
+    FOREGROUND
+    BACKGROUND
+    BACKGROUND_PREFFERED (default)
+
+*** How to get application links via rest call
+    curl -s -X GET -u <user>:<pass> -H "Accept: application/json" <hostname>/rest/applinks/1.0/listApplicationlinks | python -mjson.tool
+*** How to delete application links via rest call
+    curl -X DELETE -u <username>:<password> -H "Accept: application/json" localhost:8080/rest/applinks/1.0/applicationlink/2841b105-5904-3c0a-9710-1ff26ae88206
+
+*** How to recover if user not allowed to login
+    root@d537165747f1:/tmp# sudo -u postgres psql
+    psql (9.3.7)
+    Type "help" for help.
+    postgres=# \connect jira;
+    You are now connected to database "jira" as user "postgres".
+    jira=# select * from cwd_directory;
+    jira=# select * from cwd_directory;
+    jira=# update cwd_directory set directory_position = 1 where id = 10700;
+    UPDATE 1
+    jira=# update cwd_directory set directory_position = 0 where id = 0;
+    UPDATE 0
+    jira=# select * from cwd_directory;
+    jira=# update cwd_directory set directory_position = 0 where id = 1;
+    UPDATE 1
+    jira=# select * from cwd_directory;
+
+** docker                                                            :docker:
+*** How to change the location of docker images
+
+    /etc/sysconfig/docker add in OPTS line "-g /someloc"
+*** How to get running state of a docker container
+    docker inspect -f "{{ .State.Running }}" container-name
+*** How to setup docker registry
+    docker run -d -p 5000:5000 \
+    --restart=always --name registry registry:2
+
+*** How to send file to boot2docker
+    scp -i ~/.ssh/id_boot2docker -P 2022 file-to-upload docker@localhost:~
+*** How to set proxy in boot2docker
+*** How to set proxy when behind proxy changing ssl
+    add cer file to /etc/ssl/cacerts.pem
+    restart docker
+*** How to make changes permanent in boot2docker
+    boot2docker save
+
+*** How to change the size of default base image
+    Modify the docker config in /etc/sysconfig/docker-storage to add the line:
+    DOCKER_STORAGE_OPTIONS= - -storage-opt dm.basesize=20G
+    service docker stop
+    rm /var/lib/docker NOTE THIS DELETES ALL IMAGES etc. SO MAKE A BACKUP
+    service docker start
+*** Use insecure registry
+    #+begin_src bash
+      sudo vim /usr/lib/systemd/system/docker.service
+      #ExecStart=/usr/bin/dockerd
+      ExecStart=/usr/bin/dockerd --insecure-registry 192.168.1.88:5000
+    #+end_src
+** IRC                                                                  :irc:
+   /msg NickServ SET PASSWORD mynewpassword
+
+** AWS                                                                  :aws:
+*** Install awscli
+    pip install awscli
+    For Better UI
+    pip install aws-shell
+*** Install spark in ec2 cluster
+    ./spark-ec2 --key-pair=spark --identity-file=~/personal/passwords/spark.pem --region=ap-southeast-2 launch
+*** How to query using aws cli
+
+    aws ec2 describe-instances --output text --query 'Reservations[*].Instances[*].[InstanceId,InstanceType,Tags[?Key==`Name`].Value]'
+
+    aws ec2 describe-instances --output table --query 'Reservations[*].Instances[*].{ID:InstanceId,Type:InstanceType,Tags:Tags[?Key==`Name`].Value | [0]}'
+*** How to change the ami's permission
+    $ aws ec2 modify-image-attribute --image-id ami-2bb65342 --launch-permission "{\"Add\":[{\"UserId\":\"123456789012\"}]}"
+*** EBS Volumes
+    Network attached
+    Persist even after the instances are terminated
+    Highly Available and Reliable
+    Can be used as a storage or boot partition
+    Two Volume Types
+    1. Standard   - Moderate / bursty I/O Requirements
+    2. Provisioned IOPS  - High Performance I/O Requirements like db
+
+*** Create EBS Volumes
+
+
+    The volume could be /dev/sdf or /dev/xvdf
+    sudo mkfs -t ext3 /dev/sdf
+    sudo mount /dev/sdf /mnt/data-store
+    /etc/fstab
+    /dev/sdf /mnt/data-store ext3 defaults,noatime 1 2
+
+*** Create Autoscaling
+
+    export PATH
+    export AWS_ACCESS_KEY=AKIAIOTLT6VHWGIJ2HZQ
+    export AWS_SECRET_ACCESS_KEY=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
+    export EC2_REGION=us-east-1
+    export EC2_URL=https://us-east-1.ec2.amazonaws.com
+    export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY
+    export AWS_SECRET_KEY=$AWS_SECRET_ACCESS_KEY
+    export AWS_CLOUDFORMATION_HOME=/opt/aws/apitools/cfn
+    export PATH=$AWS_CLOUDFORMATION_HOME/bin:$PATH
+    export PATH=/opt/aws/bin:$PATH
+    export AWS_CREDENTIALS_FILE=/home/ec2-user/.aws-credentials
+    export AWS_CREDENTIAL_FILE=$AWS_CREDENTIALS_FILE
+    export PATH=/usr/local/bin/aws-scripts-mon:$PATH
+    export AMM_KEY_NAME=qwikLABS-L131-302767
+    export PATH=/usr/local/bin/aws-scripts-mon:$PATH
+    export AWS_DEFAULT_REGION=us-east-1
+
+    Create autoscale launch config
+    as-create-launch-config --image-id <PasteYourAMIIdHere> --instance-type t1.micro --key <PasteYourKeyNameHere> --group <PasteYourSecurityGroupHere> --user-data-file as-bootstrap.sh --launch-config lab-lc
+
+
+    Check for metadata
+    ec2-metadata
+
+    check for metadata about the placement group
+    ec2-metadata -z
+
+    Set the autoscaling group
+    as-create-auto-scaling-group lab-as-group --availability-zones <PasteYourAvailabilityZoneHere> --launch-configuration lab-lc --load-balancers <PasteYourElasticLoadBalancerHere> --max-size 5 --min-size 1
+    as-create-auto-scaling-group lab-as-group --availability-zones us-east-1a --launch-configuration lab-lc --load-balancers qlstack2-ElasticL-YH2U2F6BVD9I --max-size 5 --min-size 1
+
+
+    aws autoscaling create-launch-configuration --launch-configuration-name odtestlaunch --image-id ami-1b3b462b --instance-type t1.micro
+
+    aws autoscaling describe-launch-configurations --launch-configuration-names odtestlaunch
+
+
+    aws autoscaling create-auto-scaling-group --auto-scaling-group-name spotodtestgroup --launch-configuration-name odtestlaunch --min-size 2 --max-size 2 --availability-zones <Your Availability Zone>
+
+    aws autoscaling describe-auto-scaling-groups
+
+
+    aws autoscaling enable-metrics-collection --auto-scaling-group-name spotodtestgroup --granularity 1Minute --metrics GroupInServiceInstances
+
+    aws autoscaling create-launch-configuration --launch-configuration-name spottestlaunch --image-id ami-1b3b462b --instance-type t1.micro --spot-price 0.03
+
+    aws autoscaling describe-launch-configurations --launch-configuration-names spottestlaunch
+
+    aws autoscaling update-auto-scaling-group --auto-scaling-group-name spotodtestgroup --launch-configuration-name spottestlaunch --min-size 0 --max-size 6 --desired-capacity 4
+
+    aws autoscaling update-auto-scaling-group --auto-scaling-group-name spotodtestgroup --launch-configuration-name spottestlaunch --desired-capacity 6
+
+    aws autoscaling put-scaling-policy --auto-scaling-group-name spotodtestgroup --policy-name spotodtestpolicy --adjustment-type ExactCapacity --scaling-adjustment 0
+
+
+
+
+==================================================================================================================
+Create Auto Scaling Notifications
+==================================================================================================================
+
+as-put-notification-configuration lab-as-group --topic-arn <PasteTheTopicARNHere> --notification-types autoscaling:EC2_INSTANCE_LAUNCH, autoscaling:EC2_INSTANCE_TERMINATE
+as-put-notification-configuration lab-as-group --topic-arn arn:aws:sns:us-east-1:992013841892:lab-as-topic --notification-types autoscaling:EC2_INSTANCE_LAUNCH, autoscaling:EC2_INSTANCE_TERMINATE
+
+
+
+==================================================================================================================
+Create Auto Scaling Policies
+==================================================================================================================
+
+as-put-scaling-policy lab-scale-up-policy --auto-scaling-group lab-as-group --adjustment=1 --type ChangeInCapacity --cooldown 300
+
+
+as-put-scaling-policy lab-scale-down-policy --auto-scaling-group lab-as-group "--adjustment=-1" --type ChangeInCapacity --cooldown 300
+
+
+==================================================================================================================
+Wrapping Up
+==================================================================================================================
+
+as-describe-scaling-activities --show-long
+
+** Zsh
+    1. Kill x<TAB> will do autocomplete with the process id of process name starting with x
+    2. !$ expands to the previous history line’s last argument, !^ expands to the first argument, !:n to the n-th argument.
+    3. <42-69> globs numbers between 42 and 69. Drop the number(s) to make it open-valued. {42..69} expands to the numbers between 42 and 69.
+    4. ESC-RETURN inserts a literal newline, so you can edit longer commands easily.
+    5. cat {file1, file2}
+** Salt                                                                :salt:
+   salt-cloud -m ~/learn/uni/project/sw/salt/cloud.maps.d/ec2.map -P
+
+** Spark
+   -Dspark.local.dir=/mnt/spark
+
+** Oracle                                                            :oracle:
+*** How to see all views in oracle
+    select * from all_views where owner = 'JIRAUSER';
+*** How to see all tables in oracle
+    select * from all_tables where owner = 'JIRAUSER';
+*** How to export Data in Oracle
+    exp username/password
+** Others
+*** How to Run Java in port 80 or 443
+    1. Allow java bin to run in privileged mode
+       #+begin_src shell
+       /usr/sbin/setcap 'cap_net_bind_service=+ep' /loc/to/java
+       #+end_src
+    2. If java throws error like libjli.so not found. Add the libjli.so folder to be allowed.
+       #+begin_src shell
+       cat > /etc/ld.so.conf.d/java.conf <<EOF
+       /usr/java/jire_1.8.40/lib/amd64/jli
+       EOF
+       #+end_src
+    3. Exec ldconfig
+       #+begin_src shell
+       ldconfig
+       #+end_src
+*** How to edit xml using augeas
+    augtool --noload --noautoload --echo
+
+    set /augeas/load/Xml/lens "Xml.lns"
+    set /augeas/load/Xml/incl "/tmp/foo.xml"
+    load
+
+    set /augeas/load/Shellvars_list/lens "Shellvars_list.lns"
+    set /augeas/load/Shellvars_list/incl "/tmp/test.properties"
+    load
+
+    set /augeas/load/Simplevars/lens "Shellvars.lns"
+    set /augeas/load/Simplevars/incl "/tmp/test.properties"
+    load
+
+
+    set /augeas/load/Properties/lens "Properties.lns"
+    set /augeas/load/Properties/incl "/tmp/test.properties"
+    load
+*** How to setup guard file for coffeescript
+    https://github.com/guard/guard-coffeescript
+*** How to develop a phonegap application with ionic framework
+    1. Download and install nodejs
+    2. Download and Install phonegap in OSX
+    3. Download and Install phonegap in your android through your play store
+    4. Install ionic
+       npm install -g cordova ionic
+    5. Start an ionic project
+       ionic start <appname> sidemenu
+    6. Install android sdk
+    7.
+*** How to use Yeoman
+    npm install -g yo bower grunt-cli gulp
+    npm install -g generator-angular
+    yo angular --coffee
+
+*** How to run consul
+    [[https://www.consul.io/intro/getting-started/install.html][consul]]
+*** How to use qfc
+    git clone https://github.com/pindexis/qfc $HOME/.qfc
+*** how to check vm statistics
+    vmstat 1
+*** How to set npm proxy
+    #+BEGIN_SRC sh
+    npm config set proxy http://proxy.company.com:8080
+    npm config set https-proxy http://proxy.company.com:8080
+    #+END_SRC
+    #+BEGIN_SRC sh
+    export npm_config_proxy http://proxy.company.com:8080
+    export npm_config_https_proxy http://proxy.company.com:8080
+    #+END_SRC
+*** How to set npm insecure
+    npm set strict-ssl false
+*** How to run js from command line
+    apt-get install libmozjs-24-bin
+*** How to install selenium
+    Install xvfb to run chrome headlessly
+    sudo apt-get install xvfb
+    sudo apt-get install unzip
+    wget -N http://chromedriver.storage.googleapis.com/2.20/chromedriver_linux64.zip
+    unzip chromedriver_linux64.zip
+    chmod +x chromedriver
+    sudo mv -f chromedriver /usr/local/share/chromedriver
+    sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+    sudo ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
+*** How to setup a angular, coffee, leaflet project
+    install nvm
+    npm install yo bower grunt-cli gulp
+    npm install generator-angular
+*** How to run aspell
+    aspell --lang=en --mode=tex check file.tex
+*** How to convert esri to geojson
+    ogr2ogr -f GeoJSON test.json ~/Downloads/test.json OGRGeoJSON
+*** How to clear totem player history
+    rm ~/.local/share/recently-used.xbel
+*** How to use PGP
+    1. In Mac download and install PGP from [[https://gpgtools.org][PGP For OSX]]
+    2. Create your own key
+    3. Set the keyboard shortcut
+*** How to run maven with cucumber options
+    mvn test -Dcucumber.options="--tags @CalculateHomePremium_Buildings_EnvSmokeTest"
+
+*** How to find list of open files by process id
+    #+begin_src bash
+      lsof +f g -ap <PROCESS_ID>
+    #+end_src
+*** How to get input from file but have user to skip to next line
+    #+begin_src bash
+      exec 3<file
+      while read -u 3 line;do echo echo "$line"; read -p "Press any key" -n 1;done
+    #+end_src
+*** How to add user to a groups
+    sudo gpasswd -a ${USER} docker
+** openssl
+   #+begin_src bash
+   openssl x509 -in some_pem_file.pem -text
+   #+end_src
+*** Export cert from website
+    #+BEGIN_SRC bash
+    echo | openssl s_client -connect yoursever:port 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > yourcert.pem l l
+    #+END_SRC
+** Volumes
+   Physical Volumes
+     - pvcreate /dev/sdb
+     -
+   Volume Groups
+     vgcreate volname /dev/sdb /dev/sdc
+     vgdisplay
+     vgreduce volname /dev/sdc
+     vgextend volname /dev/sdc
+     vgscan
+   Logical Volumes
+     lvcreate -n logical_vol_name --size 4G volname
+     lvdisplay
+     lvremove /dev/volname/logical_vol_name
+     lvextend -L +2G /dev/volname/logical_vol_name
+     lvreduce -L -2G /dev/volname/logical_vol_name
+   mkfs.ext4 /dev/volname/logical_vol_name
+** cron
+*** Generic Format
+    ENV_VAR=value
+    MAILTO=xyz@xxx.com
+    min hour day month year username flock -nx /var/somelockfile.lock task
+*** How to make cron job to dump to a file with name contains date     :cron:
+    run at every minute
+    */1 * * * * ls >> /somefolder/$(date '+\%Y\%m\%d_\%H\%M\%S').txt
+    run at 2 AM every day
+    00 02 * * * ls >> /somefolder/$(date '+\%Y\%m\%d_\%H\%M\%S').txt
+*** How to set cron job in script                                      :cron:
+    echo "*/5 * * * * rsync -aq from to" > /tmp/mycron
+    crontab /tmp/mycron
+    rm /tmp/mycron
+*** How to remove all cron jobs                                        :cron:
+    crontab -r
+** selinux httpd
+   chcon -Rv --type=httpd_sys_content_t /html
+** Kernel
+*** Drop Caches
+    #+begin_src bash
+    sync; echo 3 > /proc/sys/vm/drop_caches
+    #+end_src
+** setuid and setgid
+   u+s and g+s
+** setfacl and getfacl
+   setfacl -m u:someuser:rw file_or_dir
+   getfacl file_or_dir
+   getfacl file_or_dir | getfacl --set-file=- file_or_dir
+** selinux
+   Modes
+   1. Enabled
+   2. Passive
+   3. Disabled
+      Check the status of selinux
+      #+begin_src bash
+      sestatus
+      getenforce
+      #+end_src
+** nsupdate
+   #+begin_src bash
+     cat > dnsfile <<EOF
+     server 10.100.246.10
+     update delete fe1.example.com.
+     update add fe1.example.com. 300 A 10.100.246.20
+     send
+     update delete 20.246.100.10.in-addr.arpa. 300 PTR
+     update add 20.246.100.10.in-addr.arpa. 300 PTR fe1.example.com.
+     send
+     EOF
+     nsupdate dnsfile
+   #+end_src
+** certificates
+   Add root certificates
+   #+begin_src bash
+     #!/bin/bash
+
+     ## Copy the attachment from $RS_ATTACH_DIR
+
+     sudo ls -l $RS_ATTACH_DIR/iag-ca.cer
+
+     sudo cp $RS_ATTACH_DIR/iag-ca.cer /etc/pki/ca-trust/source/anchors/
+
+     ## Update the certificates ##
+     sudo update-ca-trust extract
+
+   #+end_src
+** nslookup
+   #+BEGIN_SRC bash
+nslookup
+> set querytype=soa
+> live.gsteasyonline.com
+
+   #+END_SRC
+** xargs
+   - use -I {} . This means you can use "{}" anywhere for the input text to be
+   replaced
+   - use -P 10 to run 10 in parallel.
+
+** lsattr chattr
+   - +i immutable
+   - +u undeletable. If deleted, the file can be recovered using undeletion tool
+   - +s secure delete a file.
+* SELinux
+** Concepts
+  - It is a Labelling System
+  - Current Access control is called DAC (Discretionary Access Control)
+    - The user gives access. He can mess it up
+  - SELinux provides MAC (Mandatory Access Control)
+  - Terminologies
+    1. Objects
+       - Anything on linux system is considered as object
+    2. Subjects
+       - Users and Processes. Only in MLS Policy
+    3. Labels
+       - A.K.A Security Contexts
+    4.
+  - SELinux Components
+    1. Modes
+       - Types of Modes: Disabled, Permissive, Enforced
+         #+BEGIN_SRC bash
+         getenforce # get mode
+         sestatus
+         setenforce 1 # add to Enforceing mode
+         setenforce 0 # add to Permissive mode
+         #+END_SRC
+       - /etc/selinux/config is used for making selinux changes permanent
+       - You can change in grub as well. add enforcing = 0 in the kernel line.
+    2. Labels
+       - Label contains User, Role, Type, Level
+       - Levels are rarely used
+       - -Z to existing commands to see the selinux labels
+    3. Policy Types
+       - Targeted policy is the default policy on RHEL
+       - Types: Targeted, minimal, mls
+       - MLS: Multilevel security
+       - MLS is for government grade security and it is complex
+       - minimal: is for low spec machines. Barebones of Targeted policy
+    4. Policy Rules and Packages
+       - SELinux Policy are loaded into kernel dynamically at runtime
+       - Policy reside at /etc/selinux/targeted or /etc/selinux/mls or /etc/selinux/minimal
+  - Type Enforcement
+    - Targeted Policy depends heavily on type and hence implements technology called Type Enforcement (TE)
+    - Objects with same security requirement are grouped together with same type
+    - Objects with same type are allowed to access and interact with each other
+    - In the context of processes, we call type as domain
+    - unconfined_t domain in the domain in which processes not part of selinux run
+    #+BEGIN_SRC bash
+    # Get all selinux types
+    seinfo -t
+    # Get all selinux users
+    seinfo -u
+    # Get all user account mapping to selinux user
+    semanage login -l
+    #+END_SRC
+  - Default rule is to deny all
+  - Policy Lookup results gets stored in Access Vector Cache (AVC)
+  - MAC sits on top of DAC. First DAC Rules are checked then MAC
+  - To list all unconfined domains
+    #+BEGIN_SRC bash
+    seinfo -aunconfined_domain_type -x
+    #+END_SRC
+  - To see all allow rules
+    #+BEGIN_SRC bash
+    sesearch --allow
+    #+END_SRC
+  - To see all loaded policy modules
+    #+BEGIN_SRC bash
+    semodule -l
+    #+END_SRC
+  - Booleans
+    - Allow to make on the fly dynamic changes
+    - To list all Booleans
+      #+BEGIN_SRC bash
+      getsebool -a
+      semanage boolean -l
+      #+END_SRC
+    - To get and set booleans
+      #+BEGIN_SRC bash
+      setsebool samba_export_all_ro on
+      setsebool samba_export_all_ro off
+
+      # To make setting permananet
+      setsetbool samba_export_all_ro on -P
+      #+END_SRC
+  - audit2allow to create new rules based on current error messages
+    - To show all the denied errors in human readable form
+    #+BEGIN_SRC bash
+    audit2allow -wa
+    #+END_SRC
+    - To create a new policy from error messages
+      #+BEGIN_SRC bash
+      audit2allow -aM
+      #+END_SRC
+  - Permissive Domains
+    - Allow specific domains into permissive modes
+    - To list selinux permissive domains
+      #+BEGIN_SRC bash
+      semanage permissive -l
+      #+END_SRC
+    - To make a domain permissive and remove it
+      #+BEGIN_SRC bash
+      semanage permissive -a httpd_t
+      semanage permissive -d httpd_t
+      #+END_SRC
+  - Create a new context and restore context
+  - Copy files inherit labels from the target location
+  - Move files will retain their original labels
+  - To preserve selinux while copying
+    #+BEGIN_SRC bash
+    cp -c src dest
+    cp --preserve=context src dest
+    #+END_SRC
+  - While relabeling uses /etc/selinux/targeted/contexts/files/file_contexts
+  - To force relabeling touch /root/.autorelabel. This will remove all labels and reset based on the file_contexts file
+  - To add entries to file_contexts
+    #+BEGIN_SRC bash
+    semanage fcontext -at httpd_sys_content_t "web(/.*)?"
+    #+END_SRC
+  - Log file: /var/log/audit/audit.log and/or /var/log/messages if setroubleshootd is running or not
+    - "SELinux is preventing" in /var/log/messages
+    - "denied" in /var/log/audit/audit.log
+    - Run setroubleshootd
+  - There are lots of audit denied not logged. This is by design as they dont cause any harm. seinfo shows it
+** Commands
+*** Find Any audit errors
+    #+BEGIN_SRC bash
+       ausearch -m AVC,USER_AVC,SELINUX_ERR,USER_SELINUX_ERR -i
+    #+END_SRC
+* cloudinit
+
+  init local  -> cloud-init init -l
+  init        -> cloud-init init
+  config      -> cloud-init modules -m config
+  final       -> cloud-init modules -m final
+
+* Commands & Snippets
+** lsof
+*** kill all process by user
+    #+BEGIN_SRC bash
+    kill -9 `lsof -t -u someuser`
+    #+END_SRC
+
+*** Find process with open port
+   #+BEGIN_SRC bash
+   lsof -i TCP:22
+   #+END_SRC
+
+*** Find all open files by PID
+   #+BEGIN_SRC bash
+   lsof -p somepid
+   #+END_SRC
+
+*** Find all the open files in directory
+   #+BEGIN_SRC bash
+   lsof +d /somedir
+   lsof +D /somedir
+   #+END_SRC
+** nc
+*** Client
+    #+BEGIN_SRC bash
+    nc localhost 22
+    #+END_SRC
+
+*** Server
+    #+BEGIN_SRC bash
+    nc -l localhost 3000
+    #+END_SRC
+
+*** Transfer files
+    #+BEGIN_SRC bash
+    nc -l localhost 3000 > test
+    cat somefile > nc localhost 3000
+    #+END_SRC
+
+*** Using udp
+    #+BEGIN_SRC bash
+    nc -u -l localhost 3000
+    nc -u localhost 3000
+    #+END_SRC
+
+*** Port scanning
+    #+BEGIN_SRC bash
+    nc -zv somehost 1000-65535
+    nc -zv somehost 22 80 8080
+    #+END_SRC
+** socat
+*** Connect System command to STDOUT
+    #+BEGIN_SRC bash
+    socat SYSTEM:date -
+    #+END_SRC
+*** Connect STDIN to http server
+    #+BEGIN_SRC bash
+    socat - TCP:localhost:80,crnl
+    #+END_SRC
+*** Send a compressed file to server
+    #+BEGIN_SRC bash
+    tar czf - /folder/to/backup | socat TCP:hostname:4242 -
+    #+END_SRC
+** wget
+   --no-check-certificate

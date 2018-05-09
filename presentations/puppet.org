@@ -1,0 +1,131 @@
+#+OPTIONS: num:nil
+#+REVEAL_HLEVEL: 999
+#+REVEAL_PLUGINS: (highlight notes)
+#+TITLE: Puppet
+#+AUTHOR: Ramz
+#+EMAIL: ramzthecoder@gmail.com
+* Hello world
+  #+begin_src bash
+    puppet apply -e "notice('hello world')"
+  #+end_src
+
+  #+BEGIN_NOTES
+  puppet apply -e "err('hello world')"
+  puppet apply -e "debug('hello world')"
+  #+END_NOTES
+* Centralized Architecture
+  [[file:images/puppet_centralized_architecture.jpg]]
+* Decentralized Architecture
+* Resources
+** What
+   #+ATTR_REVEAL: :frag (appear)
+  - Basic Building block of Puppet
+  - State definitions
+  - Example: file, package, service
+** Example
+  In config.pp
+  #+begin_src puppet
+  file { '_some_name':
+    path   => '/tmp/test',
+    content => 'Hello world',
+    ensure => file,
+  }
+  #+end_src
+  #+begin_src bash
+  puppet apply config.pp
+  #+end_src
+  #+BEGIN_NOTES
+  Template for Resource
+  #+END_NOTES
+** Namevars
+   Resources have a parameter / attribute which is called Namevar which has to be unique
+   Namevar for file Resource is path
+* Facter
+** Overview
+   Cross platform system profiling library
+
+   #+begin_src bash
+   facter
+   #+end_src
+
+   Output
+   #+begin_src bash
+   architecture => x86_64
+   fqdn => IIT-LAPTOP-169
+   hostname => IIT-LAPTOP-169
+   id => ramz.sivagurunathan
+   productname => MacBookAir7,2
+   os => {"name"=>"Darwin", "family"=>"Darwin", "release"=>{"major"=>"15", "minor"=>"5", "full"=>"15.5.0"}}
+   osfamily => Darwin
+   ...
+   #+end_src
+
+   #+BEGIN_NOTES
+   It gives details like interfaces, ip addresses, path, memory, ...
+   #+END_NOTES
+** Facts
+   Types
+   - Core Facts
+     1. Legacy Facts
+     2. Modern / Structured Facts
+
+     #+begin_src bash
+     facter --show-legacy
+     #+end_src
+   - Custom Facts
+** How to use it ?
+   $fact_name or $facts[fact_name]
+
+* Conditionals
+* Metaparameters
+
+* Ecosystem Overview
+** Facter
+** PuppetDB
+*** What is it for ?
+    Stores
+    1. Most recent facts of all nodes
+    2. Most recent catalog of all nodes
+    3. Optionally, 14 days(configurable) of event reports of all nodes
+*** How does puppet uses the db ?
+    If we are using exported resources then puppet uses puppetDB for searching and retrieving facts
+** Hiera
+** Mcollective
+*** What is it ?
+    - Framework
+      1. For building server orchestration
+      2. For building parallel job execution systems
+*** Architecture Overview
+
+     [[file:images/mcollective_architecture.gif]]
+
+     #+BEGIN_NOTES
+     Enter speaker notes here.
+     #+END_NOTES
+*** Architecture: Server
+    [[file:images/mcollective_server.gif]]
+    - Mandatory Plugins
+      1. Connector Plugin
+      2. Security Plugin
+    - Optional Plugins
+      1. Agent Plugins
+      2. Registration Plugin
+      3. Data Plugins
+      4. Authorization Plugin
+      5. Audit Plugin
+*** Architecture: Client
+    [[file:images/mcollective_client.gif]]
+    - Mandatory Plugins
+      1. Connector Plugin
+      2. Security Plugin
+    - Optional Plugins
+      1. Agent Plugin DDL Files
+      2. Discovery Plugins
+      3. Validator Plugin
+      4. Aggregate Plugin
+      5. Application Plugins
+* Hiera
+* Mcollective
+* PuppetDB
+* Style Guide
+* References

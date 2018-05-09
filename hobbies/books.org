@@ -1,0 +1,178 @@
+* Fiction
+| Author            | Book                                 |                |
+|-------------------+--------------------------------------+----------------|
+| Lee Child         | Make me                              | Book [DONE]    |
+| Lee Child         | Not a Drill (Electronic Short Story) |                |
+| Lee Child         | Small Wars (Electronic Short Story)  |                |
+| Lee Child         | High Heat (Electronic Short Story)   |                |
+| Lee Child         | Second Son (Electronic Short Story)  |                |
+| Lee Child         | Deep down (Electronic Short Story)   |                |
+| Kalki             | Ponniyin Selvan                      |                |
+| Stephen Hunter    | Point of Impact                      |                |
+| Stephen Hunter    | Dirty White Boys                     |                |
+| Stephen Hunter    | Black Light                          |                |
+| James Thayer      | White Star                           |                |
+| J D Salinger      | The catcher in the rye               |                |
+| Jonathan Stroud   | The ring of solomon                  | Audible [DONE] |
+| Clive Cussler     | The Mediterranean Caper              |                |
+| Dan Brown         | Inferno                              |                |
+| Stieg Larsson     | Girl with the dragon Tattoo          | Audible [DONE] |
+| Jeffrey Archer    | The Eleventh Commandment             |                |
+| Douglas Adams     | Hitchhikers Guide to Galaxy          | Audbile        |
+| Isaac Asimov      | Foundation                           |                |
+| Neal Stephenson   | Seveneves                            |                |
+| Jeffrey Deaver    | The Bone Collector                   |                |
+| Jeffrey Deaver    | The Coffin Dancer                    |                |
+| Octavia E. Butler | Lilith's Brood                       |                |
+| John Le Carre     | The spy who came from cold           |                |
+
+* Non Fiction
+| Author                                | Book                                                           |                   |
+|---------------------------------------+----------------------------------------------------------------+-------------------|
+| Susan Cain                            | Quiet                                                          | Audible [DONE]    |
+| Yogananda Paramahansa                 | Autobiography of a yogi                                        | Audible [DONE]    |
+| Dalai Lama                            | The Art of Happiness                                           |                   |
+| Jeffrey Bennett                       | What is Relativity                                             |                   |
+| Machiavelli                           | The Prince                                                     |                   |
+| Malcom Galdwell                       | Blink                                                          |                   |
+| Lao Tzu                               | Tao Te Ching                                                   |                   |
+| Matt Ridley                           | The Rational Optimist                                          | Audible           |
+| Hermann Hesse                         | Siddhartha                                                     |                   |
+| Subramanian Samanth                   | Following Fish                                                 |                   |
+| Jared Diamond                         | Guns, Germs and Steel                                          | Audible           |
+| Danile Velleman                       | How to Prove it: A Structured Approach                         |                   |
+| Simon Singh                           | Big Bang: The origin of the universe                           |                   |
+| H.G. Wells                            | The Invisible Man                                              |                   |
+| Dab Ariely                            | Predictably Irrational                                         | Audible           |
+| Joshua foer                           | Moonwalking with Einstein                                      |                   |
+| Carol Dweck                           | Mindset: The new Psychology of success                         |                   |
+| Nick Lane                             | The Vital Question                                             |                   |
+| Randall Munroe                        | Thing Explainer: Complicated stuff in simple words             | Book              |
+| David Brooks                          | The Road to character                                          |                   |
+| George Polya                          | How to solve it                                                | Book              |
+| Barbara Oakley                        | A Mind for numbers                                             |                   |
+| Jared Diamond                         | The world until yesterday                                      |                   |
+| Robert Prisig                         | Zen and the art of motorcycle maintenance                      | Audible           |
+| David McRaney                         | You are not so smart                                           | Audible           |
+| Daniel Kahneman                       | Thinking fast and slow                                         | Audible [STARTED] |
+| Michael Lu                            | Get Ready to Get Pregnant                                      |                   |
+| Mugil Mugil                           | Radhayanam (Tamil)                                             | Book [DONE]       |
+| Bobby Fischer                         | Bobby Fischer Teaches Chess                                    | Book [STARTED]    |
+| Mihaly Csikszentmihalyi               | Flow: The Psychology of Happiness                              |                   |
+| Robert B. Cialdini                    | Influence: The Psychology of Persuasion                        |                   |
+| Mason Currey                          | Daily Rituals: How Artists Work                                |                   |
+| Richard Dawkins                       | The selfish genes                                              |                   |
+| Peter F. Drucker                      | Managing Oneself                                               |                   |
+| Charles Duhigg                        | The Power of Habit: Why We Do What We Do in Life and Business  |                   |
+| Viktor E. Frankl, Harold S. Kushner   | Man's Search for Meaning                                       |                   |
+| Robert Greene                         | The 48 Laws of Power                                           |                   |
+| Robert Greene                         | Mastery                                                        |                   |
+| Thor Heyerdahl                        | Kon-Tiki                                                       |                   |
+| Haruki Murakami                       | What I Talk About When I Talk About Running                    |                   |
+| John J. Ratey, Eric Hagerman          | Spark: The Revolutionary New Science of Exercise and the Brain |                   |
+| Robert Wright                         | The Moral Animal                                               |                   |
+| James Robinson, Daren Acemoğlu        | Why Nations Fail                                               |                   |
+| Henry Kissinger                       | World Order                                                    |                   |
+| William James                         | The Varieties of Religious Experience                          |                   |
+| Yuval Noah Harari                     | Sapiens                                                        |                   |
+| Thomas S. Kuhn                        | The Structure of Scientific Revolutions                        |                   |
+| Steven Pinker                         | The Better Angels of Our Nature                                |                   |
+| Matt Ridley                           | Genome                                                         |                   |
+| Vaclav Smil                           | Energy: A Beginners Guide                                      |                   |
+| A manual for living                   | epictetus                                                      |                   |
+| Fear the fear and do it anyway        | Susan Jeffers                                                  |                   |
+| The Element of style                  | William Strunk and E.B. White                                  |                   |
+| Man's Search for Meaning              | Viktor E Frankl                                                |                   |
+| Righteous Mind                        | Jonathan Haidt                                                 |                   |
+| Creativity Inc                        | Ed Catmull                                                     | Audible           |
+| Drive                                 | Daniel Pink                                                    |                   |
+| J.E. Gordon                           | Structures: Or why things Dont't fall down                     |                   |
+| Nick Bostrom                          | Superintelligence: Paths Dangers, Strategies                   |                   |
+| Peter Thiel                           | Zero to One: Notes on startups or how how build future         |                   |
+| Jordan Ellenberg                      | How not to be wrong                                            |                   |
+| Noah Yuval Harari                     | Sapies: A brief history of humankind                           |                   |
+| Ryoichi Mitikani and Hiroshi Mitikani | The power to compete                                           |                   |
+| Thomas Sowell                         | Basic Economics                                                |                   |
+| Csíkszentmihályi                      | Flow: The Psychology of Optimal Experience                     |                   |
+| Bill Bryson                           | A Short History of Nearly Everything                           | Audible           |
+| Alain de Botton                       | The consolations of philosophy                                 |                   |
+| Gen. Stanley McChrystal               | Team of Teams                                                  | Audible [DONE]    |
+| Greg Mckeown                          | Essentialism: The Disciplined Pursuit of Less                  |                   |
+| Varoufakis                            | Adults in the room                                             |                   |
+|                                       |                                                                |                   |
+
+* Review (2016)(4 books Read)
+** Quiet by Susan Cain
+   This introvert centered book by Susan Cain explores the world of introverts.
+   This book helped me understand about myself a lot. Some of my quirks started to make
+   sense and was a bit comfortable to know many of my fellow introverts have similar quirks.
+   The book covered lot of ground about introverts like
+
+   1. Who are introverts and some of famous introverts
+   2. Quirks of introverts
+   3. How the world treats an introverts and rise of extrovert centric world?
+   4. Why did evolution spared the introverts ?
+   5. Genetic connection to introvert nature
+   6. Physiological differences of an introvert
+   7. How Risk handling differs between introverts and extroverts
+   8. Eastern culture and their emphasis on being an introvert
+   9. Work place problems for an introvert and how to handle it
+   10. Getting best out of being introvert and what to learn from extroverts
+   11. Pseudo introverts and how they do it
+   12. Introvert Extrovert couples
+   13. Introvert kid. How to handle him/her?
+
+   This is a good read not only for introverts but also for extroverts. Though extroverts might
+   feel that their role is being downplayed a bit. I am not sure how the author could have avoided it.
+   It was good to know that many like me have the same feelings. Overall it is a very informative and
+   could be a self realizing one for introverts. For an extrovert, especially the one who is in
+   relation with an introvert will know how to appreciate and handle an introvert. Overall it is a must
+   read for an introvert and also to an extrovert who is living with an introvert (kid, spouse, friend)
+** Autobiography of a Yogi
+   This is a spiritual book. For an atheist or to someone who questions some of the theist thinking
+   this is definite no no. This book can only be appreciated by
+   1. Who is highly spiritual
+   2. Who can appreciate an underlying message
+
+   In this book the author Paramahansa Yogananda, describes his life journey. I personally felt that
+   the author to get his message into the reader has used euphoric exaggerated miracles performed
+   by his teachers as a tool. These miracles are felt by the author's mental self might not be
+   actual physical experiences. But surprisingly though the content penetrates through your
+   scientific mind and a kind of calmness is felt while reading this book. This book also gives
+   us a glimpse of earlier 20th century india and US.
+
+   My take away from this book is "Mind" is an important organ which has to be kept in harmony. If
+   that can be achieved then body will be in harmony and healthy. The suggested way in this book
+   is by kriya yoga. It is a form of meditation. Once i have got this message then i did not
+   feel the need of reading through the pages of miracle performed by yogis.
+
+   One can give it a try to read this but this book might not appeal to many. And also this book is
+   quite long to sustain the interest.
+** Radhayanam
+   This is a short biography of M R Radha, an eminent stage and film actor, an ardent follower of periyar.
+   The author gives us a glimpse of m r radha, through few events in the actors life. The book is filled
+   with various quotes of the actor which are hilarious and thought provoking.
+
+   Before reading this book, i did not know much about him other than a fact that he was an actor and he
+   shot MGR. I liked m r radha's quotes, his views of life, his quirks and overall his healthy attitude. I also
+   liked the way the author presented the life of m r radha succinctly.
+
+   One thing that was missing from the book is the not so good side of m r radha. May be that was not much
+   interesting about it. Any way i would recommend this book for tamil readers with atheist views.
+** Girl with a dragon Tattoo
+   This is a good thriller by Steig Larsson. I liked the slow build up of tempo, followed by a amazing twist.
+   The author has given very detailed description for his main characters and also he has spend time to build
+   a separate story for them. It was a nice read overall.
+
+* Review (2017)
+** A short history of nearly everything
+   A highly informational but yet funny book by Bill Bryson. In this book he
+   embarks a quest to explain some of the questions which your kid
+   might ask like How do you weigh the earth, how do you find the distance
+   between earth and sun, how old is the earth. He explains these
+   questions without dwelling upon too much physics or math. Laid with anecdotes
+   in lives of various scientists, he catalogs mankind's journey in various
+   fields like physics, chemistry, archaeology, anthropology, etc to answer
+   those basic questions about our universe. A must read for
+   anyone who want to know more about our
+   earth and beyond without any serious physics or math.

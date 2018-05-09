@@ -1,0 +1,5 @@
+azure login
+azure account list
+azure account set 'Azure Pass'
+azure config mode asm
+azure storage account create 'myaccount'

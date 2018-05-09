@@ -1,0 +1,3 @@
+* SW
+  - [[https://www.destroyallsoftware.com/talks/boundaries][Imperative Shell and Functional Core]]
+  - 

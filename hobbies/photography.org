@@ -1,0 +1,136 @@
+* Camera
+** Basic Terminologies
+*** Additive Colors
+    - The more you add the brighter it becomes
+    - They are emitting light
+    - RGB is additive color
+    - They are used in monitors
+*** Subtractive Colors
+    - The more you mix darker they become
+    - They are reflecting light
+    - RYB / CMYK is subtractive color
+    - They are used in paints
+*** Hue
+    - Pure color. Measured in degrees
+*** Saturation
+    - How close is the color to grey
+    -
+*** Tint
+    - how much white in the color
+*** Shade
+    - how much black in the color
+*** Tones
+    - how much black and white in the color
+*** f-Stop
+    In camera size of the aperture is measured in f-stop.
+    It is the ratio between diameter of the aperture and focal length of the lens
+*** Bracketing
+*** UHS (Ultra High Speed)
+*** HDR
+*** Review Time
+*** Mirrorless Interchangable Lens Camera
+*** Fast Lenses
+    Lenses which has wide aperture lenses is called Fast Lenses
+    They will be larger and bulkier
+
+** Camera Modes
+*** Program Mode (P)
+    - Camera sets initial aperture priority and Shutter speed based on meter but changeable
+    - But user has control over
+      1. ISO
+      2. Auto Exposure Bracketing
+      3. Auto Focusing Points Used
+      4. Flash Settings
+      5. White Balance
+    - Everytime the shutter is pressed the camera loses the settings
+*** Aperture Priority Mode (Av)
+    - You control the aperture and camera sets the shutter speed
+*** Shutter Priority Mode (Tv)
+    - You control the shutter speed and camera sets the aperture priority
+*** Bulb Mode (B)
+    - The shutter stays open as long as you depress the shutter release button
+*** Custom Shooting Mode (C)
+    - Save your custom settings
+*** Scene Mode (SCN)
+    - You can select preconfigured scene from the menu
+*** Creative Auto Mode (CA)
+    - Similar to Auto but provides little more control over
+      1. flash firing brightness
+      2. Depth of Field
+*** Exposure Compensation
+    By Default when you are using your camera in Program mode, camera will set your aperture and shutter speed
+    based on optimal exposure. But if you want to make your photo darker or brighter you can adjust the exposure
+    compensation
+
+*** Auto Focus Modes
+    1. Single Shot
+       - Half click the subject will get focus. The focus length with not change
+         if the subject or the photographer move
+       - Good for recomposing
+    2. AI Servo
+       - Always tries to focus. Good when subject or photographer moves.
+       - It always tracks around the focus points
+    3. AI Focus
+       - Combination of single shot and AI Servo. Behaves single shot on still
+         subject and AI Servo when there is movement
+* Photography
+** Rules
+*** Rule of Thirds
+** Aperture
+   - It is the size of the shutter opening to let the light in. Higher the value lower the size, as it is 1/something.
+** Shutter Speed
+** ISO
+   - ISO Range
+     |          Range | Uses                                                       |
+     |----------------+------------------------------------------------------------|
+     |         50-100 | Bright Light. Like Outdoors on sunny days                  |
+     |            200 | Overcast or cloudy days                                    |
+     |        400-800 | When light is dim but not yet dim                          |
+     | 1600 and above | indoor or night shots. Sometimes for freezing sports shots |
+
+** Techniques
+*** Recomposing the shot
+    - Focus first and move to recompose the shot.
+* How to Improve
+** Get a Decent Camera
+** Start Using Program Mode
+   Rather than jumping straight to manual mode where you have to think about every possible settings,
+   program mode helps you with aperture and shutter speed. You have to deal with focus and iso.
+   This is a great for me.
+** Stop Using the Review
+** How to take Great Portrait
+   1. Connect With Subjects
+   2. Find the Location
+   3.
+
+* Camera Bag
+** Options
+  | Name                          |  Cost | Features                          | Notes |
+  |-------------------------------+-------+-----------------------------------+-------|
+  | Lowepro Flipside Sport 15L AW | 85.45 | All weather, Tripod stand, Sports |       |
+  |                               |       |                                   |       |
+** Content
+   1. Camera
+   2. Lens
+   3. Business Card
+   4. Pen & Paper
+   5. Flash Light
+   6. Clamps
+   7. First Aid Kit
+   8. Rubber Bands
+   9. Plastic Bag
+   10. Camera Rain Coat
+   11. Batteries, Chargers and Adaptors
+   12. Instruction Manual
+   13. Card Reader
+   14. USB Stick
+   15. AA Batteries
+   16. Hard disk
+   17. Tripod
+   18. Swiss Army Knife
+   19. Lume cube (Need to be purchased)
+   20. Lens Cleaner
+
+* Links
+  - [[http://www.uscoles.com/fstop.htm][F-Stops]]
+  -

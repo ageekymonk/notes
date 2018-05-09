@@ -1,0 +1,77 @@
+* Java
+** Functional Interfaces
+   - Single Abstract Method
+   -
+** Java 8
+   - Used to implement Functional Interfaces without creating the class
+     #+BEGIN_SRC java
+     Runnable r1 = () -> System.out.println("Hello");
+     #+END_SRC
+   - forEach Method for any collections
+   - predicate Interfaces
+   - method references
+     1. Static Method
+     2. Instance Method
+   - Default Methods in Interfaces
+   - static Methods in Interfaces
+   - streams
+     1. Sequential Streams
+     2. Parallel Streams
+        #+BEGIN_SRC bash
+stream.of()
+Arrays.stream()
+        #+END_SRC
+   - Optional Double
+   - New Date and Time API
+     - Instance
+     - Duration
+     - LocalDate, LocatTime, LocalDateTime
+     - DateTimeFormatter
+     - ZonedDateTime
+     - ZoneId
+   - javascript in Java using Nashorn Engine. jjs
+   - String.join and StringJoiner
+   -
+
+* Spring
+  - How does it help
+    - Increases Testability
+    - Increases Maintainability
+    - Helps with scalability
+    - Reduces complexity of the code
+  - Bean is just an object created using new keyword
+  - Types of injection
+    1. Setter Injection
+    2. Constructor Injection
+       - Index Based
+  - Autowiring Types
+    1. byType
+    2. byName
+    3. byConstructor
+    4. none
+  - Annotations
+    1. @component
+    2. @service
+       - business logic
+    3. @repository
+       - data layer
+  - autowire
+    1. Member Variable
+    2. Setter Injection
+    3. Constructor
+  - JSR-330
+    - DI for Java
+  - Java Configuration
+    - @configuration
+    - @Bean
+  - Bean Scopes
+    1. Singleton
+       - Default Bean Scope
+       - One instance per spring container
+    2. Prototype
+       - Unique instance per request
+    3. Request
+    4. Session
+    5. Global
+    6.
+  -

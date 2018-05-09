@@ -1,0 +1,89 @@
+* University
+** Project
+*** DONE Install the apache spark
+    CLOSED: [2015-07-28 Tue 21:12]
+*** DONE Create an account in apache
+    CLOSED: [2015-08-08 Sat 08:28]
+*** DONE Latex Template for the Literature Review
+    CLOSED: [2015-08-19 Wed 11:25]
+*** DONE Run history server
+    CLOSED: [2015-09-25 Fri 19:57]
+*** DONE Send mail to Ying
+    CLOSED: [2015-10-03 Sat 10:09]
+*** DONE Do S Partitioning rather than R
+    CLOSED: [2015-10-03 Sat 10:08]
+*** DONE idistance index
+    CLOSED: [2015-10-03 Sat 10:08]
+
+*** TODO Add Exact Partitioning
+    :PROPERTIES:
+    :ID:       BBC34AF3-30F7-456B-8BCA-5A04EE4B9C63
+    :END:
+*** TODO Results
+    :PROPERTIES:
+    :ID:       57240ED0-974C-4DDA-B125-52765D7808F3
+    :END:
+    | cpus | data        | Time        | Pivots | Notes         |
+    |------+-------------+-------------+--------+---------------|
+    |   16 | forest 500k | 35 minutes  |    500 |               |
+    |   24 | forest 500k | 31 minutes  |    500 |               |
+    |   24 | forest 500k | 16 minutes  |    200 |               |
+    |   40 | forest 500k | 16 minutes  |    200 |               |
+    |   40 | forest 500k | 22 minutes  |    100 |               |
+    |   40 | forest 500k | 8.6 minutes |    200 | Coarse = True |
+    |   40 | forest 500k | 16 minutes  |    100 | Coarse = True |
+    |   40 | forest 500k | 8.6 minutes |    200 |               |
+
+*** TODO Verify the accuracy
+    :PROPERTIES:
+    :ID:       B877A742-292F-4C61-9E3B-3062F1C46F06
+    :END:
+    For all phases and compare every result for 10K
+*** TODO Compile the original author code
+    :PROPERTIES:
+    :ID:       8C2E3C91-9957-4B22-9DED-FABA0D126B69
+    :END:
+*** TODO Get Other datasets
+    :PROPERTIES:
+    :ID:       D7413582-2C96-462B-B260-A94315765BF2
+    :END:
+*** TODO Refractor the code
+    :PROPERTIES:
+    :ID:       4BAB6A06-496F-4169-A6FF-A9A290D6A241
+    :END:
+*** TODO Partition based on number of elements
+    :PROPERTIES:
+    :ID:       F76481CF-DB04-4C56-9A80-21771193A774
+    :END:
+*** TODO Get Results for
+    :PROPERTIES:
+    :ID:       DD46A689-F228-44CB-9A6F-91F5154B85AB
+    :END:
+    1. Different num neighbours
+    2. Different vector size
+    3. Number of pivot size
+       | Dataset     | Num Features | Num Neighbours | Num Pivots | Time taken  | Shuffle Read | Shuffle Write | Notes          |
+       |-------------+--------------+----------------+------------+-------------+--------------+---------------+----------------|
+       | Forest 500k |           54 |              3 |        200 | 3.5 minutes | 160 MB       | 450 MB        | 40 Cores 60 GB |
+       | Forest 500k |           54 |              5 |        200 | 3.8 minutes | 200 MB       | 500 MB        | 40 Cores 60 GB |
+       | Forest 500k |           54 |              7 |        200 | 6.8 minutes | 220 MB       | 600 MB        | 40 Cores 60 GB |
+       | Forest 500k |           54 |              9 |        200 | 7.7 minutes | 400 MB       | 700 MB        | 40 Cores 60 GB |
+       | Forest 500k |           54 |             11 |        200 | 8.5 minutes | 750 MB       | 830 MB        | 40 Cores 60 GB |
+       |             |              |                |            |             |              |               |                |
+
+| Dataset     | Num Features | Num Cores | Num Neighbours | Num Pivots | Time Taken  | Shuffle Read | Shuffle Write | Notes |
+|-------------+--------------+-----------+----------------+------------+-------------+--------------+---------------+-------|
+| Forest 500k |           54 |        40 |              3 |        200 | 4.7 minutes | 195 MB       | 450 MB        |       |
+| Forest 500k |           54 |        16 |              3 |        200 | 7.3 minutes | 150 MB       | 430 MB        |       |
+| Forest 500k |           54 |         8 |              3 |        200 | 17 minutes  | 0            | 430 MB        |       |
+| Forest 500k |           54 |        24 |              3 |        200 | 4.9 minutes | 180 MB       | 430 MB        |       |
+| Forest 500k |           54 |        32 |              3 |        200 | 4.8 minutes | 200 MB       | 430 MB        |       |
+|             |              |           |                |            |             |              |               |       |
+
+| Dataset     | Num Features | Num Cores | Num Neighbours | Num Pivots | Time Taken   | Shuffle Read | Shuffle Write | Notes |
+|-------------+--------------+-----------+----------------+------------+--------------+--------------+---------------+-------|
+| Forest 500k |           54 |        40 |              3 |        200 | 3.5  minutes | 160 MB       | 450 MB        |       |
+|             |              |           |                |            |              |              |               |       |
+
+
+** Notes

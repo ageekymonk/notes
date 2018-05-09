@@ -1,0 +1,12 @@
+* Cryptocurrency
+  Major Players
+  1. Bitcoin
+  2. Litecoin
+  3. Namecoin
+  4. IoTA
+** Bitcoin
+   - Virtual Currency
+   - Max 21 Million. 12 Millions are already there
+* To Research
+  1. Elliptic Curve
+  2. mathematical trap door

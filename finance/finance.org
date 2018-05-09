@@ -1,0 +1,84 @@
+* Finance
+** Investments
+*** Key Ideas
+**** When Currency Weakens Invest on Export Companies
+** Notes
+   - Interest Rate depends upon
+     1. opportunity cost
+     2. Risk
+     3. Inflation
+   - Compound Interest
+     #+BEGIN_SRC latex
+     Amount = P * (l + r/n)^n^t < Pe^r^t
+     #+END_SRC
+   - Discounted Cash Flow
+     - What is the present value of all the future earnings
+   - Asset = Liability + Equity
+   - Bonds vs Stock
+     - Holding a Bond is what you lend a company
+     - Holding Stock is what amount you own a company
+   - Bankruptcy Types
+     - Liquidation
+       - Sell out all the assets and pay the debtors first and then the equity holders
+     - Restructuring
+       - Restructure the debtors and equity holders for the new valuation of the company
+   - Return on Capital (ROC)
+     - cash you get / cash you put in
+   - Cost on Capital
+     - amount of interest on capital
+   - Credit Default Swap
+     - Insuring companies to ensure their investment return. If the invested
+       company goes bankrupt and could not return the expected return, the
+       insurance company will give back the money to the insuring company
+   - Mortgage backed security
+     - Classes (Tranches) to split the security based on risk profile with the same
+       mortgage backed
+   - Treasury Bills, Bonds and Notes
+     - Treasury bills for 1 month till 1 year
+     - Treasury notes for 1 year till 10 years
+     - Treasury Bonds for beyond 10 years
+   - Liquidity vs Insolvency
+   - Income statement vs Balance statement
+     - Balance statement tells you about what is the current snapshot of the company
+     - Income statement tells you about what happened between two balance sheets
+       (beginning and end of year balance sheet)
+     - Cash Flow statement tells you how the cash changed between two balance statements
+   - Rule of 72. Number of years it take to double your money
+   - Bond prices and interest are inversely proportional
+   - Long straddle
+     - Buy both call option and put option. This is a strategy when you know
+       there can be a swing
+   - Put as insurance
+     - Buy stock + put. put acts as insurance if it goes below
+   - Put call Parity
+     - Bond + Call = Stock + put
+   - Call put Arbitrage
+     - small change in price where Bond + call != stock + put. So we take
+       advantage and get the free money
+   - contango
+     - spot price is cheaper than future
+   - Backwardation
+     - spot price is more than future
+   - Depreciation in cash flow statements
+     - This is to avoid profit incorrectly shown in the statement.
+     - Instead of the amount removed from balance statement in a single year we
+       spread out so that profit reflects correctly of our business
+   - Mutual Funds
+     - Open Ended Funds
+       - The fund can grow the number of shares. The investor can sell their
+         share anytime and mutual fund will give back their money. So they have
+         to keep some cash to do that.
+     - Closed Ended Funds
+       - The fund shares are fixed. If the investor has to sell he will sell in
+         market to another seller. This way the mutual fund does not need to
+         keep cash in hand.
+   - Hedge Funds
+     - Not regulated
+     - can't market
+     - can't take money from public
+     - They dont disclose much about what they do
+   - Stagflation
+     - It is inflation caused by sudden spike in increase in price of something.
+       That causes a ripple effect and brings the entire economy down by
+       increasing inflation of everything else
+     - 

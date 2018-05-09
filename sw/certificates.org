@@ -1,0 +1,114 @@
+* PKI
+  - Public Key Infrastructure
+  - CSR
+    - If you would like to obtain an SSL certificate from a certificate authority (CA) you must generate a certificate signing request (CSR)
+    - A CSR consists mainly of the public key of a key pair, and some additional information. Both of these components are inserted into the certificate when it is signed.
+    - 
+* CA 
+  - A certificate authority (CA) is an entity that signs digital certificates
+  - Many websites need to let their customers know that the connection is secure, so they pay an internationally trusted CA (eg, VeriSign, DigiCert) to sign a certificate for their domain.
+** Generate a Root Key Pair for CA Server
+   - This pair forms the identity of your CA.
+   - The root CA does not sign server or client certificates 
+   - The root CA is only ever used to create one or more intermediate CAs, which are trusted by the root CA to sign certificates on their behalf.
+   - All configuration is placed in /root/ca/openssl.cnf
+   - To Generate a private key for root CA
+     #+BEGIN_SRC bash
+     openssl genrsa -out ca-key.pem 2048 
+     openssl genrsa -aes256 -out ca.key.pem 4096
+     #+END_SRC
+   - To create a root certificate (public key)
+     #+BEGIN_SRC bash
+     openssl req -config openssl.cnf \
+      -key ca.key.pem \
+      -new -x509 -days 7300 -sha256 -extensions v3_ca \
+      -out ca.cert.pem
+     #+END_SRC
+   - To Verify the generated root certificate
+     #+BEGIN_SRC bash
+     openssl x509 -noout -text -in certs/ca.cert.pem
+     #+END_SRC
+** Generate an intermediate Pair
+   - This key pair is used for signing
+   - All configs are placed in openssl_intermediate.cnf
+   - To generate intermediate private key
+     #+BEGIN_SRC bash
+     openssl genrsa -aes256 \
+      -out intermediate.key.pem 4096
+      chmod 400 intermediate.key.pem
+     #+END_SRC
+   - To generate Certificate Signing Request (CSR)
+     #+BEGIN_SRC bash
+     openssl req -config openssl_intermediate.cnf -new -sha256 \
+      -key intermediate.key.pem \
+      -out intermediate.csr.pem
+     #+END_SRC
+   - The intermediate certificate should have smaller validity than root CA
+   - To generate intermediate Certificate (Public Key)
+     #+BEGIN_SRC bash
+     openssl ca -config openssl.cnf -extensions v3_intermediate_ca \
+      -days 3650 -notext -md sha256 \
+      -in intermediate.csr.pem \
+      -out intermediate.cert.pem
+      chmod 444 intermediate.cert.pem
+     #+END_SRC
+   - To verify the intermediate certificate
+     #+BEGIN_SRC bash
+     openssl x509 -noout -text -in intermediate.cert.pem
+     openssl verify -CAfile ca.cert.pem intermediate.cert.pem
+     #+END_SRC
+** Certificate Chain
+   - When an application (eg, a web browser) tries to verify a certificate signed by the intermediate CA, 
+     it must also verify the intermediate certificate against the root certificate
+   - To complete the chain of trust, create a CA certificate chain to present to the application.
+   - To generate certificate chain
+     #+BEGIN_SRC bash
+     cat intermediate.cert.pem ca.cert.pem > ca-chain.cert.pem
+     chmod 444 ca-chain.cert.pem
+     #+END_SRC
+** Server and Client Certificates
+*** Using your own CA
+**** Create private Key without password    
+     - To create key pair to be used by apache server, we need to create without password. Otherwise we need to enter password on apache restart
+     - To create without password omit -aes256
+       #+BEGIN_SRC bash
+       openssl genrsa -out www.example.com.key.pem 2048
+       chmod 400 www.example.com.key.pem
+       #+END_SRC
+**** Create private Key with password
+     #+BEGIN_SRC bash
+     openssl genrsa -aes256 -out www.example.com.key.pem 2048
+     chmod 400 www.example.com.key.pem
+     #+END_SRC
+**** Create Certificate Signing Request
+     - Private key is used to generate CSR
+     - The CSR details don’t need to match the intermediate CA
+     - For server certificates, the Common Name must be a fully qualified domain name (eg, www.example.com), 
+       whereas for client certificates it can be any unique identifier
+     - Common Name cannot be the same as either your root or intermediate certificate.
+     - To generate CSR
+       #+BEGIN_SRC bash
+       openssl req -config openssl_intermediate.cnf -key www.example.com.key.pem -new -sha256 -out www.example.com.csr.pem
+       #+END_SRC
+**** Create Certificate [SKIP: If you are using Third party CA]
+     - use the intermediate CA to sign the CSR
+     - If the certificate is going to be used on a server, use the server_cert extension
+     - If the certificate is going to be used for user authentication, use the usr_cert extension
+     - To generate certificate
+       #+BEGIN_SRC bash
+       openssl ca -config openssl_intermediate.cnf -extensions server_cert -days 375 -notext -md sha256 \
+        -in intermediate/csr/www.example.com.csr.pem -out intermediate/certs/www.example.com.cert.pem
+        chmod 444 intermediate/certs/www.example.com.cert.pem
+       #+END_SRC
+**** Verify the certificate
+     #+BEGIN_SRC bash
+     openssl x509 -noout -text -in www.example.com.cert.pem
+     #+END_SRC
+**** Verify the certificate for valid chain of trust
+     #+BEGIN_SRC bash
+     openssl verify -CAfile ca-chain.cert.pem www.example.com.cert.pem
+     #+END_SRC
+*** Using Third party CA
+    
+* Reference
+  [[https://jamielinux.com/docs/openssl-certificate-authority/index.html][OpenSSL Certificate Authority]]

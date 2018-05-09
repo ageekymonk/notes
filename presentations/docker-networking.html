@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Docker Networking</title>
+<meta name="author" content="(Ramz)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/night.css" id="theme"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/lib/css/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">Docker Networking</h1><h2 class="author">Ramz</h2><p class="date">Created: 2017-12-10 Sun 22:39</p>
+</section>
+<section>
+<section id="slide-org970b7e9">
+<h2 id="org970b7e9">Agenda</h2>
+<ol>
+<li>Network Drivers</li>
+<li></li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-org6648913">
+<h2 id="org6648913">Network Namespace</h2>
+<ul>
+<li>Partition the use of the network devices, addresses, ports, routes, firewall
+rules into separate boxes within a single kernel</li>
+<li><p>
+Create a network namespace
+</p>
+<div class="org-src-container">
+
+<pre><code class="bash" >    ip netns add mynamespace
+</code></pre>
+</div>
+
+<p>
+Creates /var/run/netns/mynamespace
+</p></li>
+
+</ul>
+
+</section>
+<section id="slide-org895e9fa">
+<h3 id="org895e9fa">Virtual Ethernet</h3>
+<ul>
+<li>pair of fake Ethernet devices that act as a pipe</li>
+<li>Traffic sent out on one interface arrives on other</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4e74a98">
+<h2 id="org4e74a98">Network Drivers</h2>
+<div class="org-src-container">
+
+<pre><code class="bash" >  docker network ls
+</code></pre>
+</div>
+
+<pre  class="example">
+NETWORK ID          NAME                DRIVER              SCOPE
+b3821048db31        bridge              bridge              local
+32690e591f8e        host                host                local
+f292ac5fe63c        none                null                local
+
+</pre>
+</section>
+<section id="slide-org2d27be2">
+<h3 id="org2d27be2">Bridge Driver</h3>
+<ul>
+<li>Layer 2</li>
+<li>docker0 is the default bridge</li>
+
+</ul>
+<div class="org-src-container">
+
+<pre><code class="bash" >sudo mkdir /var/run/netns
+pid=$(docker inspect -f '{{.State.Pid}}' network-test)
+sudo ln -s /proc/$pid/ns/net /var/run/netns/<container_name>
+ip netns exec <container_name> ip addr
+</code></pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org0905f7d">
+<h2 id="org0905f7d">MacVLAN</h2>
+<ul>
+<li>Single Physical interface can have multiple subinterfaces each with its own
+physical address</li>
+<li>MAC VLAN Modes
+<ol>
+<li>MacVLAN Private</li>
+<li>MacVLAN VEPA</li>
+<li>MacVLAN Bridge</li>
+<li>MacVLAN Passthru</li>
+
+</ol></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org269fc45">
+<h2 id="org269fc45">Custom Network Plugins</h2>
+<ol>
+<li>Weave</li>
+<li>Flannel</li>
+
+</ol>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="https://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+ { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

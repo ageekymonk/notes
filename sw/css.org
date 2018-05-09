@@ -1,0 +1,181 @@
+* CSS
+** CSS Files Hierarchy
+   1. Styles in the Web Page
+   2. User Stylesheet
+   3. User Agent Stylesheet (Default stylesheet for each browser)
+
+      User agent stylesheet cannot be changed. To give more important to
+      settings in user stylesheet, use *!important*
+
+** Reset
+   - set of CSS rules that resets the styling of all HTML elements to a consistent baseline
+   - Removes all default styling
+** Normalize
+   - Sometimes you do not want no styling but consistent styling.
+   - you can use normalize.css
+** Display & Visibility
+   - It can be one of
+     - Block
+       - Sit on top of each other by default
+       - Example div, li, P
+       - They move to newline
+     - Inline
+       - Example: Span
+       - They dont create vertical space until they are forced to
+       - They get displayed in the same line until it runs out of space
+       - They do not honor the width
+     - inline-block
+       - Same as inline
+       - It honors width.
+     - None
+       - Removes the elements
+       - It does not take space
+
+   - Setting visibility to none takes space
+   -
+** Font & Text
+   - Font Family
+     - Serif
+     - Sans-Serif
+     - Cursive
+     - Fantasy
+     - monospace
+   - Text properties
+     - text-indent
+       - indent first line of paragraph
+** Layout
+   - Position
+     - Static
+       - Default is static position. It positions one above the other.
+     - Relative
+       - you can set top, left, bottom, right position
+     - absolute
+       - Absolute position relative to the body.
+     - fixed
+       - Same as absolute but relative to the window.
+       - It will be fixed even we scroll
+   - Float and clear
+     -
+
+** Pain Points
+   - Color Problem
+     Does not allow name to color or any other properties and make us to repeat it all over the place.
+   - Code Duplication
+   - Cascading avalanches
+     Difficult to find out from code where a particular css rule is coming from
+   - Lack of calculations
+   - Problem with imports
+** Box Model
+   - Components of a box
+     - Content
+       Content of the box where the text or image appears
+     - Padding
+       Clears an area around the content. The area is transparent.
+     - Border
+       A border that goes around the padding and content
+     - Margin
+       Clears an area outside the border. The margin is transparent
+   - Rendered Width = width + padding + border + margin
+   - With * { box-sizing: border-box; } width is the rendered width
+** Flex Box
+   - To enable display in a container use
+     #+BEGIN_SRC
+     display: flex
+     #+END_SRC
+   - To fill the container equally. It is the percent. 1 is equal.
+     #+BEGIN_SRC
+     flex-grow: 1
+     #+END_SRC
+   - flex-order to control the order
+   - flex-wrap to control wrapping of child to next row based on viewport size
+   - flex-direction controls the direction of all the child getting displayed.
+   - justify-content how the child should be justified. Default is flex-start.
+     - flex-end is for right justify
+     - flex-center is for center
+     - space-between to add space in between
+     - space-around to add space start, end and in between as well
+   - align-items
+     - Align all the child in the container
+     - flex-start to align to top
+     - flex-end to align to bottom
+     - flex-center to align to center
+     - stretch to stretch the child to fit the container
+     - baseline to stretch until the content of the children
+   - align-self
+     -  to override align-items inside children. It takes the same values as align-items
+** Points to Ponder
+   1. Vertical margin collapse. IF you have two elements top of each other. The
+      bottom margin of top element and top margin of bottom element collpase to
+      max margin. (Actually it collapse until one of the element touches the
+      border of the other)
+   2. Horizontal margin *does* not collapse
+   3. Width does not include border, padding & margin
+   5. float does not respect text-align. To fix this use clear:both
+   6. inline-block elements have 4-5px width of whitespace
+   7. You do not need list element for HTML5
+   8. z-index need position
+   9. !important to override any other usage
+   10. gradient to add tint to your photos
+   11. [[https://css-tricks.com/design-considerations-text-images/][Text on Image]]
+* Sass
+  - Syntactically Awesome Stylesheet
+  - Compiles to CSS
+  - Two types of syntax
+    1. SASS
+       Format is with indentation and is not a valid css. It is not used.
+    2. SCSS
+       Looks like CSS
+  - Install
+    #+BEGIN_SRC bash
+    yarn add sass
+    #+END_SRC
+  - Rules
+    - Allow hierarchy in definition of css
+      #+BEGIN_SRC css
+        html {
+          body {
+            ul {
+              font-size: 12px;
+            }
+          }
+        }
+      #+END_SRC
+    - Use Parent selector
+      #+BEGIN_SRC css
+        a {
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      #+END_SRC
+    - Nested sub-properties
+      #+BEGIN_SRC css
+        .button {
+
+          font: {
+            family: Verdana, Helvetica, san-serif;
+            size: 14px
+          }
+        }
+      #+END_SRC
+  - Directives
+    1. @import
+       - Importing the scss file will embed into the calling file. This will help in reduce the number of round trip time to get the css files.
+    2. @extend
+       - Kind of inheritance for css properties
+    3. @mixin
+       - Repeatable sections
+       - @mixin and @include
+       - inject properties into css
+    4. @function
+       - returns values
+    5. @if, @for, @each, @while
+
+* Bootstrap
+** Container
+   - container vs container-fluid
+     - container-fluid occupies the entire viewport regardless
+     - container will center the content
+   - Four Visual Breakpoints
+     - xs, sm, md, lg
+   - Need to setup viewport meta tag for this to work

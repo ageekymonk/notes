@@ -1,0 +1,54 @@
+* Design Patterns
+** Creational Patterns
+*** Abstract Factory
+    Factories Produce Products.
+    If there are different types of products depending upon the type of platform then we need abstract factory design pattern.
+
+*** Factory Method
+    Factory Method is similar to Abstract Factory but without the emphasis on families.
+    Abstract Factory is often implemented using Factory method (sometimes prototype is also used)
+
+*** Prototype
+    The Prototype Pattern is used to create new objects by cloning an original object, and then modifying the clone.
+
+*** Object Pool
+    it is most effective in situations where the cost of initializing a class instance is high,
+    the rate of instantiation of a class is high, and the number of instantiations in use at any one time is low.
+
+*** Builder
+*** Singleton
+
+** Structural pattern
+*** Adapter
+*** Bridge
+    decouple an abstraction from its implementation so that the two can vary independently
+*** Composite
+    Tree, leaf
+    1-to-many "has a" up the "is a" hierarchy
+*** Decorator
+    Wrapping a gift, putting it in a box, and wrapping the box.
+*** Facade
+    Wrap a complicated subsystem with a simpler interface.
+*** Flyweight
+    Use sharing to support large numbers of fine-grained objects efficiently.
+*** Proxy
+** Behavioral Pattern
+*** Chain of Responsibility
+*** Command
+    Encapsulate a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations.
+*** Iterator
+*** Mediator
+     defines an object that encapsulates how a set of objects interact.
+*** Memento
+    Promote undo or rollback to full object status.
+*** Observer
+    Define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.
+    It is the View part of the MVC
+*** State
+*** Strategy
+    Define a family of algorithms, encapsulate each one, and make them interchangeable. Strategy lets the algorithm vary independently from the clients that use it.
+*** Template method
+    A template for strategy steps
+*** Visitor
+     separating an algorithm from an object structure on which it operates. A practical result of this separation is the
+     ability to add new operations to existing object structures without modifying those structures. It is one way to follow the open/closed principle.

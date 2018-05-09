@@ -1,0 +1,258 @@
+* Datamining
+
+** Terminologies
+   1. Likelihood vs Probability
+      Likelihood and Probability is often used as a synonym. But there is a distinction depending upon roles of outcome or parameter
+      Probability is used when describing a function of the outcome given a fixed parameter value.
+      For example, if a coin is flipped 10 times and it is a fair coin, what is the probability of it landing heads-up every time?
+      Likelihood is used when describing a function of a parameter given an outcome. For example, if a coin is flipped 10 times and
+      it has landed heads-up 10 times, what is the likelihood that the coin is fair?
+   2. Long Tail Phenomenon
+      This is the distinction between the physical and online world of product selling. Physical stores can sell only limited popular products
+      whereas online world can display both popular and all available products. If we place popularity on y axis and items on x axis,
+      online world can display entire spectrum while the physical stores there is a cutoff and the rest of the tail is not sold in the store.
+   3. Utility Matrix
+      The data of user preference and items represented as a matrix
+   4. Learning Types
+      1. Supervised Learning
+      2. Unsupervised Learning
+      3. Reinforcement Learning
+   5. Clustering Types
+      1. Partition Clustering
+      2. Hierarchical Clustering
+
+** Clustering
+*** Clustering Types
+    1. Well separated Cluster
+    2. Center Based Clusters
+    3. Contiguous Clusters
+    4. Density Based Clusters
+    5. Shared Property or Conceptual Clusters
+
+*** Properties
+    - Clusters are defined by an objective function. We find clusters by minimizing or mazimizing the objective function.
+    - Can have local or global objectives. Hierarchical Clustering algorithm have local objectives. Partition algorithm has global objectives.
+    - Map the clustering problem to another domain and solve the problem there.
+      - Proximity Matrix defines a weighted graphs. Clustering is just breaking the graph into connected component
+
+*** Partition Clustering
+**** K Means Clustering
+     - Each cluster is associated with a centroid
+     - Each point is associated with the cluster with the closest centroid
+     - Number of clusters k should be specified before
+     - Algo
+       - Select k points randomly as centroid
+       - Form k clusters by assigning nearby points to the centroid
+       - Recalculate the centroid of each cluster
+       - Repeat the above steps until the centroid does not change
+     - Complexity O(n * k * i * d)
+       - n => number of points
+       - k => number of clusters
+       - i => number of iterations
+       - d => number of attributes
+     - Sum of Squared Errors (SSE)
+     - Solution to initial centroid problem
+       - Multiple runs
+       - Sample and use Hierarchical clustering to find initial centroid
+       - select more than k centroid and then select among these initial centroids select most separated
+     - K Means++
+       - Select one centroid in random (C1)
+       - Select the next center ci with probability dist(x)^2 / \sigma dist(x)^2
+       - Repeat above step until K centers have been selected
+       -
+
+**** Mean shift Clustering
+
+*** Hierarchical Clustering
+**** About
+     - Clusters are organized as a hierarchical tree
+     - Any desired number of clusters can be obtained by cutting the hierarchy at a certain level
+     - They may correspond to meaningful taxonomy
+     - O(N^2) space and O(N^3) time and O(N^2 Log N) time for some cases
+     - Once a decision is made to combine two clusters it can't be undone
+     - Two types
+       - Agglomerative
+         - start with individual points and merge nearby points to form clusters
+         - Create Proximity matrix
+         - Find intercluster similarity
+           - Min
+             - Can handle Elliptical shapes
+             - Sensitive to noise and outliers
+           - Max
+             - Less susceptible to noise and outliers
+             - Tends to break large clusters
+             - Biased towards globular clusters
+           - Group Average
+             - Less susceptible to noise and outliers
+             - Biased towards globular clusters
+           - Distance between centroid
+           - Ward's Method
+             - Similarty is based on increase in SSE when two clusters are merged
+             - Less susceptible to noise and outliers
+             - Biased towards globular clusters
+       - Divisive
+         - Start with single cluster and divide each cluster into two each time
+*** Cluster Validity
+**** Why
+     - To avoid finding pattern in noise
+     - To compare cluster algo
+     - To compare two sets of clusters
+     - To compare two clusters
+
+**** Aspects
+     - Determining clustering tendency of data
+     - Comparing results of cluster analysis to externally known results
+     - Determining correct number of clusters
+     - Compare two different cluster analysis to find which is better
+     - How well the cluster analysis fit the data without any external results
+
+**** Types
+     1. External Index
+        Extent to which cluster labels match externally supplied class labels
+        Example: Entropy
+     2. Internal Index
+        Measure goodness of clustering structure without respect to extern info
+        Example: SSE
+     3. Relative Index
+        Used to compare clusters. It is often External or Internal Index
+
+**** Measure
+     - Two Matrices
+       - Proximity Matrix
+       - Incidence Matrix
+     - Find correlation between matrices
+       - High correlation means points belonging to same clusters are close
+       - Not a good measure for density or contiguity based clusters
+     - Internal Measures
+       - Cluster Cohesion
+         - Measures how closely related are objects in clusters
+       - Cluster Separation
+         - Measures how distinct or well separated a cluster is from others
+       - Silhoutte Coefficient
+         - Combines both cohesion and separation
+         - a => average distance i to the points in the cluster
+         - b => min(average distance i to the points in another cluster)
+         - s = 1 -(a/b)
+         - Closer to 1 is better. 0 < s < 1
+     - External Measures
+       - Entropy
+       - Purity
+     - Affinity Propagation
+       - Finds number of k clusters automatically
+       - Minimizes cost function
+         -min(\sum cj yj +\sum(i) \sum(j) dij xij
+         - xij and yj are binary assignment matrix
+         - yj cost of creating cluster
+         - xij cost of assigning point i to point j
+
+
+
+
+
+**** Similarity Between Clusters
+     1. Single Linkage
+        Minimum Distance between two clusters
+        Forms Long Chains
+     2. Complete Linkage
+        Sensitive to Outliers
+     3. Average Linkage
+
+
+** Recommendation Systems
+*** Types
+    1. Content Based Filtering
+       - Focus is on the properties of items
+       - Similarity of items is determined by finding out similarities in their properties
+       - We must construct a profile for each items. For example: for a movie the profile contains actors, genre, director, year
+       - It might be difficult to find all the properties / features for the items.
+       - Similarity can be done via cosine similarity. Cosine similarity measures angle between two vectors.
+       - Item Profile
+         - Constructed from features of the items
+         - Features may be easy to obtain, for example for movies
+         - Features can be hard like extracting genre of an article, features for images.
+         - User tagging can be used as input for finding the features
+         - Features could be boolean. True if a movie belongs to that genre
+         - Features could be numerical. Rating for a movie
+       - User Profile
+         - This should be same vector as Item Profile
+         - Constructed from Item Profile and Utility Matrix
+         - Utility Matrix can be boolean or Numerical as well
+         - If utility Matrix is numerical, we can normalize the utilities by subtracting the average value for a user.
+       - To recommend an item we can find the similarity between user profile and item profile by finding the cosine similarity between the two.
+       - Techniques: Random Hyperplanes, LSH. This is for fast lookup
+       - Pros:
+         1. No need for data on other users
+         2. Able to recommend to users with unique tastes
+         3. Able to recommend new and unpopular items. No first rater problem
+         4. Able to provide explanantion why the product is recommended by listing features
+       - Cons:
+         1. Finding features is hard
+         2. Recommendation for new users
+         3. Overspecialization. Does not recommend user outside user's content profile
+    2. Collobarative Filtering
+       - Focus is on relationship between users and items
+       - Similarity of items is determined by similarity in ratings provided users who bought both items
+       - Measuring similarity is through cosine similarities or by Jaccard similarity
+       - Jaccard similarity ignores the numerical value. It considers only boolean.
+       - Normalize the values so high value of one of the attributes does not affect the others
+       - Two ways we can do collaborative filtering
+         - Find the similar users by clustering and recommend product based on what being used by the cluster
+         - Find similar items based on what user has purchased and take the average ratings of those items
+       - If there are empty space in the utility matrix
+         - we can cluster the products to groups so that we can reduce that
+         - UV Reduction. Considering the utility matrix to be product of two matrix
+       - UV Reduction
+         - To find how close is the UV matrix to actual matrix we use RMSE (Root Mean Square Error)
+         - Initial value of U V with smaller dimension as d and average non blank elements is a is sqrt(a/d)
+         - Each round select random but make sure all are visited or go row by row
+         - Set a Minimum RMSE reduction threshold so that if there is no improvement between two iteration then we stop
+         - Avoid overfitting
+           - stop visiting elements of U and V well before the process has converged
+           - Take several UV and take average
+           - Avoid favouring the first component by moving a fraction to the optimized value
+
+
+** Anamoly Detection
+*** Approaches
+    1. Graphical Method
+       - Graphical approach is time consuming
+       - Graphical approach is subjective
+    2. Statistical Method
+       - Let Lt(D) be log likelihood of Data D at time t
+       - For each point X move it out of Data D to another Set A.
+       - Let Lt+1(D) be log likelihood with one element removed
+       - if Delta = Lt(D) - Lt+1(D) is greater than a threshold the it is an anamoly
+       - We assume here the Anamoly is uniform distribution
+       - This is for single attribute
+       - For higher dimension it is difficult to find the true distribution
+    3. Distance Based Method
+       - Data is vector of features
+       - Types of Approaches
+         - Nearest Neighbour
+           - Data with fewer than p neighbouring points within distance D is an outlier
+           - Top n data points whose distance to the kth neighbour is greatest
+           - Top n data opints whose average distance to k neighbour is greatest
+         - Density based
+           - Local Outlier Factor (LOF)
+             - LOF is the average of the ratios of the density of sample p and density of its neighbours
+         - Clustering Based
+           - Cluster the data into groups of different density
+           - Choose points in small clusters as candidate outliers
+           - Compute the distance between the candidate outlier and non candidate outlier if they are farther then they are the outlier
+
+    4. Model Based Method
+       - Grubb's test
+         - Detects one outlier at a time
+         - Remove the outlier and repeat
+
+*** Base Rate Fallacy
+
+** Classifiers
+*** K Nearest Neighbours Classifiers (KNN)
+    - Lazy Learners
+    -
+*** Bayesian Classifiers
+
+*** SVM
+    - Linear Classifier
+    -

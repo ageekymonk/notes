@@ -1,0 +1,610 @@
+* Javascript
+** Primitives
+   1. Number
+   2. String
+   3. Boolean
+** Predefined Objects
+** Others
+   - Use 'use strict' at the top of the file. It turns off some of the bad features.
+   - IIFE (Immediately Invoked Function Expression)
+   - In ECMAScript 5.1 only scope is function. In later version it has been rectified and there is a backward compatibility
+   - Passing Types
+     - Pass by Reference
+     - Pass by Reference Value
+     - Pass by Value
+   - Strings are immutable in javascript
+   - Let statement makes a braces to be scope boundary
+   - String can be both single and double quotes. Convention is to use single quotes
+   - JavaScript is single threaded.
+   - Semicolon is not mandatory.
+   - JavaScript functions take arbitrary parameters.
+     Every function has implicit variable called arguments which is an array like object with all the passed parameters
+   - Object are created with
+     - object literal
+     - new keyword
+   - Functions start with lower case. Constructor functions start with upper case.
+   - use self = this
+   - if (! this instanceof xxxx) { error / new xxx }
+   - <script type="module" name="functions"> </script>
+   - asm.js & emscripten
+   - capture and bubble
+** ES6 Features
+   - let and const
+     - const you can't change value
+     - var is function scoped
+     - let is block scoped
+     - Variable Hoisting
+          #+BEGIN_SRC javascript
+     {
+       console.log(c); // undefined. Due to hoisting
+       var c = 2;
+     }
+
+     {
+       console.log(b); // ReferenceError: b is not defined
+       let b = 3;
+     }
+          #+END_SRC
+     - Closure in Loop
+       #+BEGIN_SRC javascript
+for (var i = 0; i < 5; ++i) {
+  setTimeout(function () {
+    console.log(i); // output '5' 5 times
+  }, 100);
+}
+// print 1, 2, 3, 4, 5
+for (let i = 0; i < 5; ++i) {
+  setTimeout(function () {
+    console.log(i); // output 0, 1, 2, 3, 4
+  }, 100);
+}
+       #+END_SRC
+   - Arrow Functions
+     #+BEGIN_SRC javascript
+     const zeroArgs = () => {/* do something */}
+const zeroWithUnderscore = _ => {/* do something */}
+const oneArg = arg1 => {/* do something */}
+const oneArgWithParenthesis = (arg1) => {/* do something */}
+const manyArgs = (arg1, arg2) => {/* do something */}
+const sum1 = (num1, num2) => num1 + num2
+     #+END_SRC
+   - This Keyword
+     1. Outside any functions this points to window object in browser
+        #+BEGIN_SRC javascript
+        console.log(this) // Window
+        #+END_SRC
+     2. Within any simple function, this points to global object. In browser it
+        the window object
+        #+BEGIN_SRC javascript
+function hello () {
+  console.log(this)
+}
+
+hello() // Window
+        #+END_SRC
+     3. When in an object's method this points to object itself
+        #+BEGIN_SRC javascript
+let o = {
+  sayThis: function() {
+    console.log(this)
+  }
+}
+
+o.sayThis() // o
+        #+END_SRC
+     4. When function is called as a constructor this refers to newly
+        constructed object
+        #+BEGIN_SRC javascript
+        function Person (age) {
+  this.age = age
+}
+
+let greg = new Person(22)
+let thomas = new Person(24)
+
+console.log(greg) // this.age = 22
+console.log(thomas) // this.age = 24
+        #+END_SRC
+     5. when used in event listener this is set to element that fired the event
+        #+BEGIN_SRC javascript
+        let button = document.querySelector('button')
+
+button.addEventListener('click', function() {
+  console.log(this) // button
+})
+        #+END_SRC
+     6. In fat arrow function this will not get set to any new value
+        #+BEGIN_SRC javascript
+        let o = {
+  // Don't do this
+  notThis: () => {
+    console.log(this) // Window
+    this.objectThis() // Uncaught TypeError: this.objectThis is not a function
+  },
+  // Do this
+  objectThis: function () {
+    console.log(this) // o
+  }
+  // Or this, which is a new shorthand
+  objectThis2 () {
+    console.log(this) // o
+  }
+}
+button.addEventListener('click', function () {
+  console.log(this) // button
+})
+
+button.addEventListener('click', e => {
+  console.log(this) // Window
+  console.log(event.currentTarget) // button
+})
+
+let o = {
+  // Old way
+  oldDoSthAfterThree: function () {
+    let that = this
+    setTimeout(function () {
+      console.log(this) // Window
+      console.log(that) // o
+    })
+  },
+  // Arrow function way
+  doSthAfterThree: function () {
+    setTimeout(() => {
+      console.log(this) // o
+    }, 3000)
+  }
+}
+        #+END_SRC
+   - Default Parameters
+     #+BEGIN_SRC javascript
+     const announcePlayer = (firstName, lastName, teamName = 'unaffiliated') => {
+  console.log(firstName + ' ' + lastName + ', ' + teamName)
+}
+
+     #+END_SRC
+   - Deconstructing
+     #+BEGIN_SRC javascript
+     const Zell = {
+  firstName: 'Zell',
+  lastName: 'Liew'
+}
+let { firstName, lastName } = Zell
+
+let name = 'Zell Liew'
+let course = {
+  name: 'JS Fundamentals for Frontend Developers'
+  // ... other properties
+}
+
+let { name } = course // Uncaught SyntaxError: Identifier 'name' has already been declared
+
+let { name: courseName } = course
+
+console.log(courseName) // JS Fundamentals for Frontend Developers
+
+// What ES6 does under the hood:
+let courseName = course.name
+
+let course = {
+  name: 'JS Fundamentals for Frontend Developers'
+}
+
+let { package } = course
+
+console.log(package) // undefined
+
+let course = {
+  name: 'JS Fundamentals for Frontend Developers'
+}
+
+let { package = 'full course' } = course
+
+console.log(package) // full course
+
+let course = {
+  name: 'JS Fundamentals for Frontend Developers'
+}
+
+let { package: packageName = 'full course' } = course
+
+console.log(packageName) // full course
+     #+END_SRC
+   - Deconstructing Arrays
+     #+BEGIN_SRC javascript
+let [one, two] = [1, 2, 3, 4, 5]
+console.log(one) // 1
+console.log(two) // 2
+
+let [one, two, three] = [1, 2]
+console.log(one) // 1
+console.log(two) // 2
+console.log(three) // undefined
+
+let scores = ['98', '95', '93', '90', '87', '85']
+let [first, second, third, ...rest] = scores
+
+console.log(first) // 98
+console.log(second) // 95
+console.log(third) // 93
+console.log(rest) // [90, 87, 85]
+
+// Swapping with destructured arrays
+[a, b] = [b, a]
+
+function topThree ([first, second, third]) {
+  return {
+    first: first,
+    second: second,
+    third: third
+  }
+}
+
+function sayMyName ({
+  firstName = 'Zell',
+  lastName = 'Liew'
+} = {}) {
+ console.log(firstName + ' ' + lastName)
+}
+
+     #+END_SRC
+   - Rest parameter and Spread Operator
+     #+BEGIN_SRC javascript
+     // ES6 way
+const sum = (...args) => args.reduce((sum, current) => sum + current, 0)
+
+// ES6 way if we didn't shortcut it with so many arrow functions
+function sum (...args) {
+  return args.reduce((sum, current) => sum + current, 0)
+}
+
+let scores = ['98', '95', '93', '90', '87', '85']
+let [first, second, third, ...restOfScores] = scores
+
+console.log(restOfScores) // [90, 97, 95]
+
+let array = ['one', 'two', 'three']
+
+// These two are exactly the same
+console.log(...array) // one two three
+console.log('one', 'two', 'three') // one two three
+
+let array1 = ['one', 'two']
+let array2 = ['three', 'four']
+let array3 = ['five', 'six']
+
+// ES6 way
+let combinedArray = [...array1, ...array2, ...array3]
+console.log(combinedArray) // ['one', 'two', 'three', 'four', 'five', 'six']
+     #+END_SRC
+   - Enhanced object literals
+     #+BEGIN_SRC javascript
+const fullName = 'Zell Liew'
+
+// ES6 way
+const Zell = {
+  fullName
+}
+
+const anObject = {
+  // ES6 way
+  aShorthandMethod (arg1, arg2) {},
+}
+
+// with arrow functions this context is broken
+const dontDoThis = {
+  // Noooo. Don't do this
+  arrowFunction: () => {}
+}
+
+const newPropertyName = 'smile'
+
+// ES6 way.
+const anObject = {
+  aProperty: 'a value',
+  // Dynamic property names!
+  [newPropertyName]: ':D',
+  ['bigger ' + newPropertyName]: 'XD',
+}
+
+     #+END_SRC
+   - Template Literals
+     #+BEGIN_SRC javascript
+const firstName = 'Zell'
+const lastName = 'Liew'
+const teamName = 'unaffiliated'
+
+const theString = `${firstName} ${lastName}, ${teamName}`
+
+console.log(theString)
+// Zell Liew, unaffiliated
+
+const multi = `One upon a time,
+In a land far far away,
+there lived a witich,
+who could change night into day`
+
+var person = 'Mike';
+var age = 28;
+
+function myTag(strings, personExp, ageExp) {
+
+  var str0 = strings[0]; // "that "
+  var str1 = strings[1]; // " is a "
+
+  // There is technically a string after
+  // the final expression (in our example),
+  // but it is empty (""), so disregard.
+  // var str2 = strings[2];
+
+  var ageStr;
+  if (ageExp > 99){
+    ageStr = 'centenarian';
+  } else {
+    ageStr = 'youngster';
+  }
+
+  return str0 + personExp + str1 + ageStr;
+
+}
+
+var output = myTag`that ${ person } is a ${ age }`;
+
+console.log(output);
+// that Mike is a youngster
+     #+END_SRC
+   -
+
+** To investigate
+   - Thread workers
+   -
+** Babel
+   - can do in browser transpiling as well at runtime
+   - In browser transpiling will be slow
+   - For in browser transpiling to work the script tag should have
+     type="text/babel"
+   -
+
+* React
+** concepts
+   1. components
+   2. Reactive updates
+   3. Virtual views
+** What is a component
+   - Like Functions
+   - input is properties and state
+   - output is description of a UI
+   - Reusable and composable
+   - Can have a private state
+   - State can be changed but props cannot be changed
+** Types of components
+   1. Function component / Presentation Component / Stateless
+   2. Class component / Container Component / Stateful
+*** Container Components
+    - Little or no markup
+    - Pass data and actions to presentation Components
+    - Knows about Redux
+    - Stateful
+*** Presentation Components
+    - Nearly all markup will be in here
+    - Receive data and actions via props from Container Components
+    - Knows nothing about Redux
+    - Stateless
+
+** Ways to Create React Componets
+*** Types
+    1. ES5 createClass
+       #+BEGIN_SRC javascript
+var hello = React.createClass({
+  render: function() {
+    return (
+      <h1> Hello world </h1>
+    )
+  }
+})
+       #+END_SRC
+    2. ES6 stateless function
+    3. ES6 Class Component
+    4. ES6 Stateless function
+    5. object.create
+       #+BEGIN_SRC javascript
+
+         function PlainOldObjectComponent(props, context){
+           var instance = Object.create(React.Component.prototype)
+
+           instance.props = props
+           instance.context = context
+           instance.state = { message: 'Object literals ftw' }
+           instance.render = function() {
+             return <li>
+              <button onClick={ e => this.setState({ message: 'stateful!' })}>
+                 {this.state.message}
+               </button>
+             </li>
+           }
+
+           return instance
+         }
+       #+END_SRC
+    6. Mixins
+       #+BEGIN_SRC javascript
+         function MixinComponent(props, context) {
+           return {
+             ...React.Component.prototype,
+             props,
+             context,
+             state: {
+               message: 'Instances through Extension'
+             },
+             render() {
+               return <li>
+                 <button onClick={ e => this.setState({ message: 'stateful!' })}>
+                 {this.state.message}
+               </button>
+                 </li>
+             }
+           }
+         }
+       #+END_SRC
+    7. Parasitic Components
+       #+BEGIN_SRC javascript
+         function ParasiticComponent(props, context){
+           var instance = new React.Component(props, context)
+
+           instance.state = { message: 'Let me just add a method to this one..' }
+
+           instance.render = function() {
+             return <li>
+               <button href='#' onClick={()=> this.setState({ message: 'stateful!' })}>
+               {this.state.message}
+             </button>
+               </li>
+           }
+
+           return instance
+         }
+
+       #+END_SRC
+    8. StampIt
+       #+BEGIN_SRC javascript
+         // Stampit is an excellent library by Eric Elliott for object creation.
+         // https://github.com/ericelliott/stampit
+
+         var ReactStamp = stampit.convertConstructor(React.Component)
+         // ^^^ convenience method for:
+         // stampit().methods(React.Component.prototype).enclose(React.Component)
+
+         var StampitComponent = stampit()
+             .enclose(function () {
+               this.state = { message: 'I can even use stampit!' }
+             })
+             .methods({
+               render() {
+                 return <li>
+                   <button href='#' onClick={()=> this.setState({ message: 'stateful!' })}>
+                   {this.state.message}
+                 </button>
+                   </li>
+               }
+             });
+
+         StampitComponent = stampit.compose(ReactStamp, StampitComponent);
+       #+END_SRC
+
+*** Pros of Stateless component
+   - No class needed
+   - Avoid this keyword
+   - Less Code
+   - Easy to test as it is simple functions
+   - Improved Performance
+*** When to use Class Component
+    - When you need state
+    - When you need Refs
+    - Lifecycle Method hooks
+    - When you need child/nested functions
+** Others
+   1. ref attribute for getting data from input
+   2. controlled components vs Uncontrolled components
+   3. Mixins
+   4. getInitialState, getInitialProps
+   5. propTypes
+   6. Component Lifecycle
+      1. componentWillMount
+         - Runs on both server and client
+         - This is run before initial render
+         - Good spot to set initial state
+      2. componentDidMount
+         - Run after render
+         - Good spot for accessing DOM, send ajax request, set timers,
+           integrating with other frameworks
+         -
+      3. componentWillReceiveProps
+         - Run when receiving new properties
+         - This is not called on initial render.
+      4. shouldComponentUpdate
+         - Runs before render when new props or state is received
+         - This is not called on initial render
+         - Used for performance. Return false to avoid unnecessary rerender
+      5. componentWillUpdate
+         - Runs immediately before render when new props or state is received
+         - This is not called on initial render
+         - This place is used for update. But you can't call set state
+      6. componentDidUpdate
+         - This is called immediately after components update are flushed to DOM
+         - This is not called on initial render
+      7. componentWillUnmount
+         - This is called immediately before unmount
+         - This spot is good for cleanup
+   7. Events
+      1. DOM Events
+      2. Component Events
+      3. Touch Events
+   8. Push State HTML5 vs #tag
+   9. Isomorphic Rendering: Rendering in both client and server
+   10. Technologies generally used with react
+       1. nodejs
+       2. browserify
+          - bundle javascript to single file
+       3. react router
+       4. flux
+       5. gulp
+       6. Jest for testing
+   11. commonjs vs requirejs (is an implementation of Asynchronous Module Definitions)
+   12. source maps, a way to debug minified js
+   13.
+** JSX
+   - For including xml like syntax inside javascript
+   - JSX Element is converted to javascript functions
+   - Just In Time Transformer vs pre procesor transformer
+   - dangerouslySetInnerHTML
+   - Babel does the transpiling
+* Redux
+** Why
+   - Handle Complex data flow
+   - Inter component Communication
+   - Non hierarchical data
+   - Using same data in multiple places
+** Principles
+   1. Single Immutable Store
+      The application state is placed in here.
+      Whereas Flux has multiple immutable store
+   2. Actions
+      The actions trigger changes
+   3. Reducers
+      Reducers update state. They are pure functions take current state and action  and then returns new state.
+      Reducers should not mutate state, perform side effects, call non pure functions
+   4. Immutable State
+      1. Clarity
+         you know where the state got updated, which is Reducers.
+      2. Performance
+         Improves Performance due to less time taken to check whether the state has changed
+      3. Awesome Debugging
+         1. Time Travel Debugging
+         2. Undo / Redo
+         3. Turn off individual actions
+         4. Play interactions back
+
+** Flux vs Redux
+   | Features   | Flux                                  | Redux                                          |   |
+   |------------+---------------------------------------+------------------------------------------------+---|
+   | Data Flow  | Unidirectional                        | Unidirectional                                 |   |
+   | Actions    | Uses actions                          | Uses actions                                   |   |
+   | Stores     | Multiple immutable store              | Single Immutable Store                         |   |
+   | Reducers   | Not supported                         | Supported                                      |   |
+   | Containers | Not supported                         | Supported                                      |   |
+   | Dispatcher | Supported                             | Not Supported                                  |   |
+   |            | Store contains state and change logic | Store and change logic are separate            |   |
+   |            | Event Emitter Pattern                 | No need for Event Emitter as there is reducers |   |
+   |            | State is mutable                      | State is immutable                             |   |
+
+** Operations for Immutablity
+   - Object.assign
+   - Spread operator
+** React-Redux
+   - Main components
+     1. Provider component
+        Attaches app to redux store
+     2. Connect Function
+        - mapStateToProps
+        - mapDispatchToProps
+        -

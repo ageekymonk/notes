@@ -1,0 +1,51 @@
+* Programming                                                            :sw:
+** Phil Karlton                                                      :naming:
+   #+begin_verse
+   There are only two hard things in Computer Science: cache invalidation and naming things.
+   #+end_verse
+   [[http://www.commitstrip.com/en/2015/10/27/one-of-the-coders-hardest-problems/][Hardest Problem in Programming - Naming Variables]]
+** Editors
+   [[http://irreal.org/blog/?p=4971][Editors]]
+* War                                                                   :war:
+** Infantry Journal                                           :attack:ambush:
+   #+begin_quote
+   If your attack is going too well, you may have walked into an ambush.
+   #+end_quote
+
+** General George S Patton
+   #+begin_quote
+   “The purpose of war is not to die for your country. The purpose of war is to ensure that the other guy dies for his country.”
+   #+end_quote
+
+* Philosophy
+** Confidence
+   #+BEGIN_QUOTE
+   True confidence is being more invested in your perception of yourself than
+   someone else’s perception of you.
+    — Mark Manson
+   #+END_QUOTE
+** Life
+   #+begin_quote
+   There are only two ways to live your life. One is as though nothing is a
+   miracle. The other is as though everything is a miracle. - Albert Einstein
+   #+end_quote
+** Success
+   #+begin_quote
+   Don't measure yourself by what you have accomplished, but by what you should have accomplished with your ability. -- John Wooden
+   #+end_quote
+   #+BEGIN_QUOTE
+   The enjoyment of one's tools is an essential ingredient of successful work. - Donald E. Knuth
+   #+END_QUOTE
+** Teacher
+   #+begin_quote
+   The mediocre teacher tells,
+   The Good teacher explains,
+   The superior teacher demonstrates,
+   The great teacher inspires
+   #+end_quote
+** Mind
+*** shoshin / Beginners Mind                                  :BeginnersMind:
+   #+BEGIN_QUOTE
+   In the beginner's mind there are many possibilities,
+   but in the expert's there are few.
+   #+END_QUOTE

@@ -1,0 +1,54 @@
+* Tools
+** Common
+  1. zsh
+  2. google chrome
+  3. autojump -> fasd
+  4. ncdu
+  5. rvm
+  6. pyenv
+  7. nvm
+  8. nodejs
+  9. docker
+  10. pyenv-virtualenv
+  11. virtualenv
+  12. htop
+  13. ngrok
+  14. ccat
+  15. socat
+  16. direnv
+  17. fzf
+  18. aria2
+** OSX
+   1. hammerspooon
+   2. brew
+   3.
+** Linux
+   1. terminator
+* Testing tools
+  1. WireMock
+  2. jmeter
+  3. https://bgrins.github.io/devtools-snippets/
+  4.
+* GIF Maker
+  1. Glyphy
+  2. [[https://github.com/icholy/ttygif][ttygif]]
+  3. [[http://www.cockos.com/licecap/][licecap]]
+* key strokes
+  1. keycastr
+
+* Mail Server
+** Postal
+   [[https://github.com/atech/postal][Postal]]
+* Security Testing
+  - https://github.com/danielmiessler/SecLists
+  -
+* Version Control
+** Git
+* Database
+** CLI
+   [[https://github.com/xo/usql][usql]]
+* Remote desktop
+  https://guacamole.apache.org/
+* Terminal
+  [[https://github.com/xtermjs/xterm.js][xterm.js]]
+  [[https://mitmproxy.org/][mitmproxy]]

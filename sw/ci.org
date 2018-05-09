@@ -1,0 +1,42 @@
+* Jenkins
+** Groovy Scripts
+*** Fetch all Tags and Branches
+    #+BEGIN_SRC java
+def repo = "git@bitbucket.org:batboy/bat.git"
+
+// Ask the Git repo to give up some metadata by pinging it with ls-remote commands.
+// Then take the output and process it into list variables for return to the
+// Extensible Choice plugin.
+
+//def command = """git ls-remote --heads --tags ${repo}"""
+def gitHeads = """git ls-remote --heads ${repo}"""
+def gitTags = """git ls-remote --tags ${repo}"""
+def commitID = ~/^\w+\s+/                    // regexp to match commit ID and whitespace after it
+
+def proc = gitHeads.execute()
+proc.waitFor()                               // Wait for the command to finish
+def listHeads = proc.in.text.tokenize("\n")  // *out* from the external program is *in* for groovy
+listHeads = listHeads.collect{it - commitID} // Strip the commit ID from each string
+
+proc = gitTags.execute()
+proc.waitFor()                               // Wait for the command to finish
+def listTags = proc.in.text.tokenize("\n")   // *out* from the external program is *in* for groovy
+listTags = listTags.reverse(mutate=false)    // List newest tags first and take the top 20
+if (listTags.size() > 20) {
+    listTags = listTags[0..19]
+}
+listTags = listTags.collect{it - commitID}   // Strip the commit ID from each string
+
+def result = ["--choose one--"] + listHeads + listTags
+return result
+    #+END_SRC
+** Plugin
+*** Trial 1 (Failed)
+   1. checkout
+     #+BEGIN_SRC bash
+     https://github.com/jenkinsci/hello-world-groovy-plugin.git
+     #+END_SRC
+   2. mvn clean install
+*** Trial 2
+    1. Install gradle
+    2.

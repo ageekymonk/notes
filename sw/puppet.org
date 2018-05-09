@@ -1,0 +1,882 @@
+* Puppet
+** Administration
+*** Configs
+    - Confdir
+      * Unix Systems: /etc/puppetlabs/puppet
+      * Windows: %PROGRAMDATA%\PuppetLabs\puppet\etc (usually C:\ProgramData\PuppetLabs\puppet\etc)
+      * non-root users: ~/.puppetlabs/etc/puppet
+      * $confdir variable can be used anywhere
+      *
+*** Install / Uninstall / Update module
+    #+begin_src bash
+     puppet module install --module_repository https://forgeapi.puppetlabs.com puppetlabs-vcsrepo \
+            -v 0.0.4 \
+            --environment development  \
+            --target-dir=/opt/puppetlabs/puppet/modules \
+            --modulepath /etc/puppetlabs/code/modules
+
+     puppet module install ~/puppetlabs-vcsrepo-0.0.4.tar.gz --ignore-dependencies
+    #+end_src
+
+    #+begin_src bash
+     puppet module uninstall puppetlabs-apache --force --ignore-changes
+    #+end_src
+
+    #+begin_src bash
+     puppet module upgrade puppetlabs-apache --version >=0.6 --ignore-changes --ignore-dependencies
+    #+end_src
+*** Module structure
+    #+BEGIN_VERSE
+    <my_module>
+      manifests
+        init.pp  - Contains Class definition. Should match module's name
+        my_class.pp - A new class called my_class1. Referred by my_module::my_class
+        my_defined_type.pp - A defined type referred by my_module::my_defined_type
+        my_subdir
+          my_subdir_class  - A class referred as my_module::my_subdir::my_subdir_class
+      files
+        my_conf_file.conf - source => URL would be puppet:///modules/my_module/my_conf_file.conf. content => file('my_module/my_conf_file.conf')
+      templates
+        my_template.erb - A manifest can render this template with template('my_module/my_template.erb').
+        my_template.epp - A manifest can render this template with template('my_module/my_template.epp').
+      lib - contains plugins like custom facts, custom resource types,
+      facts.d - contains external facts an alternative to custom facts
+      examples - contains examples
+      spec - contains spec tests
+    #+END_VERSE
+*** Puppet Apply
+#+begin_src src
+ puppet apply --confdir etc/puppet --modulepath modules --debug --verbose manifests/site.pp
+
+#+end_src
+** Syntax
+*** Data Types
+    Data type of literal data type is 'Type'
+**** Core Datatype
+***** String
+      - String[<MIN LENGTH>, <MAX LENGTH>]
+****** Types
+      1. bare words
+         - It should start with lower case and should not be a reserved word
+      2. Single quoted strings
+         - Cannot interpolate values and does not allow for escape sequence.
+         - To have a single quote use \'
+         - Slash is not escaped. But \\ also gives \
+      3. Double quoted strings
+         - Allow interpolation and allows for all escape sequence
+      4. Heredocs
+         #+begin_src ruby
+           $gitconfig = @("GITCONFIG"/L)
+           [user]
+           name = ${displayname}
+           lg = "log --pretty=format:'%C(yellow)%h%C(reset) %s \
+               %C(cyan)%cr%C(reset) %C(blue)%an%C(reset) %C(green)%d%C(reset)' --graph"
+           | GITCONFIG
+         #+end_src
+         - can contain |-END_TAG, - trims the final line break
+         - | to indicate amount of whitespace to trim at front of each line
+         - More than one heredoc the after first one ends, second one starts and so on
+         - An opening tag like @(EOT) won’t allow interpolation.
+         - An opening tag like @("EOT") will allow interpolation.
+         - By default, it does not have any escape sequence.
+         - @("EOT"/$n) would start a heredoc with \$ and \n enabled.
+         - @("EOT"/) would start a heredoc with all escapes enabled.
+****** Substrings
+        - $string[3] or $string[3,10]
+        - Second number: Positive numbers are lengths, counting forward from the start position.
+        - Second Number: Negative numbers are absolute positions, counting back from the end of the string (starting at -1).
+
+***** Numbers
+      - Integer
+        Integer[MIN, MAX]
+      - Float
+        Float[MIN, MAX]
+      - Numeric
+        Numeric
+        It includes both Integer and Numeric
+
+***** Boolean
+***** Array
+      #+begin_src ruby
+        # Array[<CONTENT TYPE>, <MIN SIZE>, <MAX SIZE>]
+        $foo = [ 'one', 'two', 'three', 'four', 'five' ]
+        notice( $foo[2,1] )  # evaluates to ['three']
+        notice( $foo[2,2] )  # evaluates to ['three', 'four']
+        notice( $foo[2,-1] ) # evaluates to ['three', 'four', 'five']
+        notice( $foo[2,-2] ) # evaluates to ['three', 'four']
+        notice( $foo[-2,1] ) # evaluates to ['four']
+
+        $a = ['vim', 'emacs']
+        myfunc($a)    # calls myfunc with a single argument: the array containing 'vim' and 'emacs'
+        myfunc(*$a)   # calls myfunc with two arguments: 'vim' and 'emacs'
+
+        [1, 2, 3] << 4     # resolves to [1, 2, 3, 4]
+        [1, 2, 3] << [4, 5]   # resolves to [1, 2, 3, [4, 5]]
+
+        [1, 2, 3] + 1     # resolves to [1, 2, 3, 1]
+        [1, 2, 3] + [1]   # resolves to [1, 2, 3, 1]
+        [1, 2, 3] + [[1]] # resolves to [1, 2, 3, [1]]
+
+        [1, 2, 3, 4, 5, 1, 1] - 1    # resolves to [2, 3, 4, 5]
+        [1, 2, 3, 4, 5, 1, 1] - [1]  # resolves to [2, 3, 4, 5]
+        [1, 2, 3, [1, 2]] - [1, 2]   # resolves to [3, [1, 2]]
+        [1, 2, 3, [1, 2]] - [[1, 2]] # resolves to [1, 2, 3]
+      #+end_src
+***** Hash
+      #+begin_src ruby
+        # Hash[<KEY TYPE>, <VALUE TYPE>, <MIN SIZE>, <MAX SIZE>]
+
+        { key1 => 'val1', key2 => 'val2' }
+        { key1 => 'val1', key2 => 'val2', }
+
+        $myhash = { key       => "some value",
+                    other_key => "some other value" }
+        notice( $myhash[key] )
+
+        $myhash = { key       => "some value",
+                    other_key => "some other value" }
+        notice( $myhash[key] )
+
+        $main_site = { port        => { http  => 80,
+                                        https => 443 },
+                       vhost_name  => 'docs.puppetlabs.com',
+                       server_name => { mirror0 => 'warbler.example.com',
+                                        mirror1 => 'egret.example.com' }
+                     }
+        notice ( $main_site[port][https] )
+      #+end_src
+***** Regexp
+      #+begin_src ruby
+        # Regexp[<SPECIFIC REGULAR EXPRESSION>]
+
+        if $host =~ /^www(\d+)\./ {
+          notify { "Welcome web server #$1": }
+        }
+
+        # (?<ENABLED OPTION>:<SUBPATTERN>) and (?-<DISABLED OPTION>:<SUBPATTERN>)
+
+        $packages = $operatingsystem ? {
+        /(?i-mx:ubuntu|debian)/        => 'apache2',
+        /(?i-mx:centos|fedora|redhat)/ => 'httpd',
+        }
+      #+end_src
+***** Undef
+      - Equivalent to nil in ruby
+      - Boolean is false
+
+***** Default
+        - only value in this datatype is default
+        - Used incase statements and selector expressions
+        - Explicitly declining to choose a value, represented by default
+**** Resource and Class Reference
+     1. Resource Reference
+        * Usage
+        #+begin_src ruby
+          # A reference to a file resource:
+          subscribe => File['/etc/ntp.conf']
+
+          # A type with a multi-segment name:
+          before => Concat::Fragment['apache_port_header']
+
+          # A multi-resource reference:
+          require => File['/etc/apache2/httpd.conf', '/etc/apache2/magic', '/etc/apache2/mime.types'],
+
+          # An equivalent multi-resource reference:
+          $my_files = ['/etc/apache2/httpd.conf', '/etc/apache2/magic', '/etc/apache2/mime.types']
+          require => File[$my_files]
+        #+end_src
+
+        * resource reference to access the values of a resource’s attributes
+        #+begin_src ruby
+            file { "/etc/first.conf":
+            ensure => file,
+                   mode   => "0644",
+                   owner  => "root",
+            }
+
+            file { "/etc/second.conf":
+            ensure => file,
+                   mode   => File["/etc/first.conf"]["mode"],
+                   owner  => File["/etc/first.conf"]["owner"],
+            }
+        #+end_src
+        * resource references are not evaluation-order dependent, and can be used before the resource itself is declared
+        -
+
+     2. Class Reference
+        #+begin_src ruby
+          require => Class['ntp::install']
+        #+end_src
+**** Abstract Datatype
+     1. Scalar
+     2. Collection
+     3. Variant
+     4. Data
+     5. Pattern
+     6. Enum
+     7. Tuple
+     8. Struct
+     9. Optional
+     10. Catalogentry
+     11. Type
+     12. Any
+     13. Callable
+*** Defined Types
+    - Defining a type
+      #+begin_src ruby
+        # /etc/puppetlabs/puppet/modules/apache/manifests/vhost.pp
+        define apache::vhost (Integer $port, String[1] $docroot, String[1] $servername = $title, String $vhost_name = '*') {
+          include apache # contains Package['httpd'] and Service['httpd']
+          include apache::params # contains common config settings
+          $vhost_dir = $apache::params::vhost_dir
+          file { "${vhost_dir}/${servername}.conf":
+                   content => template('apache/vhost-default.conf.erb'),
+                 # This template can access all of the parameters and variables from above.
+                 notify  => Service['httpd'],
+          }
+        }
+      #+end_src
+    - Declaring a type
+      #+begin_src ruby
+        apache::vhost {'homepages':
+                         port    => 8081,  # Becomes the value of $port
+                       docroot => '/var/www-testhost', # Becomes the value of $docroot
+        }
+      #+end_src
+    - $title and $name are already available inside the parameter list
+    - Resources in the defined type should be different. So use their titles and names/namevars include the value of $title or another parameter.
+    - The value of the metaparameter can be used as a variable in the definition, as though it were a normal parameter.
+      (For example, in an instance declared with require => Class['ntp'], the local value of $require would be Class['ntp'].)
+    -
+
+*** Match Expresssions
+*** Case Statements
+    #+begin_src ruby
+      $enable_real = $enable ? {
+      Boolean => $enable,
+      String  => str2bool($enable),
+      Numeric => num2bool($enable),
+      default => fail('Illegal value for $enable parameter'),
+      }
+    #+end_src
+*** Selector Expressions
+    #+begin_src ruby
+      $rootgroup = $osfamily ? {
+          'Solaris'          => 'wheel',
+          /(Darwin|FreeBSD)/ => 'wheel',
+          default            => 'root',
+      }
+
+      file { '/etc/passwd':
+        ensure => file,
+        owner  => 'root',
+        group  => $rootgroup,
+      }
+    #+end_src
+*** Class
+
+    Classes are singletons — although a given class can have very different behavior depending on how its parameters
+    are set, the resources in it will only be evaluated once per compilation.
+    #+begin_src ruby
+     class apache (String $version = 'latest') {
+             package {'httpd':
+             ensure => $version, # Using the class parameter from above
+                    before => File['/etc/httpd.conf'],
+             }
+     }
+    #+end_src
+
+    Class inheritance should be used very sparingly, generally only in the following situations:
+
+    - When you need to override resource attributes in the base class.
+    - To let a “params class” provide default values for another class’s parameters:
+
+    #+begin_src ruby
+      class example (String $my_param = $example::params::myparam) inherits example::params {
+      }
+    #+end_src
+
+    Overriding resource attributes
+    #+begin_src ruby
+      class base::freebsd inherits base::unix {
+              File['/etc/passwd'] {
+                group => 'wheel'
+              }
+              File['/etc/shadow'] {
+                group => 'wheel'
+              }
+            }
+    #+end_src
+
+    Make attributes unmanaged by puppet
+    #+begin_src ruby
+      class base::freebsd inherits base::unix {
+              File['/etc/passwd'] {
+                group => undef,
+              }
+            }
+    #+end_src
+
+    Appending to resource attributes
+    #+begin_src ruby
+      class apache {
+              service {'apache':
+                         require => Package['httpd'],
+              }
+            }
+
+        class apache::ssl inherits apache {
+                # host certificate is required for SSL to function
+                Service['apache'] {
+                  require +> [ File['apache.pem'], File['httpd.conf'] ],
+                  # Since `require` will retain its previous values, this is equivalent to:
+                  # require => [ Package['httpd'], File['apache.pem'], File['httpd.conf'] ],
+                }
+              }
+    #+end_src
+
+
+    Include like vs Resource like
+
+    Include-like behavior relies on external data and defaults for class parameter values, which allows
+    the external data source to act like cascading configuration files for all of your classes.
+
+    include, require, contain, and hiera_include functions let you safely declare a class multiple times;
+    no matter how many times you declare it, a class will only be added to the catalog once
+
+    The include function uses include-like behavior. (Multiple declarations OK; relies on external data for parameters.) It can accept:
+
+    - A single class name (like apache) or class reference (like Class['apache'])
+    - A comma-separated list of class names or class references
+    - An array of class names or class references
+
+    #+begin_src ruby
+      include base::linux
+      include base::linux # no additional effect; the class is only declared once
+
+      include Class['base::linux'] # including a class reference
+
+      include base::linux, apache # including a list
+
+      $my_classes = ['base::linux', 'apache']
+      include $my_classes # including an array
+    #+end_src
+
+
+    The require function (not to be confused with the require metaparameter) declares one or more classes, then causes
+    them to become a dependency of the surrounding container.
+
+    #+begin_src ruby
+      define apache::vhost (Integer $port, String $docroot, String $servername, String $vhost_name) {
+        require apache
+      }
+    #+end_src
+
+    The contain function is meant to be used inside another class definition. It declares one or more classes, then
+    causes them to become contained by the surrounding class
+
+    #+begin_src ruby
+      class ntp {
+              file { '/etc/ntp.conf':
+                       ...
+                       require => Package['ntp'],
+                     notify  => Class['ntp::service'],
+              }
+              contain ntp::service
+              package { 'ntp':
+                          ...
+              }
+            }
+    #+end_src
+
+    In the above example, any resource that forms a before or require relationship with class ntp will also be applied before or after class ntp::service, respectively.
+
+    The hiera_include function requests a list of class names from Hiera, then declares all of them.
+    Since it uses the array lookup type, it will get a combined list that includes classes from every level of the hierarchy.
+
+    #+begin_src ruby
+      # /etc/puppetlabs/puppet/hiera.yaml
+      ...
+      hierarchy:
+      - "%{::clientcert}"
+      - common
+
+      # /etc/puppetlabs/code/hieradata/web01.example.com.yaml
+      ---
+        classes:
+      - apache
+      - memcached
+      - wordpress
+
+      # /etc/puppetlabs/code/hieradata/common.yaml
+      ---
+        classes:
+      - base::linux
+      # /etc/puppetlabs/code/environments/production/manifests/site.pp
+      hiera_include(classes)
+    #+end_src
+
+    Resource Like
+    - Multiple declarations prohibited
+    - Can specify value for a metaparameter
+
+    #+begin_src ruby
+      # Specifying the "version" parameter:
+      class {'apache':
+               version => '2.2.21',
+      }
+        # Declaring a class with no parameters:
+        class {'base::linux':}
+    #+end_src
+
+    - Any resource can specifically override metaparameter values received from its container.
+    - Metaparameters which can take more than one value (like the relationship metaparameters) will merge the values from the container and any resource-specific values.
+
+*** Metaparameter
+    - Works with any resource type including custom types and defined types
+    - Types
+      1. Alias
+         #+begin_src ruby
+           file { '/etc/ssh/sshd_config':
+                    owner => root,
+                  group => root,
+                  alias => 'sshdconfig',
+           }
+
+           service { 'sshd':
+                       subscribe => File['sshdconfig'],
+           }
+
+         #+end_src
+
+      2. Audit
+         - Marks a subset of this resource’s unmanaged attributes for auditing
+         - whenever a catalog is applied with puppet apply or puppet agent, Puppet will check whether that attribute
+           of the resource has been modified, comparing its current value to the previous run; any change will be logged
+           alongside any actions performed by Puppet while applying the catalog.
+      3. before
+      4. require
+      5. notify
+      6. subscribe
+      7. consume
+      8. export
+      9. loglevel
+      10. noop
+      11. schedule
+      12. stage
+          - Applied only for classes. Cannot be applied for any other resource or on classes with include
+      13. tag
+          - Apply custom tags on resources
+          - Can be used to apply subset of resources like puppet agent --test --tags bootstrap
+          - There is a function that can be called to apply tags instead of metaparameter
+          #+begin_src ruby
+            apache::vhost {'docs.puppetlabs.com':
+                             port => 80,
+                           tag  => ['us_mirror1', 'us_mirror2'],
+            }
+
+            class role::public_web {
+                    tag 'us_mirror1', 'us_mirror2'
+
+                    apache::vhost {'docs.puppetlabs.com':
+                                     port => 80,
+                    }
+                    ssh::allowgroup {'www-data': }
+                    @@nagios::website {'docs.puppetlabs.com': }
+           }
+          #+end_src
+*** Containment
+    - All resources are automatically contained within class or defined types
+    - Classes are not automatically contained
+    - Contain keyword is used to contain class
+    -
+*** Facts
+    The idiom to access facts is ::facts (Example: ::osfamily)
+    Special Variables added by puppet
+    - The $trusted hash, which has trusted data from the node’s certificate
+    - Agent facts, which are set by puppet agent or puppet apply
+    - Puppet master variables, which are set by the Puppet master (and sometimes by puppet apply)
+    - Compiler variables, which are special local variables set for each scope.
+*** Conditionals
+    if statement is also an expression that produces a value, and can be used wherever a value is allowed.
+    The value of an if expression is the value of the last expression in the executed block, or undef if no block was executed.
+
+    #+begin_src ruby
+      if $is_virtual {
+          warning('Tried to include class ntp on virtual machine; this node may be misclassified.')
+        }
+      elsif $operatingsystem == 'Darwin' {
+        warning('This NTP module does not yet work on our Mac laptops.')
+      }
+      else {
+      include ntp
+      }
+    #+end_src
+
+    any captures from parentheses in the pattern will be available inside the associated code block as numbered variables
+    ($1, $2, etc.), and the entire match will be available as $0:
+    #+begin_src ruby
+      if $hostname =~ /^www(\d+)\./ {
+          notice("Welcome to web server number $1")
+        }
+
+    #+end_src
+    #+begin_src ruby
+      unless $memorysize > 1024 {
+        $maxclient = 500
+      }
+      else {
+        $maxclient = 100
+      }
+    #+end_src
+
+    #+begin_src ruby
+      case $operatingsystem {
+        'Solaris':          { include role::solaris }
+        'RedHat', 'CentOS': { include role::redhat  }
+        /^(Debian|Ubuntu)$/:{ include role::debian  }
+        default:            { include role::generic }
+      }
+    #+end_src
+*** Resources
+    Namevar -> primary Queue. Should be unique.
+    Most cases the resource title will be a default value for Namevar.
+* Certification
+** Style Guide
+    |--------------------+------------------------------------------------------------------------------+---------------------------------------------------------------|
+    | Type               | Good                                                                         | Notes                                                         |
+    |--------------------+------------------------------------------------------------------------------+---------------------------------------------------------------|
+    |                    | Semantic Versioning                                                          | x: backward incompatible change, y: new features, z: bugfixes |
+    |                    | Two Space Soft Tab                                                           |                                                               |
+    |                    | No Trailing White space                                                      |                                                               |
+    |                    | No more than 140 Characters                                                  |                                                               |
+    |                    | Leave space between successive resources                                     |                                                               |
+    |                    | Align =>                                                                     |                                                               |
+    |                    | Leave Trailing commas for attributes and parameters                          |                                                               |
+    | Quoting            | Use Single Quotes unless they contain variables or single quotes             |                                                               |
+    |                    | Optional Quoting for enumerated options                                      |                                                               |
+    |                    | Variables should be inside braces when interpolated                          | "${::operatingsystem} is good"                                |
+    | Comment            | # is comment                                                                 |                                                               |
+    | Module             | ???                                                                          |                                                               |
+    |                    | example directory should contain examples                                    |                                                               |
+    | Resources          | resource title should be quoted                                              |                                                               |
+    |                    | ensure if present should be the first attribute                              |                                                               |
+    |                    | Should be grouped by logical relationship                                    |                                                               |
+    |                    | symbolic link should have ensure => link                                     |                                                               |
+    | File Mode          | POSIX Numeric notation should be 4 digits                                    |                                                               |
+    |                    | POSIX symbolic notation should be string                                     |                                                               |
+    |                    | In Windows use ACL Mode                                                      |                                                               |
+    |                    | Use numeric notation whenever possible                                       |                                                               |
+    | Classes            | Classes and Defined types should in separate files                           |                                                               |
+    |                    | Make use of public and private classes                                       |                                                               |
+    |                    | Chaining arrows should be from left to right                                 |                                                               |
+    |                    | Make use of relationship metaparameter than chaining arrows                  |                                                               |
+    |                    | Avoid Nested Classes and Defined Types                                       |                                                               |
+    |                    | Class Mandatory parameters should be before optional                         |                                                               |
+    |                    | _ prefix for local scope variable                                            |                                                               |
+    |                    | Inheritance can be used within a module                                      |                                                               |
+    | Exported Resources | ???                                                                          |                                                               |
+    |                    | Class inheritance should only be used for myclass::params parameter defaults |                                                               |
+    |                    | Class inheritance be avoided                                                 |                                                               |
+    |                    | Avoid accidental Scoping use  $::operatingsystem                             |                                                               |
+    | Variable           | numbers, lowercase letters, and underscores                                  |                                                               |
+    |                    | Do not use camelcase                                                         |                                                               |
+    | conditionals       | Do not mix conditionals in Resource declaration. Keep them separate          |                                                               |
+    |                    | Case statement should have defaults                                          |                                                               |
+    |                    | Avoid calls to Hiera for public consumed functions as many do not use hiera  |                                                               |
+    |                    |                                                                              |                                                               |
+** Functions
+*** 3.X
+   - Run during catalog compilation
+   - Types
+     1. Rvalues - gives return values
+     2. Statements - performs action but no return value
+   - Functions can access commands and data on puppet master
+   - puppet data type number is converted to ruby data type string
+   -
+*** 4.X
+    #+begin_src ruby
+      name(argument, argument, ...) |$parameter, $parameter, ...| { code block }
+      argument.name(argument, ...) |$parameter, $parameter, ...| { code block }
+    #+end_src
+
+    - Prefix Calls
+      template("ntp/ntp.conf.erb")
+    - Chained Calls
+      "ntp/ntp.conf.erb".template
+    - Statement Functions
+      - Builtin functions and used only for their side effects
+      - Cannot be custom created
+      - Types
+        - Catalog Statements
+          1. include
+          2. require
+          3. contain
+          4. realize
+          5. tag
+        - Logging statements
+          1. debug
+          2. info
+          3. notice
+          4. warning
+          5. err
+        - Failure Statements
+          1. fail
+** Lambdas
+*** 3.X   - Not available
+*** 4.X
+    #+begin_src ruby
+      $binaries = ["facter", "hiera", "mco", "puppet", "puppetserver"]
+
+      # function call with lambda:
+      $binaries.each |String $binary| {
+        file {"/usr/bin/$binary":
+        ensure => link,
+               target => "/opt/puppetlabs/bin/$binary",
+        }
+      }
+    #+end_src
+** Classes
+*** 3.X
+   #+begin_src ruby
+     class base::linux {
+     }
+
+     class apache ($version = 'latest') {
+     }
+     class example ($my_param = $example::params::myparam) inherits example::params { ... }
+
+   #+end_src
+   - In side module manifest folder, One class per file and file name match the class name
+   - Other locations
+     Main Manifests
+     Imported Manifests
+   - Class contains all resources. Any relationship with class means the same relationship with every resource in the class
+   - Class also can contain other classes and containment is specified ???
+   - Resources inside classes added once per compilation
+   - Every resource is auto tagged with classsname
+   - In class inheritance base class should not contain any parameters
+   - Inheritance should be used only when
+     - To override resource attributes in base class
+     - To let params class provide default value for derived class parameters
+     - ?? Use resource collectors override resource attributes
+      #+begin_src ruby
+      class apache {
+       service {'apache':
+         require => Package['httpd'],
+       }
+     }
+
+     class apache::ssl inherits apache {
+       # host certificate is required for SSL to function
+       Service['apache'] {
+         require +> [ File['apache.pem'], File['httpd.conf'] ],
+         # Since `require` will retain its previous values, this is equivalent to:
+         # require => [ Package['httpd'], File['apache.pem'], File['httpd.conf'] ],
+       }
+     }
+
+      #+end_src
+
+   - Declaring Classes
+     1. Include Like
+        - Can be called any number of times but it will be added only
+        - Contain function should be used inside another class
+        - Using include / require / contain functions
+        #+begin_src ruby
+        include base::linux
+        include base::linux, apache
+        $my_classes = ['base::linux', 'apache']
+        include $my_classes # including an array
+        require apache
+        contain ntp::service
+        hiera_include(classes)
+        #+end_src
+
+     2. Resource Like
+        - Should be called only once
+          #+begin_src ruby
+          class {'base::linux':}
+          class {'apache':
+          version => '2.2.21',
+          }
+          #+end_src
+   - Include and Resource like declaration should not be mixed
+   -
+** Conditionals
+   - If conditional
+     #+begin_src ruby
+    if str2bool("$is_virtual") {
+      # Our NTP module is not supported on virtual machines:
+      warning( 'Tried to include class ntp on virtual machine; this node may be misclassified.' )
+    }
+    elsif $operatingsystem == 'Darwin' {
+      warning( 'This NTP module does not yet work on our Mac laptops.' )
+    }
+    else {
+      # Normal node, include the class.
+      include ntp
+    }
+     #+end_src
+   - Regex Capture
+     #+begin_src ruby
+    if $hostname =~ /^www(\d+)\./ {
+      notice("Welcome to web server number $1")
+    }
+     #+end_src
+   - Unless conditional
+     #+begin_src ruby
+     unless $memorysize > 1024 {
+      $maxclient = 500
+     }
+     #+end_src
+   - Case statements
+
+     #+begin_src ruby
+         case $operatingsystem {
+      'Solaris':          { include role::solaris } # apply the solaris class
+      'RedHat', 'CentOS': { include role::redhat  } # apply the redhat class
+      /^(Debian|Ubuntu)$/:{ include role::debian  } # apply the debian class
+      default:            { include role::generic } # apply the generic class
+    }
+     #+end_src
+     - Cannot use expressions as cases
+   - Selector Statements
+     Selector statements are similar to case statements, but return a value instead of executing a code block.
+     Can be used everywhere except in case statements
+     Cannot use expressions as a selector or control statements
+     you cannot use list of cases. If needed use regex
+     #+begin_src ruby
+     $rootgroup = $osfamily ? {
+        'Solaris'          => 'wheel',
+        /(Darwin|FreeBSD)/ => 'wheel',
+        default            => 'root',
+    }
+
+    file { '/etc/passwd':
+      ensure => file,
+      owner  => 'root',
+      group  => $rootgroup,
+    }
+     #+end_src
+** Facts
+   - Core Facts
+   - Custom or External Facts
+   - Access
+     * Classic $fact_name facts
+     * The $facts['fact_name'] hash
+       - Enabled by trusted_node_data
+       - Disabled by immutable_node_data
+   - Special Variables
+     * $trusted
+       - Enabled by setting trusted_node_data=true in puppet.conf
+     * Agent Facts
+       - puppet agent / puppet apply add variables like certname,clientversion,clientnoop
+     * Puppet Master Variables
+       - $environment, $servername, $serverip, $serverversion, $settings::<somesettings>
+       - Not available via the $facts hash
+     * Parser Variables
+       - Not available via the $facts hash
+       - $caller_module_name, $module_name
+   - facter --show-legacy
+** Tags
+
+   Useful for
+   1. Collecting resources
+   2. Analyzing Reports
+   3. Restricting Catalog RUns
+
+   Automated Tagging
+   1. Resource Type
+   2. Fullname of class or defined type
+   3. Every namespace segment of resource's class or defined type
+
+   Class tags are useful when setting up tagmail module or testing refactored module ???
+
+   Custom tags are passed by tag metaparameters. They are passed along by containment. So the tags are assigned to every resource within the containment
+   Tag function can be used to assign tags in
+
+   #+begin_src ruby
+   class role::public_web {
+  tag 'us_mirror1', 'us_mirror2'
+
+  apache::vhost {'docs.puppetlabs.com':
+    port => 80,
+  }
+  ssh::allowgroup {'www-data': }
+  @@nagios::website {'docs.puppetlabs.com': }
+}
+
+apache::vhost {'docs.puppetlabs.com':
+  port => 80,
+  tag  => ['us_mirror1', 'us_mirror2'],
+}
+   #+end_src
+
+   The tags are assigned to every resource within the class and also every resource contained by the resources
+
+   sudo puppet agent --test --tags apache,us_mirror1
+
+
+
+** Hiera
+*** Merge Type
+    1. Priority
+    2. Array
+    3. Hash
+       - native
+       - Deep
+       - Deeper
+*** Backends
+    1. yaml
+    2. json
+*** CLI
+    hiera ntp_server --yaml web01.example.com.yaml
+    hiera ntp_server osfamily=Debian timezone=CST
+    Query from Puppet DB
+    hiera ntp_server -i balancer01.example.com
+*** Interpolation
+    - Syntax
+      %{variable} or %{function("input")}
+      Below both are same
+      smtpserver: "mail.%{::domain}"
+      smtpserver: "mail.%{scope('::domain')}"
+    - wordpress::database_server: "%{hiera('instances::mysql::public_hostname')}"
+    - hiera function output should be string
+    - Can interpolate in
+      1. Datasources
+         #+begin_src yaml
+                    ---
+           :hierarchy:
+             - "%{::clientcert}"
+             - "%{::custom_location}"
+             - "virtual_%{::is_virtual}"
+             - "%{::environment}"
+             - common
+         #+end_src
+      2. In Data
+         #+begin_src yaml
+           # /var/lib/hiera/common.yaml
+           ---
+           bacula::jobs:
+             "%{::hostname}_Cyrus":
+               fileset: MailServer
+               bacula_schedule: 'CycleStandard'
+             "%{::hostname}_LDAP":
+               fileset: LDAP
+               bacula_schedule: 'CycleStandard'
+         #+end_src
+    - This only works for keys that are part of a value; that is, you can’t use interpolation to dynamically create new Hiera lookup keys at the root of a data source.
+*** Variables
+    - From Puppet & Facts
+    - From CLI
+*** Functions
+    hiera(key, default, default_hierarchy)
+    hiera_array(key, default, default_hierarchy)
+    hiera_hash(key, default, default_hierarchy)
+    hiera_include('classes') - This does array merge lookup. It includes all classes
+*** Puppet Autobinding
+    To disable
+    data_binding_terminus = none
+    It is enabled by default.
+** TODO Reports,

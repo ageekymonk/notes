@@ -1,0 +1,446 @@
+* Cloud Computing
+** Saas, PaaS, IaaS
+*** Saas Maturity Levels
+    1. AdHoc
+       Customized Instance for each customer
+    2. Configurable
+       Same instance customized for all customer
+    3. Configurable and Multitenant Efficient
+       Only Scale up is possible
+    4. Scalable, Configurable and Multitenant Efficient
+       Easy to scale out
+** Datacenter and Virtualization
+*** Datacenter
+    1. Cost of datacenter is dominated by Power
+    2. DC is optimized for Work Done/Watt
+    3. Power Usage Efficiency = Total Facility Power / IT Equipment Power
+    4. 31% cost is only related to power.
+
+*** Virtualization
+**** Why Virtualization
+     1. The Utilization Problem -> Large number of underutilized servers
+     2. Clients wants system to run in isolation
+     3. OS heterogenity.
+     4. High Availability & Cold Standby causes systems to run without much utilization
+     5. Mergers and other integration projects
+**** Benefits of Virtualization
+     1. Better Resource utilization
+     2. Fault tolerance.(Can migrate VMs on faults)
+     3. Portability
+     4. Managebility
+     5. Live Migration of guest OS
+
+**** Challenges for Virtualization
+     1. Fidelity
+        1. Software running on VMM should be identical to running on hardware
+     2. Safety
+     3. Performance
+
+**** Types of Virtualization
+     1. Bare Metal VM or Type I
+     2. Hosted VM or Type II
+
+**** Virtualization Techniques
+     1. Full Virtualization
+        - No Guest OS Modification
+        - Examples: Virtualbox, Parallels
+        - Possible Software Approach
+          - Binary Translation (On the fly modification of code)
+        - Possible Hardware Assisted Virtualization
+          - New Priviledge Mode
+            | Extension  | What does it do ?                  | Notes                               |
+            |------------+------------------------------------+-------------------------------------|
+            | Intel VT-x | Processor's Virtualization support | In /proc/cpuinfo it is shown as vmx |
+            | AMD-V      | Processor's Virtualization support | In /proc/cpuinfo it is shown as svm |
+            | Intel VT-d | I/O MMU Virtualization             |                                     |
+            | AMD-Vi     | I/O MMU Virtualization             |                                     |
+            | Intel VT-i | Processor's Virtualization support | For Itanium Architecture            |
+
+     2. ParaVirtualization
+        - Guest OS Modification
+        - This makes virtualization faster
+        - Can be combined with full Virtualization techniques where ever possible
+        - Bulk of work is changing the priviledge instructions to hypercalls
+        - Software Approach
+          - Hypercalls
+          - Xen
+
+**** Xen Hypervisor
+***** About
+     1. Hypervisor using Paravirtualization
+     2. Machines sub-divided to domains.
+        1. Domain 0
+           - elevated Privilege.
+           - Can create and manage Domain U
+           - Device Drivers
+        2. Domain U - User Privilege
+
+***** Virtualization Elements
+     Things that is virtualized are
+     1. CPU Instructions / Management
+     2. Memory Management
+     3. Device I/O
+
+***** CPU Management Techniques
+      1. Guest OS run at lower privilege. Uses Ring 1
+      2. System calls go from Ring 3 to Ring 1 rather than ring 0
+      3. Trap privileged instructions and let hypervisor handle it
+      4. VMM / hypervisor knows the state of all CPUs
+      5. VMM / hypervisor Uses shadow page table for each VM
+      6. If hardware assist available then no need to change the guest OS to run on Ring 1.
+      7. Exceptions are to be executed in ring 1. Guest OS registers the handler similar to original. VMM makes sure it does execute at privileged level
+      8. System calls go from ring 3 to ring 1 rather than ring 0
+      9. Page fault to be handled by VMM
+
+***** Scheduling
+      1. Credit Scheduler
+         1. vCPU assigned to each VM.
+         2. 30ms credit assigned to each VM.
+         3. state of vCPU = above => above fair share
+         4. state of vCPU = below => below fair share
+         5. Pick the vCPU whose state is below
+
+***** Virtualizing Memory Management
+      1. Virtual Memory Management has to cooperate with other Virtual Memory of Guest OSs
+      2. Challenges
+         1. Protecting Hypervisor
+         2. Performance
+         3. VMM Commands are privilege instructions
+      3. Approachess
+         1. Shadow Page Table
+            1. Guest OS has its own set of page tables
+            2. Any page table updates go through VMM which validates and updates the real Page table
+            3. There are two page fault. One is from fault to Guest and guest updates its shadown PT. Next is fault to VMM which updates what guest shadow PT Contains.
+            4. There is a preformance hit because of this
+         2. Direct Page Table Access (Xen)
+            1. Guest have read only access to the page table
+            2. Any updates go through VMM
+            3. P2M is provided to Guest OS by VMM
+         3. Extended Page Table Access
+            1. Supported by Hardware. Hardware has ASID Address space identifier for each PT entry. So multiple PT from different Guest OS can coexist
+            2.
+
+***** I/O Virtualization
+      1. Guest must use network, disks but they are shared with all Guests
+      2. Xen exposes disks, network with buffer based event mechanism
+      3. Guest Driver ---> Virtual device --> IO Stack --> Physical Device Driver -->Device
+      4. Split driver model using shared memory ring buffer. Asynchronous communication
+***** Live VM Migration
+      1. Xen allows live migration of Guest OS. General down time for apps will be 50 - 300ms
+      2. Activate VM on remote machine while source VM is running
+      3. Push Phase: Source VM Pushes the memory pages over network while keeping track of the source Memory changes
+      4. Stop and Copy Phase: Source VM Stops and pushes the incremental changes to new VM
+      5. Reconfigure routing. New VM takes over
+      6. problems: How to achieve live DB Migration ?
+***** Todays Problems
+      1. Network Bandwidth
+** Cloud Based NoSQL Databases
+*** Terminology
+    1. <<AntiEntropy>>
+       AntiEntropy means comparing all the replicas of each piece of data that exist (or are supposed to) and updating each replica to the newest version.
+    2. <<ACID>>
+       Atomicity, Consistency, Isolation, Durability
+    3. CAP Theorem
+       C - Consistency
+       A - Availability
+       P - Partition Tolerance
+
+       2 out of 3 only possible
+    4.
+
+
+*** Goals
+    1. Scalability
+    2. High Availability
+    3. Partition Tolerance
+    4. Consistency
+
+*** Problems with SQL
+    1. Expensive for commerical DB
+    2. Schema should be known before
+    3. Slow for large Data
+
+
+*** Partition
+**** Types
+    1. Horizontal
+    2. Vertical
+**** How to Partition ?
+     1. Round Robin
+     2. Range Partition
+     3. Hash Partition
+
+
+*** Amazon's Dynamo
+    1. Highly Scalable Key Value Store
+    2. Similar to Cassandra
+    3. Always write should be possible
+    4. AP System
+    5. It is a persistent Distributed Hash Table (DHT)
+      | Problem                            | Technique                                              | Expected Advantage                                                       |
+      |------------------------------------+--------------------------------------------------------+--------------------------------------------------------------------------|
+      | High Availability for write        | Vector Clocks with reconciliation during reads         | Version size is decoupled from updates                                   |
+      | Partitioning                       | Consistent Hashing                                     | Incremental Scalability                                                  |
+      | Handling Temporary Failures        | Sloppy Quorum and hinted handoff                       | Provides HA and Durability                                               |
+      | Recovering from Permanent Failures | [[Antientropy]] with merkely Trees                         | Synchronizes Divergent replicas in background                            |
+      | Membership and failure detection   | Gossip based membership protocol and failure detection | Preserves symmetry and avoids having registry for centralized membership |
+      |                                    |                                                        |                                                                          |
+    6. Load Balancing through Virtual Nodes
+       1. Each physical node is responsible for multiple virtual nodes
+       2. More powerful machine handles more virtual nodes
+    7. Quorum Protocol R+W > N
+
+*** HBase
+    - Tables are partitioned to regions. Google Bigtable it is called tablets
+    - Each region is made of multiple stores
+    - Each store contains StoreFiles (HFile) and MemStore (in-memory cache)
+    - Operations: Get, Put, Scan, Delete
+    - (row, columnkey, timestamp) -> value (bytearray)
+    - Master handles multiple regionservers.
+    - region server handles multiple regions
+    - any update goes to commit log
+    - Store is per column family.
+    - MemStore takes all the updates and when it is full it is flushed to StoreFile
+    - If more than N Storefiles then it gets compacted
+    - If region becomes too large then it is split. Managed by Region server
+    - Restrictions
+      - Row key is the only primary index
+      - No columnt typing
+      - No join operators
+    - Three types of lookup
+      - Point query
+      - Full table Scan
+      - Range Scan
+    - Non java client access is via thrift api
+    -
+
+*** Cloud Consistency
+**** Types
+  +-------+----------------------------------+----------------------------------------------------------------------------------+
+  |       | Write to Primary Copy only       | Write to Anywhere                                                                |
+  +-------+----------------------------------+----------------------------------------------------------------------------------+
+  |Eager  |Consistency Easier to             |Slightly Better as more option to write to.                                       |
+  |       |achieve. Good for small DC        |                                                                                  |
+  |       |systems. For multi location       |                                                                                  |
+  |       |systems it is very slow.          |                                                                                  |
+  +-------+----------------------------------+----------------------------------------------------------------------------------+
+  | Lazy  | Eventual consistency.            | Very difficult to implement and synchronizes. How to resolve two similar updates |
+  +-------+----------------------------------+----------------------------------------------------------------------------------+
+
+**** Distributed Transactions
+     - Transaction Coordinator Module which takes care of the transactional commit across all the db for a transaction.
+     - Distributed Transactions should Be [[ACID]]. Each local DB subtransaction should be ACID as well as the global.
+     - Two phase commit protocol
+       - Phase 1: Prepare
+       - Phase 2: Commit
+       - Cons:
+         - There is few extra write ahead logs to be written
+         - There is a synchronous wait for Coordinator and Participants
+       - Due to these problems not good for databases distributed across geography.
+       - Does not scale due to blocking nature
+     - Global serializability
+       - If all sites uses two phase locking protocol and a two phase commit protocol is used then the transactions are globally serializable
+     - Paxos
+       - Distributed Consensus Algorithm
+       - Shared Global state
+       - Communication via asynchronous messages
+       - Nodes can have various roles like proposers, Acceptors, Learners
+       - Message sent are called Proposals = Request Number + Data value
+       - Two Phase
+         - Prepare and Promise
+         - Accept
+
+**** Eventual Consistency
+     1. Causal Consistency
+        If process A has commiunicated to process B that it has updated the data item, the subsequent access by process B will have updated value.
+     2. Read your writes Consistency
+        Process A after writing if it reads will never see the older value. This is special case of Causal Consistency
+     3. Session Consistency
+        The process access the storage in context of a session. Within a session Read your writes consistency is present.
+     4. Monotonic Read Consistency
+        If a process has seen a particular value, it will not see any older value
+     5. Monotonic write Consistency
+        Serializes the writes by the same program. If a system that does not give this guarentee is difficult to program with.
+
+** Distributed File system
+*** GFS
+**** Overview
+        - Single Master, contains all metadata
+        - Chunk Servers, controlled by Master
+        - Chunks (64MB) with Unique 64bit ID replicated atleast 3 times in various Chunk servers
+        - Clients, gets metadata from master to find the location of chunkservers from where it gets the data
+        - Single Master a possible Single point of failure.
+        - Chubby is used to point to an active master among other shadow masters
+        - Metadata
+          - File and chunk namespaces - kept in oplog
+          - Mapping from files to chunks - kept in oplog
+          - Location of chunk replicas - queried at startup and periodically
+        - Master grants chunk lease to a replica which becomes primary replica
+        - Leases are for 60 seconds and extended indefinitely. Extensions are piggybacked on HB.
+        - Primary Replica controls mutations for a chunk in all the replicas.
+        - Chunk version number is used to find replica with stale information
+        -
+***** Read and Write
+        - Read
+          - Client converts filename and byte index to chunk index
+          - Contacts master for finding the location of chunkserver
+          - master replies back with chunk handle and location of replicas
+          - client caches and contacts chunkserver for data
+          - chunk server replies with the data
+        - Write
+          - Clients talk to master to get which chunkserver hold lease for chunk
+          - If no one holds the lease master gives client a new lease
+          - Master gives client primary and secondary chunks servers
+          - Client pushes data to all the chunkservers
+          - Once data is transferred, client sends write request to primary
+          - Primary serailizes all writes in all secondaries. When all write is complete primary signals completion.
+          - Any errors are handled by retrying
+
+***** Chunk Versioning
+      - When master grants new lease it increments the chunk versions and updates all the chunk servers
+      - If a chunkserver restarts it checks with the master to find out about the versions of all the chunks
+      - When a client wants to append data to a chunk it asks master for the primary replica
+      - Master checks the metadata to see who is holding the lease if no one is holding the lease it assigns a new version
+      - Updates all the chunkservers with the new version
+      - Client writes the data with the process above
+      -
+***** High Availability
+      - Fast Recovery
+        - Chunkserver maintains checksums for 64Kb blocks for data integrity
+        - Chunkversion number for data fresness
+        - The metadata is small for the master to read from disk.
+      - Replication
+        - Checks operation log and checkpoint
+        - Master fails, chubby elects new master from the shadow master
+        - Shadow master provides Readonly access when master is down
+        - Chunk replica is placed based on availability, reliability, bw utilization
+        -
+
+*** HDFS
+**** Overview
+     - Opensource implementation of GFS
+     -
+      | GFS                            | HDFS              |
+      |--------------------------------+-------------------|
+      | MasterNode                     | Namenode          |
+      | Slave                          | Datanode          |
+      | Chunk                          | block             |
+      | Random write and write append  | write append      |
+      | HA is by external using chubby | SecondaryNamenode |
+      |                                |                   |
+
+
+** Data Analytics
+
+*** Hadoop Map Reduce
+**** Problems
+     1. Simple key value format. Can't handle data with structure
+     2. Joins are difficult
+     3. Difficult for non programmers to use
+     4. Even trivial projections has to go through map and reduce
+     5. Difficult to maintain and reuse
+**** Scheduler
+     1. MRv1 Framework
+        There is a Jobtracker which knows about number of mappers and reducers in each job.
+        It also knows number of slots on worker nod
+        FIFO Scheduling
+        Has fixed map slots and reduce slots. They can't be interchanged
+
+     2. YARN Framework
+        - Its view is about application requesting for resources
+        - Resource Manager(one per cluster): A pure scheduler
+        - Node manager (one per node)
+        - Application Master (one per application)
+          - Request for resources from
+          - Monitors application.
+          - Framework specific
+        - Concepts
+          - Resource Request: In terms of CPU and Cores
+          - Container: Resource allocation is in form of container.
+          - A container has grants for specific amount of memor, cpu
+          - Containter is launched by Nodemanager
+        - Scheduler: Capacity Scheduler, Faire scheduler
+
+*** Pig
+**** About
+     1. Data flow layer on top of hadoop
+     2. Sequence of data transformation steps
+     3. High Level Operations like Filtering, Grouping, Aggregation are supported
+     4.
+
+*** HIVE
+
+**** Architecture
+     1. Metastore
+     2. Driver
+     3. Query Compiler
+     4. Execution Engines
+     5. Hive Server
+     6. Client Components
+
+
+**** Optimization
+     1. Input Correlation
+        If multiple nodes have Input correlation
+     2. Transit Correlation
+        If multiple nodes have Input correlation + Partition key
+     3. Job Flow Correlation
+        If node has same partition key as its child nodes
+
+** DataFlow
+*** Apache Flink
+    - Data Model
+      - Tuple is the inherent data model
+      - Primitive Data Types
+        - Integer, Float, Text, Special Values
+      - Custom Data types supported
+        - In this case we need to extend the Value interface for serialization and deserialization
+      - A set of tuples is called a dataset
+    - Data Transformation
+      - Map, Reduce, group, cogroup, etc ..
+    - Optimization
+      - Efficient execution plan for data processing tasks
+        - Estimates output size
+        - Based on cardinalities, decides on parallelism and local vs network pipeline strategy
+      - Big challenge is UDF
+    - Data flow
+      - Data sources
+        - Entrypoint for data into dataflow
+        - Can connect to variety of sources like csv files, hdfs, jdbc, etc and produces dataset
+        -
+      - Data Transformation
+      - Data Sinks
+        - Exit point from dataflow
+        - can output to file, hdfs, etc
+    -
+*** Spark
+**** RDD
+     - Created by Parallelizing Collections or by Referencing a dataset in external storage
+     - Have Partitions
+     - Operations: Transformation and Actions
+     - Transformations create a new Dataset from existing one
+     - Actions return value to driver after the computation
+     - All Transformations are lazy.
+     -
+**** Transformation
+     1. mapToPair
+     2. flatMapToPair
+     3. join
+     4. groupByKey
+     5. reduceByKey
+     6. foldByKey
+     7. aggregateByKey
+
+**** Components
+     1. Driver: Incharge of control flow of the work
+     2. Executors: Executes Tasks given by driver and storing caches
+
+**** Job, Stage and Task
+     - Transformation can cause narrow or wide dependency between parent and child RDD
+     - Narrow dependency means child depends upon one or limited partition of parent
+     - Wide dependency means child depends upon all partition of parent RDD
+     - Transformation inside a stage can run in pipeline style
+     - Across stages there will be shuffling of data
+     - pipelined transformation inside a stage is a task
+     - Number of task depends upon number of partition the parent RDD has
+     - Shuffles are expensive and they have to be written to disk

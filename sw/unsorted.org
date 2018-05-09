@@ -1,0 +1,152 @@
+* Mysql Replication
+** Synchronous
+   - Achieved by using Clusters
+
+** Asynchronous
+   - Master Slave Replication
+
+** Semi Synchronous
+   - Atleast one slave is synchronized
+* Windows
+  If the license server expired for remote desktop
+  mstsc /v:wsa0002.example.com /admin
+* Softwares
+  1. Keepalived
+  2. vrrpd
+  3.
+* Org parser
+  - Document
+    - Headline [Title, Level?, Priority?, Todo State?]
+      - Headline
+      - Section [Type]
+        - [X] section
+        - [X] Paragraph
+        - [X] Blocks
+        - [X] Drawers
+        - [ ] Lists
+        - [ ] Tables
+        - [ ] FootNotes
+        - [ ] Inline Properties
+        - [ ] Comment
+        - [ ] Fixed Width Areas ???
+        - [ ] Horizontal Rule
+        - [ ] Keywords
+        - [ ] Latex Environment
+        - [ ] Properties
+        - [ ] Entities ???
+        - [ ] Export snippets
+        - [ ] Inline Babel Calls
+        - [ ] Line Breaks
+        - [ ] Links
+        - [ ] Macros
+        - [ ] Targets and Radio Targets
+        - [ ] Statistics Cookies
+        - [ ] Subscript and Superscript
+        - [ ] Text Markup
+        -
+* Newrelic
+  - Browser
+  - Insights
+  - Synthetics
+  - APM
+  [[https://github.com/sschwartzman/newrelic-synthetics-sebuilder][Newrelic synthetic selenium test creator]]
+* Commands
+  - datamash
+  - s3cmd
+  - s4cmd
+  - shyaml
+  - xmlstarlet
+  - pandoc
+  - shuf
+  - iconv or uconv
+  - zless, zmore, zcat, zgrep
+  - dstat, glances
+  - mtr
+  - iftop, nethogs
+  - sar
+  -
+* AWS DevLounge
+** To Research
+*** IOT Buttons
+    - NA in australia
+    - We can use raspberry pi
+*** Cognito
+*** API Gateway
+*** claudia.js
+*** Serverless.com
+*** Kappa
+*** Zappa
+*** Serverless application model (SAM)
+    - A simplified cloudformation syntax for expressing serverless resources
+*** troposphere
+*** Dyanmodb
+    you can run locally for debugging
+*** Amazon device farm
+*** Appium
+*** Calabash
+*** Espresso
+*** grunt, gulp, npm
+*** mochajs
+* Volunteering
+  [[www.project501.com][project501]]
+  [[https://www.onlinevolunteering.org][UN Online Volunteering]]
+  [[http://www.datakind.org/][datakind]]
+  [[http://www.bayesimpact.org/][Bayes Impact]]
+  [[https://www.freecodecamp.com/][Freecodecamp]]
+  [[http://www.progcode.co/][progcode]]
+  [[http://socialcoder.org/Home/Index][socialcoder]]
+  [[http://www.htbox.org/][Humnaitarian toolbox]]
+  [[https://www.catchafire.org/][Catch a Fire]]
+  [[https://www.wearethorn.org/][thorn]]
+  [[http://www.doinggoodfellows.org/][Doing Good Fellows]]
+
+* OKR
+  - Objectives and Key Results
+  - Should be measurable
+  - Everyone's OKR should be public
+  - Limit number of Objectives and Key Results
+  - More than 50% of objectives should be bottom Up
+  - Not a Performance Evaluation Tool
+  - Set Quarterly and Anually
+  - Objectives should be uncomfortable
+  -
+* others
+  - Appeal to Authority: :)
+  - Dijkstra: Simplicity is a prerequisite for reliability.
+  - Null Object Pattern
+  - How to develop for Unit Tests and Integration Tests
+    - Unit testable code should be functional with no dependencies and it is isolated
+    - Integration Testable code should have no logic but all dependencies
+  - Concurrency Model
+    - Actor Model
+* Cloud Native
+* Blockchain
+  - Bitcoin and Cryptocurrency technologies princeton university
+  - Mastering Bitcoin by Andreas Antonopoulos
+  - Genesis Block - First block
+  - Bitcoin will be halved every 4 years
+  - Byzantine General Problem
+    - All generals have to attack at the same time
+  - Datastructure of a block chain
+    - Merkle Tree
+    - Nakamoto Consensus
+    - Elliptic Curve Digital Signature Algorithm
+  - Bitcoin Scripting Language
+    - Stack Based
+    - Not turing complete
+  - Ethereum
+    - Blockchain with Turing complete
+    - crypto currency called ether
+    - Apps built on top is called Decentralized Application (dApp)
+    - etherscan
+    - solidity
+      - similar to javascript but deterministic
+  - Hyperledger
+    - enterprise grade blockchain
+    - Framework: Fabric
+    - Smart Contract called Chaincode (written in go)
+  - Corda
+    - Enterprise blockchain
+    - For financial services and banking
+    - Ricardian contract. Legally Enforceable
+    -

@@ -1,0 +1,12 @@
+* Python
+** Send large file efficiently
+   [[http://michaldul.com/python/sendfile/][sendfile]]
+   uses sendfile system call which uses zero copy mechanism provided by kernel
+   using sendfile system call. This doubles the total speedup.
+
+* Leadership
+** Tech to Manager
+   [[https://lcamtuf.blogspot.com.au/2018/02/on-leadership.html][Progressing from tech to leadership]]
+   - Do not micromanage
+   - Innovate continuously
+   - People are very important

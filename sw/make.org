@@ -1,0 +1,12 @@
+* Check if folder exists
+#+BEGIN_SRC Makefile
+ifneq ($(wildcard ~/Dropbox/.*),)
+        @echo "Found ~/Dropbox."
+else
+        @echo "Did not find ~/Dropbox."
+endif
+#+END_SRC
+* Set Environment Variable
+#+BEGIN_SRC Makefile
+export var = val
+#+END_SRC

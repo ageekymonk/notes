@@ -1,0 +1,444 @@
+* Emacs                                                               :EMACS:
+** Shortcuts
+*** File commands                                                      :FILE:
+    | Action                  | shortcut        |
+    |-------------------------+-----------------|
+    | Open                    | C-x C-f         |
+    | Save                    | C-x C-s         |
+    | Close                   | C-x k           |
+    | Save As                 | C-x C-w         |
+*** Search Command                                                   :SEARCH:
+    | Action                            | shortcut                        |
+    |-----------------------------------+---------------------------------|
+    | search in file Forward            | C-s                             |
+    | search in file Reverse            | C-r                             |
+    | Search all in file                | C-c h o                         |
+    | zap to char                       | M-z                             |
+    | Highlight regexp                  | M-s h r                         |
+    | unhighlight regexp                | M-s h u                         |
+    | Highlight symbol                  | M-s h .                         |
+    | Return to pos before search       | C-u C-SPC                       |
+    | Search and replace                | M-%                             |
+    | Search multiple files and replace | helm-do-ag, Edit search Results |
+    |                                   |                                 |
+
+*** Navigation inside a buffer
+    | Action           | shortcut             |
+    |------------------+----------------------|
+    | Begining of Line | C-a                  |
+    | End of Line      | C-e                  |
+    | Start of Buffer  | M-< (need to change) |
+    | End of buffer    | M-> (need to change) |
+    | Page up          | Fn -> up             |
+    | Page Down        | Fn -> down           |
+    | Move Line up     | M-S up               |
+    | Move Line down   | M-S down             |
+    | Go to Line       | M-g g                |
+    |                  |                      |
+*** Parenthesis Navigation
+    | Action                     | shortcut |
+    |----------------------------+----------|
+    | Slurp Parenthesis forward  | M-)      |
+    | Barf Parenthesis forward   | M-(      |
+    | Slurp Parenthesis backward | C-)      |
+    | Barf parenthesis backward  | C-(      |
+    | Copy Sexp                  | C-M-w    |
+    | Kill Sexp                  | C-M-k    |
+    | Next sexp                  | C-M-f    |
+    | Prev sexp                  | C-M-b    |
+    | Down sexp                  | C-M-d    |
+    | Up sexp                    | C-M-u    |
+    |                            |          |
+
+*** Buffer commands
+    | shortcut                           | Action          |
+    |------------------------------------+-----------------|
+    | kill current buffer.               | C-x k RET       |
+    | Kill all except the current buffer | C-c k           |
+    | Show buffers in project            | C-x C-f C-x C-d |
+    | Switch to recent directory         | C-x C-f M-p     |
+    | Zoom Buffer                        | C-x C-z         |
+    |                                    |                 |
+
+*** Perspective Commands
+    | Action                             | shortcuts |
+    |------------------------------------+-----------|
+    | create/switch a perspective        | C-x x s   |
+    | kill a perspective                 | C-x x c   |
+    | Add buffer                         | C-x x a   |
+    | Remove buffer                      | C-x x k   |
+    | Set buffer. Remove from all others | C-x x A   |
+    | Switch to next                     | C-x x n   |
+    | Switch to previous                 | C-x x p   |
+    | Rename perspective                 | C-x x r   |
+*** Macros
+    | Action                             | shortcut         |
+    |------------------------------------+------------------|
+    | Macro start                        | C-x (   or F3    |
+    | Macro end                          | C-x )   or F4    |
+    | Macro execute                      | C-x e            |
+    | Macro apply to all lines in region | C-x C-k r        |
+    | Macro execute infinite             | C-x e 0          |
+    | Previous Macro in ring             | C-x C-k C-p      |
+    | Next Macro in ring                 | C-x C-k C-n      |
+    | Set Counter                        | C-x C-k C-c      |
+    | Add Counter                        | C-x C-k C-a      |
+    | Insert Counter                     | C-x C-k C-i      |
+    | Set Format for counter             | C-x C-k C-f      |
+    | Name Macro                         | C-x C-k n        |
+    | Bind a key to macro                | C-x C-k b        |
+    | Edit Macro                         | C-x C-k C-e      |
+    | Edit Macro by name                 | C-x C-k e <name> |
+    |                                    |                  |
+
+*** Other Useful commands
+    | Action                                    | shortcut                       |
+    |-------------------------------------------+--------------------------------|
+    | show all Process                          | C-x p                          |
+    | Git                                       | C-x g                          |
+    | Autocomplete                              | M-/                            |
+    | Search in Google                          | C-c g                          |
+    | Fetch webpage and display in buffer       | C-c u                          |
+    | Swap two active windows                   | C-c s                          |
+    | Repeat Previous command                   | C-x z (Repeat z as many times) |
+    | Repeat Previous command with modification | C-x ESC ESC                    |
+    | Convert a word to Uppercase               | M-u                            |
+    | Convert a word to Lowercase               | M-l                            |
+    | Indent Block                              | C-M-\                          |
+    | Indent file                               | C-c n                          |
+    | Comment Line                              | M-;                            |
+    | Open a python shell                       | C-c C-z                        |
+    | Run the current file                      | C-c C-c                        |
+    | Run a command n times                     | M-4 C-k (runs C-k for 4 times) |
+    | Run a command n times                     | C-4 C-k (runs C-k for 4 times) |
+    | Spell correct                             | C-.                            |
+    | Multiple Cursors                          | C-;                            |
+
+*** Magit Mode
+    | Action                                     | shortcuts                             |
+    |--------------------------------------------+---------------------------------------|
+    | checkout a remote branch                   | B B                                   |
+    | cherry pick a commit from different branch | l o <select branch> <select commit> A |
+    | Create a branch                            | b B  then push branch, set upstream   |
+    | delete a branch                            |                                       |
+
+*** Org Mode
+    | Action                          | shortcut    |
+    |---------------------------------+-------------|
+    | Add Tags                        | C-c C-c     |
+    | Column View                     | C-c C-x C-c |
+    | Add Estimate                    | C-c C-x e   |
+    | Add Priority                    | C-c ,       |
+    | Narrow to element               | C-x n e     |
+    | Narrow to subtree               | C-x n s     |
+    | Move subtree up                 | M-up        |
+    | Move subtree to another heading | C-c C-w     |
+*** Helm Mode
+    | Action                    | shortcut       |
+    |---------------------------+----------------|
+    | Select entry              | C-Spc          |
+    | Unselect entry            | M-Spc          |
+    | Select from history       | C-x C-f C-c h  |
+    | Pydoc                     | M-x heml-pydoc |
+    | Narrow down to entry      | C-j            |
+    | Widen again               | C-l            |
+    | Go up a directory         | C-l            |
+    | Go back to prev directory | C-r            |
+    | Find file in directory    | C-u C-c h /    |
+    | Helm top                  | C-c h t        |
+    | Semantic menu             | C-c h i        |
+    |                           |                |
+
+*** Bookmark Mode
+    | Action           | shortcuts |
+    |------------------+-----------|
+    | Add bookmarks    | C-x r m   |
+    | Jump to bookmark | C-x r b   |
+    |                  |           |
+
+*** Help Commands
+    | Action             | shortcut |
+    |--------------------+----------|
+    | Show function help | C-h f    |
+    | Show all shortcuts | C-h b    |
+*** Calc Mode
+    | Action                     | Shortcut  |
+    |----------------------------+-----------|
+    | Undo / Redo                | U/D       |
+    | Edit top element           | `         |
+    | Algebraic Mode             | '         |
+    | Exchange top 2 element     | TAB       |
+    | Sin / Cos / Tan / Exp / Ln | S/C/T/E/L |
+    | Inverse Sine / Cos / Tan   | IS/IC/IT  |
+    | Solve                      | a S       |
+    | Poly Solve                 | a P       |
+    | Display big                | dB        |
+    | Expand equation            | ax        |
+    | Differentiate              | ad        |
+    | Integrate                  | ai        |
+    | Select                     | js        |
+    | unselect                   | ju        |
+    | Eval                       | =         |
+    | store in variable          | s s       |
+    | Set Terminal device        | g D       |
+    |                            |           |
+
+*** Other customization
+**** ERC
+     #+begin_src elisp
+      (eval-after-load "erc"
+        '(progn
+
+           ;; Set personal information
+           (setq erc-nick "defaultnick")
+           (setq erc-user-full-name "My Full Name")
+
+           ;; Set autojoin channels
+           (setq erc-autojoin-channels-alist
+                 '(("freenode.net" "#emacs" "#foo" "#bar")))))
+
+      ;; Set autoconnect networks
+      (defun my-erc ()
+        "Connect to my default ERC servers."
+
+        (interactive)
+        (erc-tls :server "irc.freenode.net" :port 7000))
+     #+end_src
+**** Setting proxy
+     (setq url-proxy-services
+     '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+     ("http" . "proxy.example.com:3128")
+     ("https" . "proxy.example.com:3128")))
+*** Copy, Paste & Delete
+    | Action                              | shortcut | Package       |
+    |-------------------------------------+----------+---------------|
+    | Select the whole file               | C-x h    |               |
+    | Copy selected Region                | M-w      |               |
+    | copy line if there is no selection  | M-w      |               |
+    | cut                                 | C-w      |               |
+    | Cut line (if there is no selection) | C-w      |               |
+    | Paste                               | C-y      |               |
+    | Delete word                         | M-Delete |               |
+    | Delete Line                         | C-Delete |               |
+    | Copy word without selection         | ?        |               |
+    | Copy paragraph without selection    | ?        |               |
+    | Mark Rectangular                    | C-x Spc  |               |
+    | Delete next word                    | C-M-k    | smart-parens  |
+    | Easy kill                           | M-w      | @,+,-,w,d,f,l |
+    |                                     |          |               |
+*** Evil Mode
+    | Shortcuts      | Action                                                 |                          |
+    |----------------+--------------------------------------------------------+--------------------------|
+    | SPC TAB        | Previous Buffer                                        |                          |
+    | SPC ;          | Comment                                                |                          |
+    | SPC !          | Run shell command                                      |                          |
+    | SPC /          | Search project using ag                                |                          |
+    | SPC ?          | helm shortcut key list                                 |                          |
+    | SPC F1         | commands, classes functions                            | C-o to go between them   |
+    | SPC a c        | Launch Calculator                                      | c - calc, q - quick calc |
+    | SPC a d        | Dired                                                  |                          |
+    | SPC b .        | Buffer Microstate                                      | next, prev, kill buffers |
+    | SPC b b        | Buffer list                                            | C-c C-f follow buffers   |
+    | SPC b d        | Delete Buffer                                          |                          |
+    | SPC b h        | Go to Spacemacs Home                                   |                          |
+    | SPC c l        | Comment line                                           | L for invert             |
+    | SPC c p        | comment paragraph                                      | P for invert             |
+    | SPC c y        | Copy and comment                                       |                          |
+    | SPC e v        | verify checker                                         |                          |
+    | SPC e l        | List errors                                            |                          |
+    | SPC e s        | select checker                                         |                          |
+    | SPC f a s      | Find file or directory                                 |                          |
+    | SPC f C        | convert dos2unix / unix2dos                            |                          |
+    | SPC f J        | Open Junk file                                         |                          |
+    | SPC f e d      | spacemacs init file                                    |                          |
+    | SPC f e R      | sync spacemacs                                         |                          |
+    | SPC h SPC      | Help Spacemacs documentation                           |                          |
+    | SPC h RET      | Enables or Disables Minor mode                         |                          |
+    | SPC h d        | describe                                               |                          |
+    | SPC h l        | Go back helm buffer                                    |                          |
+    | SPC h m        | man pages                                              |                          |
+    | SPC j =        | indent buffer                                          |                          |
+    | SPC g s        | magit status                                           |                          |
+    | SPC g b        | magit blame microstate                                 |                          |
+    | SPC p p        | projects, Alt-g shows git status, Ctr-s for search     |                          |
+    | SPC n +        | increase number                                        |                          |
+    | SPC n -        | decrease number                                        |                          |
+    | SPC            |                                                        |                          |
+    | gg             | move to start of buffer                                |                          |
+    | G              | move to end of buffer                                  |                          |
+    | %              | move to matching paranthesis                           |                          |
+    | :%s/old/new    | replace in whole buffer old by new                     |                          |
+    | o              | insert line below                                      |                          |
+    | O              | insert line above                                      |                          |
+    | R              | Replace word                                           |                          |
+    | Ctrl R         | Redo                                                   |                          |
+    | Ctrl e         | to scroll down                                         |                          |
+    | Ctrl y         | to scroll up                                           |                          |
+    | [ SPC          | Insert above                                           |                          |
+    | v              | visual Mode                                            |                          |
+    | V              | visual Mode with selected line                         |                          |
+    | Ctrl v         | Visual mode but vertical selection                     |                          |
+    | gv             | select previously selected block                       |                          |
+    | m a-z          | mark location                                          |                          |
+    | ' a-z          | jump to mark                                           |                          |
+    | w              | move to forward beginning of word                      |                          |
+    | e              | move to forward end of word                            |                          |
+    | ge             | move to backward end of word                           |                          |
+    | W              | move forward word                                      |                          |
+    | b              | move backword to beginning of word                     |                          |
+    | 0              | beginning of line                                      |                          |
+    | $              | end of line                                            |                          |
+    | )              | jump forward one sentence                              |                          |
+    | (              | jump backward one sentence                             |                          |
+    | }              | jump forward one paragraph                             |                          |
+    | {              | jump backward one paragraph                            |                          |
+    | H              | jump to top of screen                                  |                          |
+    | M              | jump to middle of screen                               |                          |
+    | L              | jump to bottom of screen                               |                          |
+    | C              | Change till end of line                                |                          |
+    | D              | Delete till end of line                                |                          |
+    | Y              | copy till end of line                                  |                          |
+    | f a-z          | jump to next occurance of letter a-z                   |                          |
+    | c a-z          | change all chars from current to next occurance of a-z |                          |
+    | d a-z          | delete all chars till next occurance of a-z            |                          |
+    | zz             | center file at cursor position                         |                          |
+    | zt             | scroll cursor position to top of file                  |                          |
+    | ==             | Format line                                            |                          |
+    | =              | Format selection.                                      |                          |
+    | C-w o          | maximize window                                        |                          |
+    | gcc            | comment out a line                                     |                          |
+    | SPC z x +      | font size increase/decrease                            |                          |
+    | > >            | Indent line                                            |                          |
+    | SPC x J/K      | Move Line down/Up                                      |                          |
+    | :%s/old/new/gc | replace old by new with confirmation                   |                          |
+    | :%s/old/new/g  | replace old by new                                     |                          |
+    | s <char>       | wrap by char in visual mode                            |                          |
+    | SPC s e        | Start IEdit Mode.                                      |                          |
+    |                | F - Limit to function                                  |                          |
+    |                | L - Limit to line                                      |                          |
+    |                | J - Increase to line below                             |                          |
+    |                | K - Increase to line above                             |                          |
+    |                | n/N - Navigate between occurances                      |                          |
+    |                | TAB - Toggle Occurance                                 |                          |
+    |                | S - Substitute occurances                              |                          |
+    |                | p - Replace occurances with last yanked text           |                          |
+    |                | D - Delete all occurances                              |                          |
+    | SPC ;          | comment blocks                                         |                          |
+    | #              | Mark under cursor                                      |                          |
+    |                |                                                        |                          |
+*** TODO To research
+    - relative line number
+    - indent guide
+** Elisp
+*** Symbol
+    - Symbol is a variable in its un-evaluated state. It is similar to eval(string) in other languages
+    - To define a symbol put apostrophe in front of it
+    - Each symbol has cells to store things. They are
+      1. name
+      2. value
+      3. function
+      4. property list
+    - A symbol can be both a value and a function ??
+*** Alist and Hash table
+    Alist - ordered and can have duplicate keys. It is just a list with each entry as (cons key val)
+    Hash table - unordered and cannot have duplicate keys
+    #+begin_src elisp
+    (setq myHash (make-hash-table :test 'equal))
+    (puthash "joe" "19" myHash)
+    (gethash "jane" myHash)
+    (remhash "liz" myHash)
+    (hash-table-count myHash)
+
+    (require 'subr-x)
+    (hash-table-keys myHash)
+    (hash-table-values myHash)
+    #+end_src
+*** Functions
+    Types
+    1. function
+    2. primitive
+    3. command
+    4. macro
+    5. lambda
+    6. special form
+*** Common Functions
+    |----------+------------------------+---------------------------------------------------+---------------------------------------|
+    | Category | Name                   | Action                                            | Usage                                 |
+    |----------+------------------------+---------------------------------------------------+---------------------------------------|
+    | Check    | boundp                 | check if a variable is defined                    | (boundp 'var-name)                    |
+    |          | fboundp                | check if a function is defined                    | (fboundp 'fn-name)                    |
+    |          | featurep               | check if a package is loaded                      | (featurep 'guru-mode)                 |
+    |          | symbolp                | check if it is a symbol                           | (symbolp 's)                          |
+    |          | subrp                  | Check if a object is builtin code                 | (subrp (symbol-function 'while))      |
+    |          | use-region-p           | Check if a region exists and active and not empty |                                       |
+    |          |                        |                                                   |                                       |
+    | symbol   | symbol-name            |                                                   |                                       |
+    |          | symbol-value           |                                                   |                                       |
+    |          | symbol-function        |                                                   |                                       |
+    |          | symbol-plist           |                                                   |                                       |
+    |          |                        |                                                   |                                       |
+    | map      | maphash                | Iterate over every element of hash                | (maphash myfun myHashtable)           |
+    |          |                        |                                                   |                                       |
+    |          |                        |                                                   |                                       |
+    | list     | car                    | Return the first element                          | (car (list 1 2 3))                    |
+    |          | nth                    | Return the nth element                            | (nth 2 (list 1 2 3 4))                |
+    |          |                        |                                                   |                                       |
+    |          | cdr                    | Return the list without first element             | (cdr (list 1 2 3))                    |
+    |          | nthcdr                 | Return the list without first n element           | (nthcdr 2 (list 1 2 3 4))             |
+    |          | last                   | Return the last element as list                   | (last (list 1 2 3))                   |
+    |          | butlast                | Return the list without last n element            | (butlast (list 1 2 3) 1)              |
+    |          |                        |                                                   |                                       |
+    |          | nbutlast               | Return the modified list without last n element   |                                       |
+    |          |                        |                                                   |                                       |
+    |          | cons                   | Returns a list with (car cdr)                     | (cons car cdr)                        |
+    |          | append                 | Append list                                       |                                       |
+    |          |                        |                                                   |                                       |
+    |          | push                   | Prepends element to list. Modifies list           |                                       |
+    |          | pop                    | Removes element at front from list. Modifies list |                                       |
+    |          | setcar                 | Replaces first element. Modifies list             |                                       |
+    |          | setcdr                 | Replaces all but first element. Modifies list     |                                       |
+    |          |                        |                                                   |                                       |
+    | Cursor   | point                  | Gets the current cursor position                  | (point)                               |
+    |          | region-beginning       | Gets the beginning of the region                  | (region-beginning)                    |
+    |          | region-end             | Gets the end of the region                        | (region-end)                          |
+    |          | point-min              | Gets the position of beginning of buffer          | (point-min) useful when narrow region |
+    |          | point-max              | Gets the position of end of buffer                | (point-max)                           |
+    |          | goto-char              |                                                   |                                       |
+    |          | forward-char           |                                                   |                                       |
+    |          | backward-char          |                                                   |                                       |
+    |          | skip-chars-forward     |                                                   |                                       |
+    |          | skip-chars-backward    |                                                   |                                       |
+    |          | search-forward         |                                                   |                                       |
+    |          | search-backward        |                                                   |                                       |
+    |          | search-forward-regexp  |                                                   |                                       |
+    |          | search-backward-regexp |                                                   |                                       |
+    |          | beginning-of-line      |                                                   |                                       |
+    |          | end-of-line            |                                                   |                                       |
+    |          | thing-at-point         |                                                   |                                       |
+    |          |                        |                                                   |                                       |
+    | Editing  | insert                 |                                                   |                                       |
+    |          | insert-file-contents   |                                                   |                                       |
+    |          | delete-char            |                                                   |                                       |
+    |          | delete-region          |                                                   |                                       |
+    |          | erase-buffer           |                                                   |                                       |
+    |          |                        |                                                   |                                       |
+* Tmux
+  | command | action                         |
+  |---------+--------------------------------|
+  | C-a /   | regular expression search      |
+  | C-a C-f | Search for file name with path |
+  | C-a C-u | Search for url                 |
+  | C-a M-i | search ip address              |
+  | C-a M-h | Search sha1 hash               |
+  | C-a C-g | git status files               |
+  | C-a C-d | search for number              |
+  |         |                                |
+* Surfing Keys
+  | Key | Action         | Notes |
+  |-----+----------------+-------|
+  | ?   | Help           |       |
+  | gu  | Go up one url  |       |
+  | gU  | Go to root url |       |
+  | >>  | Move tab right |       |
+  | <<  | Move tab left  |       |
+  |     |                |       |

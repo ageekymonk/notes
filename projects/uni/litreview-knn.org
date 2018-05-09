@@ -1,0 +1,66 @@
+* Introduction
+  KNN is one of the most simplest and elegant classification or regression algorithm which works remarkably well in practice. It is a
+non parametric instance based Learning. It is also an lazy learning algorithm.
+It is classified as one of the top 10 machine learning algorithm [[http://www.cs.umd.edu/~samir/498/10Algorithms-08.pdf]]
+It finds k similar points among the given dataset. KNN Join finds the K similar vectors in dataset S for every point in dataset R.
+Nearest neighbours are calculated by measuring the distance between points. If the dataset R and S is large, calculating the K Nearest neighbour
+becomes very expensive. Many research has been done to aleviate the problem.
+
+** KNN Join
+
+   Accuracy is the first and foremost factor in KNN Join. Researches has been done on both accurate and approximate algorithms.
+
+There are two main approaches to deal with KNN Join.
+1. Partition based
+2. Index based
+
+   In Partition based approach the data set is partitioned into smaller disjoint subset
+
+   In Indexed based approach indexes are being created for the entire dataset
+
+** Approximate KNN Join
+
+** Accurate KNN Join
+
+** Large dimensions
+
+
+** Large datasets
+
+
+** Distributed Algorithm
+   Map Reduce and Spark
+
+
+** Combination of Index and Partition
+
+
+** Conclusion
+
+
+** Points to include
+   - Curse of Dimensionality
+   - Storage Limitations
+   - Computational Limitations
+   - Some of the algorithms are designed for Relational databases
+   - Incremental Updates
+   - KNN Classifiers are Lazy Learners
+   -
+
+
+** References
+   1. Top 10 algorithms in data mining Xindong Wu, Vipin Kumar, Et al Springer-Verlag London Limited 2007
+   2. iDistance: An Adaptive B+-Tree Based Indexing Method for Nearest Neighbor Search
+      - Accurate
+      - Index based but the dataset is partitioned into disjoint sets
+      - Centralised Algorithm
+      - Partitions data using KMeans for creating the index.
+   3. Efficient index-based KNN join processing for high-dimensional data
+      - Accurate
+
+
+** Study Iteration
+*** DONE Iter 1
+    CLOSED: [2015-08-30 Sun 08:11] DEADLINE: <2015-08-30 Sun 08:10> SCHEDULED: <2015-08-30 Sun 07:45>
+*** DONE Iter 2
+    CLOSED: [2015-08-30 Sun 08:49] DEADLINE: <2015-08-30 Sun 08:45> SCHEDULED: <2015-08-30 Sun 08:20>

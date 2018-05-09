@@ -1,0 +1,29 @@
+* Oxygen
+** Desktop App
+*** Requirements
+    I wanted to create a desktop app mainly because many will not be using emacs.
+*** Install
+    * Started to use electron as a base. It is proven and i have used it before. So will clone from https://github.com/jogleasonjr/electron-react-webpack-quick-start
+    * Wanted to use the module system. Have chosen Webpack. npm install webpack -g
+    * Planning to use JSX and ES2015 for easier code readability.
+    * This will be a react application. npm install --save react react-dom babel-preset-react babel-preset-es2015
+    * Semantic UI had a good visual appeal. So using Semantic UI for the Front end.
+    *
+** Other Libraries
+   1. immutable-js
+      Immutable datastructures
+   2. bluebird
+      Library for promises
+   3. lru-cache
+      Storing data in cache
+   4. async-cache
+      Storing async data in cache
+   5. expressjs
+      web framework for nodejs
+   6. passportjs
+      Simple, unobtrusive authentication for Node.js + express js
+   7. superagent
+      Lightweight AJAX Api
+   8. deep-freeze
+      To find whether an object is immutable and prevent accidental mutations
+   9.

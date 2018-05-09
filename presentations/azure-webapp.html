@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Azure</title>
+<meta name="author" content="(Ramz)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/css/reveal.css"/>
+
+<link rel="stylesheet" href="file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/css/theme/night.css" id="theme"/>
+
+<link rel="stylesheet" href="file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/lib/css/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">Azure</h1><h2 class="author">Ramz</h2><p class="date">Created: 2016-11-18 Fri 16:49</p>
+</section>
+<section id="table-of-contents">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#/slide-org2d3e0c4">Azure</a>
+<ul>
+<li><a href="#/slide-org0ae82e5">Understanding the Jargons</a></li>
+</ul>
+</li>
+<li><a href="#/slide-org79ed7fb">Azure Networking</a>
+<ul>
+<li><a href="#/slide-orga10e18f">Network Security Group</a>
+<ul>
+<li><a href="#/slide-orgf318b54">Overview</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#/slide-orgdb567d3">Azure Storage</a>
+<ul>
+<li><a href="#/slide-orgf8287b6">Understanding the Jargons</a></li>
+<li><a href="#/slide-org76afaa4">Types of storage account</a></li>
+<li><a href="#/slide-orgfb5e7eb">Types of storage Services</a></li>
+<li><a href="#/slide-org9bca737">Blob Storage</a></li>
+<li><a href="#/slide-orgb69f27e">Table Storage</a></li>
+<li><a href="#/slide-orgb992098">Limits</a></li>
+</ul>
+</li>
+<li><a href="#/slide-org1a53178">Azure Webapp</a>
+<ul>
+<li><a href="#/slide-org5fabdad">Understanding the Jargons</a></li>
+<li><a href="#/slide-org07debae">What is it ?</a></li>
+<li><a href="#/slide-org1d51798">how do i create one ?</a></li>
+<li><a href="#/slide-org98aa1d0">Deployment Methods</a></li>
+<li><a href="#/slide-org6493a11">How do i debug ?</a></li>
+<li><a href="#/slide-orged120b4">Visual Studio</a></li>
+<li><a href="#/slide-org929d8f6">kudu</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<section>
+<section id="slide-org2d3e0c4">
+<h2 id="org2d3e0c4">Azure</h2>
+<div class="outline-text-2" id="text-org2d3e0c4">
+</div></section>
+<section id="slide-org0ae82e5">
+<h3 id="org0ae82e5">Understanding the Jargons</h3>
+<ol>
+<li>Account
+<ul>
+<li>Either an Microsoft Account, work/personal email, AD Account</li>
+
+</ul></li>
+<li>Subscription
+<ul>
+<li>Billing unit within an account</li>
+
+</ul></li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-org79ed7fb">
+<h2 id="org79ed7fb">Azure Networking</h2>
+<div class="outline-text-2" id="text-org79ed7fb">
+</div></section>
+<section id="slide-orga10e18f">
+<h3 id="orga10e18f">Network Security Group</h3>
+<div class="outline-text-3" id="text-orga10e18f">
+</div></section>
+<section id="slide-orgf318b54">
+<h4 id="orgf318b54">Overview</h4>
+<ul>
+<li>Bunch of inbound and outbound rules to restrict traffic to your VMs</li>
+<li><p>
+Can be applied to Subnet or to Individual VMs
+</p>
+<aside class="notes">
+<p>
+In AWS we use NACL at subnet level and Security Group at VM Level
+Security Group in AWS is stateful and NACL is stateless
+</p>
+
+</aside></li>
+<li>Azure NSG is stateless</li>
+<li>NSG is limited to region. NSG can only apply to resources within the region</li>
+
+</ul>
+</section>
+<section>
+<ul>
+<li>Default Rules:
+<ol>
+<li>Allow all traffic from / to any node in your virtual network</li>
+<li>Allow all traffic from / to the loadbalancer (including internet)</li>
+<li>Allow only outbound traffic to the internet and block the inbound from internet</li>
+
+</ol></li>
+<li>Special Rules:
+<ol>
+<li>Key management services run in port 1688. Donot block outbound traffic on 1688</li>
+<li>DNS, DHCP and healthcheck are provided through virtualized host ip 168.63.129.16. Donot block this.</li>
+
+</ol></li>
+<li>Tags:
+<ul>
+<li>VIRTUAL<sub>NETWORK</sub></li>
+<li>AZURE<sub>LOADBALANCER</sub></li>
+<li>INTERNET</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgdb567d3">
+<h2 id="orgdb567d3">Azure Storage</h2>
+<div class="outline-text-2" id="text-orgdb567d3">
+</div></section>
+<section id="slide-orgf8287b6">
+<h3 id="orgf8287b6">Understanding the Jargons</h3>
+<ol>
+<li>Storage Account
+<ul>
+<li>Namespace to store your data</li>
+
+</ul></li>
+
+</ol>
+</section>
+<section id="slide-org76afaa4">
+<h3 id="org76afaa4">Types of storage account</h3>
+</section>
+<section id="slide-orgfb5e7eb">
+<h3 id="orgfb5e7eb">Types of storage Services</h3>
+<ol>
+<li>File</li>
+<li>Table</li>
+<li>Queue</li>
+<li>Blob
+<ul>
+<li>Any kind of file</li>
+
+</ul></li>
+
+</ol>
+</section>
+<section id="slide-org9bca737">
+<h3 id="org9bca737">Blob Storage</h3>
+
+<div class="figure">
+<p><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/BlogFileStorage/blogs_msdn/jnak/WindowsLiveWriter/WalkthroughSimpleBlobStorageSample_1000E/image_thumb_8.png" alt="image_thumb_8.png" />
+</p>
+</div>
+<aside class="notes">
+<p>
+Pseudo Foldering: Add forward slash to the Blobs and the application will consider it as folder
+</p>
+
+</aside>
+
+</section>
+<section>
+<p>
+Types of Blobs
+</p>
+<ol>
+<li>Block
+<ul>
+<li>Used for storing files</li>
+<li>Upto 200 GB</li>
+<li>Uploaded as 64 MB blocks</li>
+
+</ul></li>
+<li>Page
+<ul>
+<li>Used for random access files</li>
+<li>Upto 1 TB</li>
+<li>Read in 512 Byte Pages</li>
+
+</ul></li>
+<li>Append
+<ul>
+<li>Supports appending data to blobs</li>
+
+</ul></li>
+
+</ol>
+</section>
+<section id="slide-orgb69f27e">
+<h3 id="orgb69f27e">Table Storage</h3>
+
+</section>
+<section id="slide-orgb992098">
+<h3 id="orgb992098">Limits</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Subscription Limits</th>
+<th scope="col" class="org-left">Max Limit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Total storage per storage account</td>
+<td class="org-left">500 TB</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+<section id="slide-org1a53178">
+<h2 id="org1a53178">Azure Webapp</h2>
+<div class="outline-text-2" id="text-org1a53178">
+</div></section>
+<section id="slide-org5fabdad">
+<h3 id="org5fabdad">Understanding the Jargons</h3>
+<ol>
+<li>Service Plan</li>
+
+</ol>
+</section>
+<section id="slide-org07debae">
+<h3 id="org07debae">What is it ?</h3>
+<p>
+In AWS world it is Elastic Beanstalk
+</p>
+<aside class="notes">
+<p>
+DEMO
+</p>
+
+</aside>
+
+</section>
+<section id="slide-org1d51798">
+<h3 id="org1d51798">how do i create one ?</h3>
+<ol>
+<li>Visual Studio</li>
+<li>Management Portal</li>
+<li>Powershell</li>
+<li>xpat-cli</li>
+
+</ol>
+
+</section>
+<section id="slide-org98aa1d0">
+<h3 id="org98aa1d0">Deployment Methods</h3>
+</section>
+<section id="slide-org6493a11">
+<h3 id="org6493a11">How do i debug ?</h3>
+<ol>
+<li>Azure Application Insights</li>
+<li>Console</li>
+<li>Kudu</li>
+<li>Visual Studio</li>
+
+</ol>
+</section>
+<section id="slide-orged120b4">
+<h3 id="orged120b4">Visual Studio</h3>
+<aside class="notes">
+<ol>
+<li></li>
+
+</ol>
+
+</aside>
+</section>
+<section id="slide-org929d8f6">
+<h3 id="org929d8f6">kudu</h3>
+<aside class="notes">
+<ol>
+<li>Debug Console</li>
+<li>Site Extensions</li>
+
+</ol>
+
+</aside>
+</section>
+</section>
+</div>
+</div>
+<script src="file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/lib/js/head.min.js"></script>
+<script src="file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+ { src: 'file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

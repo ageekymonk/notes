@@ -1,0 +1,28 @@
+* Desktop
+| Component     |  Price | Price AUD | Options                                           | Country |
+|---------------+--------+-----------+---------------------------------------------------+---------|
+| SSD 512 GB    | 237.77 |  316.2341 | [[https://www.amazon.com/dp/B07836C6YV/ref=dp_cerb_3][Samsung 860 PRO 512GB 2.5 Inch SATA III]]           | US      |
+|               | 140.00 |     186.2 | [[https://www.amazon.com/Samsung-500GB-Internal-MZ-76E500B-AM/dp/B0781Z7Y3S/ref=sr_1_1?s=pc&ie=UTF8&qid=1525353808&sr=1-1&keywords=samsung+860+evo][Samsung 860 EVO 500GB 2.5 Inch SATA III]]           | US      |
+|               |        |        0. |                                                   |         |
+| HDD Drive 2TB |     70 |      93.1 | [[https://www.amazon.com/Seagate-BarraCuda-Cache-Desktop-ST2000DM006/dp/B01IEKG402?tag=cupcre06-20][Seagate 2TB BarraCuda SATA 6 Gb/s 7200 RPM]]        |         |
+|               |        |        0. |                                                   |         |
+| RAM 32 GB     |    385 |    512.05 | [[https://www.amazon.com/Corsair-Vengeance-3000MHz-Desktop-Memory/dp/B014UYPEXE?tag=cupcre06-20&th=1][Corsair LPX 32GB DRAM 3000MHz C15]]                 |         |
+|               |        |        0. |                                                   |         |
+| Motherboard   |    255 |    339.15 | [[https://www.amazon.com/MSI-Arsenal-X299-Motherboard-TOMAHAWK/dp/B071WMLYCB?tag=cupcre06-20][X299 TOMAHAWK]]                                     |         |
+|               |        |        0. |                                                   |         |
+|               |        |        0. |                                                   |         |
+| Processor     |    375 |    498.75 | [[https://www.amazon.com/Intel-BX80677I77740X-Core-i7-7740X-Processor/dp/B071H1B3Z1?tag=cupcre06-20&th=1][i7-7800X]]                                          | US      |
+|               |    475 |    631.75 | [[https://www.amazon.com/Intel-BX80677I77740X-Core-i7-7740X-Processor/dp/B072NF4BY3?tag=cupcre06-20&th=1][i7-7820X]]                                          | US      |
+|               |        |        0. |                                                   |         |
+| PSU           |    120 |     159.6 | [[https://www.amazon.com/EVGA-SuperNOVA-Modular-Warranty-220-G2-0650-Y1/dp/B0106RDIN2?tag=cupcre06-20][EVGA Supernova 650 G2]]                             | US      |
+|               |        |        0. |                                                   |         |
+| CPU Cooler    |     40 |      53.2 | [[https://www.amazon.com/Cooler-Master-RR-212E-20PK-R2-Direct-Contact/dp/B005O65JXI?tag=cupcre06-20][Cooler Master Hyper RR-212E-20PK-R2]]               | US      |
+|               |        |        0. |                                                   |         |
+| DVD Drive     |     30 |      39.9 | [[https://www.amazon.com/Asus-Serial-ATA-Internal-Optical-DRW-24B1ST/dp/B0033Z2BAQ?tag=cupcre06-20][Asus 24x DVD-RW Serial-ATA]]                        | US      |
+|               |        |        0. |                                                   |         |
+| Case          |    220 |     292.6 | [[https://www.amazon.com/Corsair-Carbide-Quiet-Compact-Mid-Tower/dp/B01LE111X8?tag=cupcre06-20][Corsair Carbide Quiet 400Q Compact Mid-Tower Case]] | US      |
+| Lan           |        |        0. |                                                   |         |
+| Wifi          |        |        0. |                                                   |         |
+|               |        |        0. |                                                   |         |
+|               |        | 3122.5341 |                                                   |         |
+#+TBLFM: $3=$2*1.33::@25$3=vsum(@2$3..@24$3)

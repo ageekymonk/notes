@@ -1,0 +1,249 @@
+* Thesis
+** Efficient Parallel kNN Joins for Large Data in MapReduce
+** Spark
+
+    The original spark.mllib API is the primary API.
+    The “Pipelines” spark.ml API is a higher-level API for constructing ML workflows.
+** Voronoi Diagram
+   - Each vertex is of degree 3
+   - N sites => 2N-5 Vertex => 3N-6 Edges
+   - Dual Graph forms a special kind of triangulation called Delaunay Triangulation
+   - Sites on unbounded voronoi cells correspond to vertices on the convex hull
+   - Fortune Algorithm
+     - O(n log n) time
+     - O(n) space
+     -
+   - Implementation
+     - Create n random RDD
+     - Calculate the max distance for each RDD
+     - Get the RDD with max distance
+** Research
+   http://rp-www.cs.usyd.edu.au/~info5993/index.php
+
+   core conference portal
+   http://103.1.187.206/core
+
+** Research Groups
+
+      | Research Groups                                                                                   | Notes                                    |
+      |---------------------------------------------------------------------------------------------------+------------------------------------------|
+      | Computational Data Analytics Group                                                                | http://cda.ornl.gov/                     |
+      | Data Science and Technology - a part of the Computational Research Division (CRD) at Berkeley Lab | http://dst.lbl.gov/                      |
+      | Institute of Data Analysis and Visualization                                                      | http://graphics.cs.ucdavis.edu           |
+      | IBM Watson Research Center                                                                        | http://www.research.ibm.com/labs/watson/ |
+      | Bell Labs                                                                                         | http://www.bell-labs.com                 |
+      | Data Analytics Group - Advanced Computing Research Centre (ACRC)                                  | http://nugget.unisa.edu.au/              |
+      | Cambridge big data                                                                                | http://www.bigdata.cam.ac.uk/            |
+
+** Books & Articles
+   | Book                                                                          | Author                                                       |
+   |-------------------------------------------------------------------------------+--------------------------------------------------------------|
+   | The Signal and the Noise: The Art and Science of Prediction                   | Nate Silver                                                  |
+   | Machine Learning: An Algorithmic Perspective                                  | Stephen Marsland                                             |
+   | Gorder: an efficient method for KNN join processing                           | Chenyi Xia, Hongjun Lu, Beng Chin Ooi, Jing Hu               |
+   | Efficient index-based KNN join processing for high-dimensional data           | Cui Yu, Bin Cui, Shuguang Wang, Jianwen Su                   |
+   | Efficient parallel kNN joins for large data in MapReduce                      | Chi Zhang, Feifei Li, Jeffrey Jestes                         |
+   | Nearest group queries                                                         | Dongxiang Zhang, Chee-Yong Chan, Kian-Lee Tan                |
+   | Parallel similarity self-join for high-dimensional vector data with MapReduce | Sergej Fries, Brigitte Boden, Grzegorz Stepien, Thomas Seidl |
+   | BORDER: efficient computation of boundary points                              | Chenyi Xia                                                   |
+   | High-dimensional kNN joins with incremental updates                           | Cui Yu, Rui Zhang, Yaochun Huang, Hui Xiong                  |
+   | Algorithm for Processing k-Nearest Join Based on R-Tree in MapReduce          | LIU Yi,JING Ning,CHEN Luo,XIONG Wei                          |
+   | Indexing the distance: An efficient method to knn processing                  | C Yu, BC Ooi, KL Tan, HV Jagadish                            |
+   | Continuous KNN Join Processing for Real-Time Recommendation                   | Chong Yang                                                   |
+   | Improvisation to the R*-Tree kNN Join Principles in Distributed Environment   | Xavier, P; Francis, F Sagayaraj                              |
+   | Distributed online similarity search in high dimensional space                | Baohui Li                                                    |
+   | DSH: data sensitive hashing for high-dimensional k-nnsearch                   | J Gao, HV Jagadish, W Lu, BC Ooi                             |
+   | Rankreduce  -  processing  k-nearest neighbor queries on top of mapreduce     | A. Stupar, S. Michel, and R. Schenk                          |
+   | Selective Hashing: Closing the Gap between Radius Search and k-NN Search      | J Gao, HV Jagadish, BC Ooi, S Wang                           |
+   |                                                                               |                                                              |
+
+** Conferences
+
+   | Conferences                                                         | Ranking |
+   |---------------------------------------------------------------------+---------|
+   | International Conference on Data Engineering                        | A*      |
+   | IEEE International Conference on Data Mining                        | A*      |
+   | ACM International Conference on Knowledge Discovery and Data Mining | A*      |
+   | ACM International Conference on Web Search and Data Mining          | A*      |
+   | International Conference on Very Large Databases                    | A*      |
+   | Pacific-Asia Conference on Knowledge Discovery and Data Mining      | A       |
+   | SIAM International Conference on Data Mining                        | A       |
+   | Data Warehousing and Knowledge Discovery                            | B       |
+   | Educational Data Mining                                             | B       |
+   | International Conference on Advanced Data Mining and Applications   | B       |
+
+** Commands
+
+   sh ./sbin/start-master.sh
+   ./bin/spark-class org.apache.spark.deploy.worker.Worker  spark://IIT-LAPTOP-169:7077 -c 1 -m 2048M
+
+   ./ec2/spark-ec2 --spark-version=c980e20cf17f2980c564beab9b241022872e29ea --spark-git-repo=https://github.com/ageekymonk/spark --key-pair=spark --identity-file=/Users/ramz.sivagurunathan/personal/passwords/spark.pem --region=ap-southeast-2 launch spark-cluster
+
+   export SPARK_PREPEND_CLASSES=true
+
+   ./bin/spark-submit --master mesos://172.31.3.8:5050 --class org.apache.spark.examples.knn.knn examples/target/scala-2.10/spark-examples_2.10-1.5.0-SNAPSHOT.jar ../../dataset/forest/covtype_100k.data 3 1000
+
+** Results
+
+   With 500k Data with 10 nodes 500 GB RAM
+
+*** Varying Dimensions - Optimized
+   | Dataset | size | Dimensions | Pivots | k | Time(mins) | Shuffle Read | shuffle Write | RDD Size |
+   |---------+------+------------+--------+---+------------+--------------+---------------+----------|
+   | Higgs   | 500k |          2 |    200 | 3 |        1.0 | 40 MB        | 70 MB         | 300 MB   |
+   | Higgs   | 500k |          4 |    200 | 3 |        1.2 | 110 MB       | 200 MB        | 1026 MB  |
+   | Higgs   | 500k |          6 |    200 | 3 |        1.7 | 370 MB       | 600 MB        | 960 MB   |
+   | Higgs   | 500k |          8 |    200 | 3 |        2.3 | 1300 MB      | 2000 MB       | 900 MB   |
+   | Higgs   | 500k |         10 |    200 | 3 |        3.8 | 1800 MB      | 2800 MB       | 1180 MB  |
+   | Higgs   | 500k |         12 |    200 | 3 |        5.5 | 4000 MB      | 7300 MB       | 950 MB   |
+   | Higgs   | 500k |         14 |    200 | 3 |        6.4 | 5000 MB      | 9300 MB       | 950 MB   |
+   | Higgs   | 500k |         16 |    200 | 3 |       10.0 | 4000 MB      | 7300 MB       | 950 MB   |
+   | Higgs   | 500k |         18 |    200 | 3 |       12.0 | 4000 MB      | 7300 MB       | 950 MB   |
+   | Higgs   | 500k |         20 |    200 | 3 |       14.0 | 4000 MB      | 7300 MB       | 950 MB   |
+   | Higgs   | 500k |         22 |    200 | 3 |       15.0 | 4000 MB      | 7300 MB       | 950 MB   |
+   | Higgs   | 500k |         24 |    200 | 3 |       16.0 | 4000 MB      | 7300 MB       | 950 MB   |
+   | Higgs   | 500k |         26 |    200 | 3 |       17.0 | 4000 MB      | 7300 MB       | 950 MB   |
+   | Higgs   | 500k |         28 |    200 | 3 |       20.0 | 20000 MB     | 36000 MB      | 950 MB   |
+   |         |      |            |        |   |            |              |               |          |
+*** Varying Dimensions - Bruteforce
+   | Dataset | size | Dimensions | Pivots | k | Time | Shuffle Read | shuffle Write | RDD    |
+   |---------+------+------------+--------+---+------+--------------+---------------+--------|
+   | Higgs   | 500k |          2 |    200 | 3 |   45 | 1600 MB      | 1800 MB       | 140 MB |
+   | Higgs   | 500k |          4 |    200 | 3 |   45 | 1900 MB      | 2100 MB       | 160 MB |
+   | Higgs   | 500k |          6 |    200 | 3 |   45 | 2100 MB      | 2400 MB       | 180 MB |
+   | Higgs   | 500k |          8 |    200 | 3 |   45 | 2400 MB      | 2700 MB       | 200 MB |
+   | Higgs   | 500k |         10 |    200 | 3 |   45 | 2500 MB      | 2900 MB       | 230 MB |
+   | Higgs   | 500k |         12 |    200 | 3 |   45 | 2800 MB      | 3200 MB       | 250 MB |
+   |         |      |            |        |   |      |              |               |        |
+*** Varying Dataset size - Optimized
+   | Dataset | size   | Dimensions | Pivots | k | Time(mins) | Shuffle Read | shuffle Write | RDD Size |
+   |---------+--------+------------+--------+---+------------+--------------+---------------+----------|
+   | Higgs   | 500k   |          6 |    200 | 3 |        1.8 | 350 MB       | 700 MB        | 400MB    |
+   | Higgs   | 1000k  |          6 |    400 | 3 |        2.2 | 800 MB       | 1450 MB       | 800 MB   |
+   | Higgs   | 1500k  |          6 |    600 | 3 |        2.8 | 1350 MB      | 2300 MB       | 1200 MB  |
+   | Higgs   | 2000K  |          6 |    800 | 3 |        4.1 | 1800 MB      | 3100 MB       | 1600 MB  |
+   | Higgs   | 3000K  |          6 |    800 | 3 |        4.5 | 4500 MB      | 5600 MB       | 2400 MB  |
+   | Higgs   | 4000K  |          6 |   2000 | 3 |        6.2 | 6300 MB      | 7800 MB       | 3200 MB  |
+   | Higgs   | 5000K  |          6 |   2500 | 3 |        9.3 | 8400 MB      | 10100 MB      | 3800 MB  |
+   | Higgs   | 7000K  |          6 |   3500 | 3 |       15.0 | 12000 MB     | 14800 MB      | 5400 MB  |
+   | Higgs   | 9000K  |          6 |   4500 | 3 |       20.0 | 16000 MB     | 20000 MB      | 7000 MB  |
+   | Higgs   | 11000K |          6 |   5500 | 3 |       26.0 | 20000 MB     | 24000 MB      | 8600 MB  |
+
+*** Varying Dataset size - Bruteforce
+   | Dataset | size  | Dimensions | Pivots | k | Time(mins) | Shuffle Read | shuffle Write | RDD Size |
+   |---------+-------+------------+--------+---+------------+--------------+---------------+----------|
+   | Higgs   | 500k  |          6 |    200 | 3 | 45 minutes | 2.1G         | 2.4 GB        | 180 MB   |
+   | Higgs   | 1000k |          6 |    400 | 3 | 3.9 hours  | 10G          | 12G           | 600 MB   |
+
+*** Varying Num Neighbours - Optimized
+   | Dataset | size | Dimensions | Pivots |  k | Time        | shuffle Read | Shuffle Write | RDD Size |
+   |---------+------+------------+--------+----+-------------+--------------+---------------+----------|
+   | Higgs   | 500k |          6 |    200 |  3 | 2.1 minutes | 350 MB       | 700 MB        | 400 MB   |
+   | Higgs   | 500k |          6 |    200 |  5 | 2.2 minutes | 840 MB       | 1100 MB       | 450 MB   |
+   | Higgs   | 500k |          6 |    200 |  7 | 2.9 minutes | 1000 MB      | 1800 MB       | 470 MB   |
+   | Higgs   | 500k |          6 |    200 |  9 | 2.9 minutes | 1200 MB      | 1900 MB       | 520 MB   |
+   | Higgs   | 500k |          6 |    200 | 11 | 2.9 minutes | 1600 MB      | 2400 MB       | 550 MB   |
+   | Higgs   | 500k |          6 |    200 | 13 | 2.9 minutes | 2000 MB      | 2800 MB       | 620 MB   |
+   | Higgs   | 500k |          6 |    200 | 15 | 3.4 minutes | 2600 MB      | 3500 MB       | 600 MB   |
+   |         |      |            |        |    |             |              |               |          |
+
+*** Varying Num Neighbours - Bruteforce
+   | Dataset | size | Dimensions | Pivots |  k | Time       | shuffle Read | Shuffle Write | RDD Size |
+   |---------+------+------------+--------+----+------------+--------------+---------------+----------|
+   | Higgs   | 500k |          6 |  200   |  3 | 45 minutes | 2100 MB      | 2400 MB       | 180 MB   |
+   | Higgs   | 500k |          6 |  200   |  5 | 45 minutes | 2600 MB      | 3000 MB       | 180 MB   |
+   | Higgs   | 500k |          6 |  200   |  7 | 45 minutes | 3200 MB      | 3600 MB       | 180 MB   |
+   | Higgs   | 500k |          6 |  200   |  9 | 45 minutes | 3700 MB      | 4100 MB       | 180 MB   |
+   | Higgs   | 500k |          6 |  200   | 11 | 45 minutes | 4200 MB      | 4700 MB       | 180 MB   |
+   | Higgs   | 500k |          6 |  200   | 13 | 45 minutes | 4600 MB      | 5300 MB       | 180 MB   |
+   | Higgs   | 500k |          6 |  200   | 15 | 45 minutes | 5300 MB      | 5900 MB       | 180 MB   |
+   |         |      |            |        |    |            |              |               |          |
+
+*** Varying Num Pivots - Optimized
+   | Dataset | size  | Dimensions | Pivots | k | Time         | shuffle Read | Shuffle Write | RDD Size |
+   |---------+-------+------------+--------+---+--------------+--------------+---------------+----------|
+   | Higgs   | 500k  |          6 |    100 | 3 | 2.8 minutes  | 250 MB       | 500 MB        | 412 MB   |
+   | Higgs   | 500k  |          6 |    200 | 3 | 1.8  minutes | 350 MB       | 700 MB        | 400 MB   |
+   | Higgs   | 500k  |          6 |    300 | 3 | 1.3 minutes  | 500 MB       | 800 MB        | 400 MB   |
+   | Higgs   | 500k  |          6 |    400 | 3 | 1.3 minutes  | 660 MB       | 1000 MB       | 400 MB   |
+   | Higgs   | 500k  |          6 |    500 | 3 | 1.3 minutes  | 700 MB       | 1100 MB       | 400 MB   |
+   | Higgs   | 500k  |          6 |    600 | 3 | 1.4 minutes  | 800 MB       | 1400 MB       | 400 MB   |
+   | Higgs   | 500k  |          6 |    700 | 3 | 1.5 minutes  | 900 MB       | 1500 MB       | 400 MB   |
+   | Higgs   | 500k  |          6 |    800 | 3 | 1.5 minutes  | 1000 MB      | 1600 MB       | 400 MB   |
+   | Higgs   | 500k  |          6 |    900 | 3 | 1.6 minutes  | 1100 MB      | 1600 MB       | 400 MB   |
+   | Higgs   | 500k  |          6 |   1000 | 3 | 1.7 minutes  | 1500 MB      | 1800 MB       | 400 MB   |
+   | Higgs   | 7000k |          6 |   2000 | 3 | 12 minutes   | 9000 MB      | 10500 MB      | 5.6 GB   |
+   | Higgs   | 7000k |          6 |   2500 | 3 | 13 minutes   | 10000 MB     | 12500 MB      | 5.4 GB   |
+   | Higgs   | 7000k |          6 |   3000 | 3 | 13 minutes   | 10000 MB     | 13500 MB      | 5.4 GB   |
+   | Higgs   | 7000k |          6 |   4000 | 3 | 16 minutes   | 12500 MB     | 16000 MB      | 5.6 GB   |
+   | Higgs   | 7000k |          6 |   4500 | 3 | 17 minutes   | 14200 MB     | 17500 MB      | 5.6 GB   |
+   | Higgs   | 7000k |          6 |   5000 | 3 | 18 minutes   | 15000 MB     | 18000 MB      | 5.6 GB   |
+   | Higgs   | 7000k |          6 |   5500 | 3 | 19 minutes   | 16000 MB     | 19000 MB      | 5.6 GB   |
+   | Higgs   | 7000k |          6 |   6000 | 3 | 22 minutes   | 17000 MB     | 20000 MB      | 5.6 GB   |
+
+*** Varying Datset - Original
+   | Dataset | size | Dimensions | Pivots | k | Time       | shuffle Read | Shuffle Write | RDD Size |
+   |---------+------+------------+--------+---+------------+--------------+---------------+----------|
+   | Higgs   | 100k |         10 |    200 | 3 | 29 minutes | 800 MB       | 1500 MB       | 412 MB   |
+   | Higgs   | 100k |         10 |    200 | 3 |            |              |               |          |
+
+*** Varying nodes - Optimized
+   | Dataset | Nodes | size | Dimensions | Pivots | k | Time        | shuffle Read | Shuffle Write | RDD Size |
+   |---------+-------+------+------------+--------+---+-------------+--------------+---------------+----------|
+   | Higgs   |     1 | 2M   |          6 |    200 | 3 | 23 minutes  | 0 MB         | 3600 MB       | 1600 MB  |
+   | Higgs   |     2 | 2M   |          6 |    200 | 3 | 12 minutes  | 1600 MB      | 3600 MB       | 1600 MB  |
+   | Higgs   |     3 | 2M   |          6 |    200 | 3 | 8.3 minutes | 2100 MB      | 3600 MB       | 1600 MB  |
+   | Higgs   |     4 | 2M   |          6 |    200 | 3 | 6.6 minutes | 2450 MB      | 3600 MB       | 1600 MB  |
+   | Higgs   |     5 | 2M   |          6 |    200 | 3 | 5.2 minutes | 2700 MB      | 3600 MB       | 1600 MB  |
+   | Higgs   |     6 | 2M   |          6 |    200 | 3 | 4.4 minutes | 2800 MB      | 3600 MB       | 1600 MB  |
+   | Higgs   |     7 | 2M   |          6 |    200 | 3 | 3.9 minutes | 2900 MB      | 3600 MB       | 1600 MB  |
+   | Higgs   |     8 | 2M   |          6 |    200 | 3 | 3.6 minutes | 2900 MB      | 3600 MB       | 1600 MB  |
+   | Higgs   |     9 | 2M   |          6 |    200 | 3 | 3.4 minutes | 2900 MB      | 3600 MB       | 1600 MB  |
+   | Higgs   |    10 | 2M   |          6 |    200 | 3 | 3.2 minutes | 2900 MB      | 3600 MB       | 1600 MB  |
+   | Higgs   |       |      |            |        |   |             |              |               |          |
+
+** Literature Review
+*** Notes
+   1. No silver bullet
+   2. Curse of dimensionality
+   3. Indexing at higher dimension is equivalent to linear search
+   4. Distributed processing has not evovlved in machine learning.
+   5.
+*** Papers
+   1. Efficient Processing of k Nearest Neighbor Joins using MapReduce
+      1. Vornoi Based Partitioning
+      2. Steps
+         1. Preprocessing
+            - Pivot Selection
+              For n pivots => o(n^2) calculation for pivot selection
+            - How to parallelize it ?
+            - Can we optimize it ?
+            - Only approximate results are required.
+         2. Map Reduce 1
+            - Assign all data points in S to partition
+              - for N Pivots => Need to compare each points to N different pivots.
+              - That is if there are 1 Million Points then 1 Million * N different comparison.
+              - Can we optimize it ? iDistance
+            - Generates Summary Tables
+         3. Map Reduce 2
+            - Finds the Max and Min Bounds
+              - Max bounds requires O(N^2)
+                - Can we optimize it ?
+              - Min bounds requires O(N^2)
+                - Can we optimize it ?
+              - We can try to combine both max and min together and also we can parallelize it
+            - Replicates the data "x" times as one partition may depend upon nearby x partitions
+              - To reduce this we need higher number of pivots.
+   2. GORDER: An Efficient Method for KNN Join Processing
+   3. iDistance: An adaptive B + -tree based indexing method for nearest neighbor search
+   4.
+   5.
+
+** Today's Work
+   1. Result for all dimensions
+      -
+   2. Result for Random 500k with single node
+      - It is too slow
+   3. Update presentation
+   4. Update report
+   6.

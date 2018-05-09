@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Azure</title>
+<meta name="author" content="(Ramz)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/night.css" id="theme"/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/reveal.js/3.0.0/lib/css/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">Azure</h1><h2 class="author">Ramz</h2><p class="date">Created: 2016-11-22 Tue 12:09</p>
+</section>
+<section>
+<section id="slide-org4ed4215">
+<h2 id="org4ed4215">Azure</h2>
+<div class="outline-text-2" id="text-org4ed4215">
+</div></section>
+<section id="slide-orge6efafe">
+<h3 id="orge6efafe">Understanding the Jargons</h3>
+<ol>
+<li>Account
+<ul>
+<li>Either an Microsoft Account, work/personal email, AD Account</li>
+
+</ul></li>
+<li>Subscription
+<ul>
+<li>Billing unit within an account</li>
+
+</ul></li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-orgeffba70">
+<h2 id="orgeffba70">Azure Networking</h2>
+<div class="outline-text-2" id="text-orgeffba70">
+</div></section>
+<section id="slide-org000d850">
+<h3 id="org000d850">Network Security Group</h3>
+<div class="outline-text-3" id="text-org000d850">
+</div></section>
+<section id="slide-org6fce927">
+<h4 id="org6fce927">Overview</h4>
+<ul>
+<li>Bunch of inbound and outbound rules to restrict traffic to your VMs</li>
+<li><p>
+Can be applied to Subnet or to Individual VMs
+</p>
+<aside class="notes">
+<p>
+In AWS we use NACL at subnet level and Security Group at VM Level
+Security Group in AWS is stateful and NACL is stateless
+</p>
+
+</aside></li>
+<li>Azure NSG is stateless</li>
+<li>NSG is limited to region. NSG can only apply to resources within the region</li>
+
+</ul>
+</section>
+<section>
+<ul>
+<li>Default Rules:
+<ol>
+<li>Allow all traffic from / to any node in your virtual network</li>
+<li>Allow all traffic from / to the loadbalancer (including internet)</li>
+<li>Allow only outbound traffic to the internet and block the inbound from internet</li>
+
+</ol></li>
+<li>Special Rules:
+<ol>
+<li>Key management services run in port 1688. Donot block outbound traffic on 1688</li>
+<li>DNS, DHCP and healthcheck are provided through virtualized host ip 168.63.129.16. Donot block this.</li>
+
+</ol></li>
+<li>Tags:
+<ul>
+<li>VIRTUAL<sub>NETWORK</sub></li>
+<li>AZURE<sub>LOADBALANCER</sub></li>
+<li>INTERNET</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgc2fe106">
+<h2 id="orgc2fe106">Azure Storage</h2>
+<div class="outline-text-2" id="text-orgc2fe106">
+</div></section>
+<section id="slide-org4374ad5">
+<h3 id="org4374ad5">Understanding the Jargons</h3>
+<ol>
+<li>Storage Account
+<ul>
+<li>Namespace to store your data</li>
+
+</ul></li>
+
+</ol>
+</section>
+<section id="slide-org9dbeda7">
+<h3 id="org9dbeda7">Types of storage Services</h3>
+<ol>
+<li><a href="#/slide-org44afafa">File</a></li>
+<li><a href="#/slide-org373cfde">Table</a></li>
+<li><a href="#/slide-orga261239">Queue</a></li>
+<li><a href="#/slide-org6dde5b6">Blob</a></li>
+
+</ol>
+</section>
+<section id="slide-orga343858">
+<h3 id="orga343858">Storage Replication</h3>
+<ol>
+<li>Locally Redundant Storage (LRS)
+<ul>
+<li>Provides 3 replicas of the data within a region</li>
+<li>20 Gbps inbound 30 Gbps outbound</li>
+<li><p>
+Replicas will be in separate fault and upgrade domain
+</p>
+<aside class="notes">
+<p>
+The data within a region is updated synchronously
+</p>
+
+</aside></li>
+
+</ul></li>
+<li><p>
+Geo Redundant Storage (GRS)
+</p>
+<ul>
+<li>Total 6 replicas, three in local and three in other region</li>
+<li>Data is available on the remote region only when microsoft declares a disaster in the region</li>
+<li>Updates across regions are done asynchronously</li>
+<li>10 Gbps inbound 20 Gbps outbound</li>
+
+</ul>
+<aside class="notes">
+<p>
+The remote region is selected by azure
+</p>
+
+</aside></li>
+
+</ol>
+</section>
+<section>
+
+<p>
+Storage Replication&#x2026;
+</p>
+<ol>
+<li>Geo Redundancy with read only access
+<ul>
+<li>Can read data from remote region before microsoft declares disaster</li>
+
+</ul></li>
+<li>Premium Storage
+<ul>
+<li>This has to be done at creation time</li>
+<li>Only Local redundancy is supported</li>
+<li>Low latency high performance persistent SSD</li>
+<li>Used for VM Disks (page blobs)</li>
+
+</ul></li>
+<li>Zone Redundant Storage
+<ul>
+<li>Can store Block blobs.</li>
+<li>Replicated across 3 facilities in a region or across region if not available in a region</li>
+<li>Not supported for VMs</li>
+
+</ul></li>
+
+</ol>
+</section>
+<section id="slide-org6dde5b6">
+<h3 id="org6dde5b6">Blob Storage</h3>
+
+<div class="figure">
+<p><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/BlogFileStorage/blogs_msdn/jnak/WindowsLiveWriter/WalkthroughSimpleBlobStorageSample_1000E/image_thumb_8.png" alt="image_thumb_8.png" />
+</p>
+</div>
+<aside class="notes">
+<p>
+Blob =&gt; Binary Large Object
+Pseudo Foldering: Add forward slash to the Blobs and the application will consider it as folder
+</p>
+
+</aside>
+
+</section>
+<section>
+<p>
+Types of Blobs
+</p>
+<ol>
+<li>Block
+<ul>
+<li>Used for storing files</li>
+<li>Upto 200 GB</li>
+<li>Uploaded as 64 MB blocks</li>
+
+</ul></li>
+<li>Page
+<ul>
+<li>Used for random access files</li>
+<li>Upto 1 TB</li>
+<li>Read in 512 Byte Pages</li>
+
+</ul></li>
+<li>Append
+<ul>
+<li>Supports appending data to blobs</li>
+
+</ul></li>
+
+</ol>
+
+</section>
+<section>
+<p>
+Blob Access Permission
+</p>
+<ol>
+<li>Private
+<ul>
+<li>To access blobs inside container you need admin account rights / access key for storage account / SAS</li>
+
+</ul></li>
+<li>Blob
+<ul>
+<li>Allow anonymous download of blob using http/https url for the blob (Read only)</li>
+
+</ul></li>
+<li>Container
+<ul>
+<li><p>
+Allow anonymous of all blobs in the container (Read only)
+</p>
+<aside class="notes">
+<p>
+<a href="https://letzchatazure.blob.core.windows.net/presentation?restype=container&amp;comp=list">https://letzchatazure.blob.core.windows.net/presentation?restype=container&amp;comp=list</a>
+</p>
+
+</aside></li>
+
+</ul></li>
+
+</ol>
+
+</section>
+<section>
+<p>
+Accessing Blobs
+</p>
+<ol>
+<li>REST Api</li>
+<li>Client Libraries</li>
+<li>Private URL + Shared Access Signature Token</li>
+
+</ol>
+
+</section>
+<section>
+<p>
+Type of Blob Properties
+</p>
+<ol>
+<li>Blob Property
+<ul>
+<li>BlobType, Container, CopyState, name</li>
+
+</ul></li>
+<li>System Property
+<ul>
+<li>Used by external systems when accessing it</li>
+<li>cacheControl, contentEncoding, contentType</li>
+
+</ul></li>
+
+</ol>
+
+</section>
+<section>
+<p>
+Leasing
+</p>
+<ul>
+<li>Only who leased the Blob can write to it</li>
+<li>Read is allowed for others</li>
+<li>Can take lease for infinite time or 15 to 60 second</li>
+<li>Actions are acquire, release, renew, change, break</li>
+<li><p>
+Can put a lease on a container which controls only the delete action on the container
+</p>
+<aside class="notes">
+<p>
+409 Error is thrown out when others try to write to a leased blob
+</p>
+
+</aside></li>
+
+</ul>
+
+</section>
+<section>
+<p>
+Snapshots
+</p>
+<ul>
+<li>Multiple versions of same blob</li>
+<li>Taking snapshots copies base blob + metadata + system properties</li>
+<li>Promoting is copying a version to base version</li>
+<li>Copying a blob does not copy the snapshots</li>
+<li>To delete a blog, need to delete all the snapshots</li>
+
+</ul>
+
+</section>
+<section>
+<p>
+Security
+</p>
+<ul>
+<li>Shared Access Signature: allow limited timed access without the key</li>
+<li>Ways to create SAS URI
+<ol>
+<li>Ad Hoc
+<ul>
+<li>To revoke change storage account key, move files</li>
+
+</ul></li>
+<li>Stored Access Policy
+<ul>
+<li>Revoke Stored Access Policy</li>
+
+</ul></li>
+
+</ol></li>
+<li>Stored Access Policy
+<ul>
+<li>Container Level</li>
+<li>5 per container</li>
+
+</ul></li>
+<li>SAS Types
+<ol>
+<li>Account Level
+<ul>
+<li>Access to storage services</li>
+<li>Access to options that are not permitted in Service Level</li>
+
+</ul></li>
+<li>Service Level
+<ul>
+<li>Access to specific resource in specific storage service</li>
+
+</ul></li>
+
+</ol></li>
+
+</ul>
+
+</section>
+<section>
+<p>
+Copy Blobs
+</p>
+<ul>
+<li>Use AzCopy to Supports copy across region</li>
+
+</ul>
+<p>
+Azure Import/Export Service to send hard disks for loading or downloading blobs
+</p>
+</section>
+<section>
+<p>
+Limits
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Blob Limits</th>
+<th scope="col" class="org-left">Max Limit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Max Throughput per blob</td>
+<td class="org-left">60 MB/s</td>
+</tr>
+
+<tr>
+<td class="org-left">Max Request per blob</td>
+<td class="org-left">500 Req/s</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="slide-org373cfde">
+<h3 id="org373cfde">Table Storage</h3>
+<ul>
+<li>Scalable NoSQL Datastore</li>
+<li>Single Clustered Index</li>
+<li>No secondary index, No Foreign keys, No complex joins or Stored Procedures</li>
+<li>Each Entity contains Primary Key (Partition key and Row Key), Timestamp and List of properties (Key Value Pairs)</li>
+<li>Max of 252 properties</li>
+<li>Supports Batch Transaction of 100 entities at a time. Should be on same partition and max size of 4 MB</li>
+<li><img src="http://www.robbagby.com/wp-content/uploads/working-with-azure-table-storage-from-php/image_thumb.png" alt="image_thumb.png" /></li>
+<li>Max throughput 2000 entities / second (1kb entities) per table partition</li>
+
+</ul>
+</section>
+<section id="slide-orga261239">
+<h3 id="orga261239">Queue Storage</h3>
+<ul>
+<li>Each message is 64Kb</li>
+<li>Best Effort FIFO</li>
+<li>Application should have idempotency to handle a message multiple times</li>
+<li>Invisibility time and Dequeue Count</li>
+<li>Max TTL = 7 days</li>
+<li>Max throughput = 2000 messages / second (1KB Messages)</li>
+
+</ul>
+<aside class="notes">
+<p>
+Service bus has much more features than queues like duplicate detection, automatic dead lettering, pub/sub, FIFO etc
+</p>
+
+</aside>
+</section>
+<section id="slide-org44afafa">
+<h3 id="org44afafa">File Storage</h3>
+<ul>
+<li>Cloud based File share</li>
+<li>Can access files via REST anywhere</li>
+<li>Supports SMB 2.1 and 3.0</li>
+
+</ul>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Limits</th>
+<th scope="col" class="org-left">Max Limits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Max IOPS</td>
+<td class="org-left">1000 IOPS</td>
+</tr>
+
+<tr>
+<td class="org-left">Throughput</td>
+<td class="org-left">60 MB/s</td>
+</tr>
+
+<tr>
+<td class="org-left">Replication</td>
+<td class="org-left">LRS &amp; GRS</td>
+</tr>
+
+<tr>
+<td class="org-left">Max File Share Size</td>
+<td class="org-left">5 TB</td>
+</tr>
+
+<tr>
+<td class="org-left">Individual File size in a share</td>
+<td class="org-left">1 TB</td>
+</tr>
+
+<tr>
+<td class="org-left">Logging Support</td>
+<td class="org-left">No</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="notes">
+<p>
+They are true folder and files unlike Blob storage
+SMB 2.1 has no encryption, cross region support and can map only on azure
+SMB 3 has encryption and cross region support and can map share on desktop (need SMB Port 445)
+</p>
+
+</aside>
+
+</section>
+<section id="slide-orgacbd5fe">
+<h3 id="orgacbd5fe">Storage Metrics &amp; Logging</h3>
+<ul>
+<li>20 TB Limit</li>
+<li>Max Retention is 1 Year</li>
+<li>There is a container called $logs which stores the logs</li>
+<li>Metrics can be hour / minute. By default it is hour and they cannot be changed via portal</li>
+<li>Metrics are Stored in Table. $MetricsHourPrimaryTransactionsBlob &amp; $MetricsCapacityBlob (blob only)</li>
+<li>Two types of summary: service level and API Level</li>
+
+</ul>
+
+</section>
+<section id="slide-org01a6697">
+<h3 id="org01a6697">Tools</h3>
+<p>
+Azure Management Console <a href="http://cerebrata.com/">http://cerebrata.com/</a>
+Azure Management Portal <a href="http://portal.azure.com">http://portal.azure.com</a>
+AzCopy
+</p>
+</section>
+<section id="slide-org348bb81">
+<h3 id="org348bb81">Limits</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Subscription Limits</th>
+<th scope="col" class="org-left">Max Limit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Total storage per storage account</td>
+<td class="org-left">500 TB</td>
+</tr>
+
+<tr>
+<td class="org-left">Max Disks</td>
+<td class="org-left">40</td>
+</tr>
+
+<tr>
+<td class="org-left">Max IOPS</td>
+<td class="org-left">20000</td>
+</tr>
+
+<tr>
+<td class="org-left">Premium Storage Max Disk Capacity</td>
+<td class="org-left">35 TB</td>
+</tr>
+
+<tr>
+<td class="org-left">Premium Storage Snapshot Capacity</td>
+<td class="org-left">10 TB</td>
+</tr>
+
+<tr>
+<td class="org-left">Premium Storage Total Bandwidth</td>
+<td class="org-left">50 GBPs</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+<section id="slide-org588951d">
+<h2 id="org588951d">Azure Webapp</h2>
+<div class="outline-text-2" id="text-org588951d">
+</div></section>
+<section id="slide-org1c7a556">
+<h3 id="org1c7a556">Understanding the Jargons</h3>
+<ol>
+<li>Service Plan</li>
+<li>Traffic Manager
+<ul>
+<li>Loadbalances across regions</li>
+<li>Geo-Replicated</li>
+
+</ul></li>
+
+</ol>
+<aside class="notes">
+<p>
+Loadbancer in azure loadbalances within the region
+</p>
+
+</aside>
+</section>
+<section id="slide-orga049e81">
+<h3 id="orga049e81">What is it ?</h3>
+<p>
+In AWS world it is Elastic Beanstalk
+It is part of Azure App Services. Other app services are Mobile, Logic, API
+</p>
+</section>
+<section id="slide-org0c65243">
+<h3 id="org0c65243">how do i create one ?</h3>
+<ol>
+<li>Visual Studio</li>
+<li>Management Portal</li>
+<li>Powershell</li>
+<li>xpat-cli</li>
+
+</ol>
+<aside class="notes">
+<p>
+DEMO
+</p>
+
+</aside>
+</section>
+<section id="slide-orga31d115">
+<h3 id="orga31d115">Service Plans</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-left">Features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Shared</td>
+<td class="org-left">1GB Storage + custom domains</td>
+</tr>
+
+<tr>
+<td class="org-left">Basic</td>
+<td class="org-left">shared + scale upto 3 instances</td>
+</tr>
+
+<tr>
+<td class="org-left">Standard &amp; Premium</td>
+<td class="org-left">Basic + More storage + SSL + Autoscale upto 10 instances + Backups + Deployment Slots + Traffic Manager</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section id="slide-org3a206b9">
+<h3 id="org3a206b9">Deployment Methods</h3>
+<ul>
+<li>FTP</li>
+<li>FTP in Visual Studio</li>
+<li>Web Deploy in Visual Studio</li>
+<li>Continuous Integration using service hooks</li>
+
+</ul>
+</section>
+<section id="slide-orgd3b8e9d">
+<h3 id="orgd3b8e9d">Deployment Slots</h3>
+<ul>
+<li><p>
+Create a stage slot. Swap with production instantly
+</p>
+<aside class="notes">
+<p>
+914660641267-aiur5ngmvgobn34cv2sh08i29sdjoe5h.apps.googleusercontent.com
+2fviJw5XvIdkBH8N6gt4ppnM
+.auth/login/google/callback
+</p>
+
+</aside></li>
+
+</ul>
+</section>
+<section id="slide-orgda8faa6">
+<h3 id="orgda8faa6">Authentication and Authorization</h3>
+<ul>
+<li>support oauth using twitter, facebook, google</li>
+<li>support microsoft AD</li>
+
+</ul>
+<aside class="notes">
+<p>
+DEMO
+</p>
+
+</aside>
+</section>
+<section id="slide-org0217c3d">
+<h3 id="org0217c3d">webjobs</h3>
+<ul>
+<li>Running Background tasks on azure webapps</li>
+<li>Types
+<ol>
+<li>ondemand</li>
+<li>continuous</li>
+<li>scheduled</li>
+
+</ol></li>
+<li>Can run any .cmd, .bat, .exe, .ps1, .sh, .php, .py, .js</li>
+<li>Upload in zip format</li>
+
+</ul>
+</section>
+<section id="slide-org82e8d6c">
+<h3 id="org82e8d6c">Continuous Deployment</h3>
+</section>
+<section id="slide-org8b5d0d7">
+<h3 id="org8b5d0d7">Backup and Restore</h3>
+</section>
+<section id="slide-org1552736">
+<h3 id="org1552736">Diagnostics</h3>
+</section>
+<section id="slide-orge2d514c">
+<h3 id="orge2d514c">Application Settings</h3>
+<ul>
+<li>Always On</li>
+
+</ul>
+<aside class="notes">
+<p>
+DEMO
+</p>
+
+</aside>
+</section>
+<section id="slide-org7f36279">
+<h3 id="org7f36279">Networking</h3>
+<ul>
+<li>Custom Domains</li>
+<li>Traffic Routing</li>
+
+</ul>
+</section>
+<section id="slide-orgb7079e8">
+<h3 id="orgb7079e8">Monitoring</h3>
+<ul>
+<li>Endpoint monitoring from different geolocations</li>
+<li>Set Alerts based on Endpoint Monitoring</li>
+<li>Log Files
+<ol>
+<li>Site Diagnostic Logs</li>
+<li>Webserver logs</li>
+<li>Detailed Error logs and Failed request Tracing</li>
+
+</ol></li>
+<li>Live streaming diagnostic logs via xplat cli, powershell, visualstudio</li>
+
+</ul>
+</section>
+<section id="slide-org6e18e69">
+<h3 id="org6e18e69">How do i debug ?</h3>
+<ol>
+<li>Azure Application Insights</li>
+<li>Console</li>
+<li>Kudu</li>
+<li>Visual Studio</li>
+
+</ol>
+</section>
+<section id="slide-org983ca7f">
+<h3 id="org983ca7f">Extensions</h3>
+</section>
+<section id="slide-org192acde">
+<h3 id="org192acde">Application Insights</h3>
+</section>
+<section id="slide-org4559be5">
+<h3 id="org4559be5">kudu</h3>
+<aside class="notes">
+<ol>
+<li>Debug Console</li>
+<li>Site Extensions</li>
+
+</ol>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-orge99b77a">
+<h2 id="orge99b77a">Azure SQL</h2>
+<ul>
+<li>Paas Solution for SQL</li>
+<li>Performance levels are measure in unit called DTU (Database Transaction Unit). Its a combination of cpu, memory, reads and writes</li>
+<li><p>
+Service Tiers
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Feature</th>
+<th scope="col" class="org-left">Basic</th>
+<th scope="col" class="org-left">standard</th>
+<th scope="col" class="org-left">premium</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Max size</td>
+<td class="org-left">2 GB</td>
+<td class="org-left">250 GB</td>
+<td class="org-left">1 TB</td>
+</tr>
+
+<tr>
+<td class="org-left">Point in time restore</td>
+<td class="org-left">7 days</td>
+<td class="org-left">35 days</td>
+<td class="org-left">35 days</td>
+</tr>
+
+<tr>
+<td class="org-left">Performance Levels</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">s0/s1/s2/s3</td>
+<td class="org-left">p1/p2/p4/p6/p11/p15</td>
+</tr>
+</tbody>
+</table></li>
+<li>Elastic Database Pools
+<ul>
+<li>Manages multiple databases in a single pool</li>
+<li>All databases share the resources of eDTU and storgae resources of the pool</li>
+<li>Avoid over provisioning based on peak usage of each database</li>
+<li>Performance is measured using eDTU. 1 DTU = 1 eDTU</li>
+
+</ul></li>
+<li>Shardlet
+<ul>
+<li>Group of related rows across tables are on same shards</li>
+
+</ul></li>
+<li>Shard Map Manager
+<ul>
+<li>Directs request to right shard</li>
+
+</ul></li>
+<li>Shard Set Executor</li>
+<li>Transparent Data Encryption</li>
+<li>Always Encrypted</li>
+<li>Dynamic Data Masking</li>
+<li>Row level security</li>
+<li>Query Performance Insights
+<ul>
+<li>can drill into poor performing queries</li>
+
+</ul></li>
+<li>SQL Database Advisor
+<ul>
+<li>Recommendations for indexes, parameterization and schema issues</li>
+
+</ul></li>
+<li>Database Scalability Options
+<ol>
+<li>Single Database
+<ul>
+<li>Scale up and down by moving to higher tiers</li>
+
+</ul></li>
+<li>Vertically Partitioning
+<ul>
+<li>Splitting database based on work loads.</li>
+
+</ul></li>
+<li>Single Tenant Sharding</li>
+<li>Multi Tenant Sharding</li>
+
+</ol></li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="https://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+ { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

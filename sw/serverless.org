@@ -1,0 +1,22 @@
+* Openfaas
+** Pros
+   - Supports Rancher
+** Cons
+  - Cron type scheduling
+  - PubSub Triggering
+
+* Nuclio
+** Pros
+   - Supports PubSub Triggering
+   - Cron type triggering
+   - http triggering
+* Openwhisk
+** Pros
+   - Supports PubSub Triggering
+   - Cron type triggering
+   - http triggering
+* kubeless
+** Pros
+   - Supports PubSub Triggering
+   - Cron type triggering
+   - http triggering

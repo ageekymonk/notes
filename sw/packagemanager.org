@@ -1,0 +1,52 @@
+* Yum
+*** Install epel repo in centos
+    yum install epel-release
+
+*** Dump and restore all the versions of software installed
+    yum-debug-dump
+    yum-debug-restore
+
+*** Lock the version of an installed software
+    yum install yum-plugin-versionlock
+    yum versionlock package
+
+*** sync epel repo
+    reposync --repoid=epel --download_path=epel
+
+*** check whether the package installed
+    yum list installed pkgname
+
+*** check which package provides files
+    yum provides file-name
+
+*** List all Repository configured
+    yum repolist
+    yum repolist enabled
+    yum repolist disabled
+
+*** Enable Repo
+    #+begin_src bash
+    yum-config-manager --enable epel
+    #+end_src
+* Apk
+** Install package from testing repository without changing configuration files
+   #+begin_src bash
+   apk add logwatch --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted
+   #+end_src
+* apt
+*** How to find which package the file belongs to
+    apt-file update
+    apt-file search filename
+
+*** Proxy for apt
+    Add these two lines to /etc/apt/apt.conf
+    #+BEGIN_SRC bash
+    Acquire::http::Proxy "http://proxy:8080/";
+    Acquire::https::Proxy "http://proxy:8080/";
+    #+END_SRC
+
+
+*** update package
+    #+BEGIN_SRC bash
+    apt-get install --only-upgrade <packagename>
+    #+END_SRC

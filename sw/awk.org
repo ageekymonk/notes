@@ -1,0 +1,120 @@
+* Print Fields
+  $1 .. $n denotes fields. Field separator is space.
+  $0 is all fields.
+  comma in action is to insert a field separator
+  NF prints number of fields in the record
+
+  #+begin_src bash
+  echo "This is my world" | awk '{ print NF,$3,$4 }'
+  #+end_src
+
+  #+RESULTS:
+  : 4 my world
+* Builtin Variables
+  | Name     | Function                    |
+  |----------+-----------------------------|
+  | NF       | Number of Fields            |
+  | NR       | Record Number               |
+  | FS       | Field Separator             |
+  | OFS      | Output Field Separator      |
+  | RS       | Record Separator            |
+  | ORS      | Output Record Separator     |
+  | FILENAME | Filename being processed    |
+  | FNR      | Record Number for that file |
+  | $NF      | Last Field                  |
+  | $(NF-1)  | Last but one field          |
+  |          |                             |
+* Assign Value to field
+  #+begin_src bash
+  echo "This is my world" | awk '{$5="hehe"; print $0}'
+  #+end_src
+
+  #+RESULTS:
+  : This is my world hehe
+
+* Customizable Field Separator
+** From command line
+  The field separator can be regular expression or string of chars
+  #+begin_src bash
+  echo "This,is,my,world" | awk -F',' '{print NF,$3,$4}'
+  #+end_src
+
+  #+RESULTS:
+  : 4 my world
+
+** Inside Program
+   #+begin_src bash
+   awk 'BEGIN{FS=","} {print $3}' somefilename.txt
+   #+end_src
+* Customizable Record Separator
+  ; separates multiple lines
+  #+begin_src bash
+   awk 'BEGIN{RS=";"} {print $3}' somefilename.txt
+   #+end_src
+* Output Field and Record Separator
+  #+begin_src bash :results verbatim
+  echo "This is my world" | awk 'BEGIN{OFS=","; ORS=";"} {print $3,$4}'
+  #+end_src
+
+  #+RESULTS:
+  : my,world;
+
+* BEGIN
+  #+begin_src bash
+   awk 'BEGIN{FS=","} {print $3}' somefilename.txt
+   #+end_src
+* Variables
+  #+begin_src bash
+  echo "This is my world" | awk -v name=ramz '{print name,$4}'
+  #+end_src
+
+  #+RESULTS:
+  : ramz world
+
+* Generic format
+  Contains action and or pattern. Action is specified in curly braces.
+  Default action is print
+
+  awk '/regular_expression/ { some action }' filename.txt
+* Control Structures
+** If condition
+  #+begin_src bash :results verbatim
+  echo "This is my world\n Bye world" | awk '{
+  if (NF == 4) {
+    print $0
+  }
+  else {
+    print "Small: " $0
+  }
+  }'
+  #+end_src
+
+  #+RESULTS:
+  : This is my world
+  : Small:  Bye world
+** For Loop
+   #+begin_src bash :results verbatim
+   echo "This is my world" | awk '{
+     for(i=1; i<=NF; i++) {
+       print $i
+     }
+   }'
+   #+end_src
+
+   #+RESULTS:
+   : This
+   : is
+   : my
+   : world
+* Functions
+  match
+  index
+  substr
+  sub
+  gsub
+  split
+* Snippets
+** Replace Single Quotes
+   #+BEGIN_SRC bash
+   grep KANA_BUILD_VERSION versions.yaml | awk '{ gsub(/[:\47]/,"",$2); print $2 }'
+   #+END_SRC

@@ -1,0 +1,1414 @@
+#+OPTIONS: num:nil
+#+OPTIONS: toc:0
+#+REVEAL_HLEVEL: 1
+#+REVEAL_PLUGINS: (highlight notes)
+#+REVEAL_THEME: night
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/reveal.js/3.0.0/
+#+TITLE: Azure
+#+AUTHOR: Ramz
+#+EMAIL: ramzthecoder@gmail.com
+* Azure
+** Understanding the Jargons
+   1. Account
+      - Either an Microsoft Account, work/personal email, AD Account
+   2. Subscription
+      - Billing unit within an account
+** xplat cli Basics
+   #+begin_src bash
+     azure login
+     azure account list
+     azure account set 'Azure Pass'
+     azure config mode asm
+     azure storage account create 'myaccount'
+   #+end_src
+** powershell
+   1. Login to azure RM
+      #+begin_src bash
+      Login-AzureRmAccount
+      Select-AzureRmSubscription -Subscription 'Azure Pass'
+      #+end_src
+   2. Login to azure Classic
+      #+begin_src bash
+      Add-AzureAccount
+      #+end_src
+
+* Azure Iaas
+** Test
+   1. Create Generalized and Specialized Images
+   2. Convert VHDX to VHD
+   3. Upload a VHD to azure
+   4. Copy blob container from one storageacct to another using powershell and azcopy
+   5. Enable Powershell and connect via remote powershell
+   6. Enable extensions like custom script, vm access, DSC
+   7.
+** Powershell
+   1. Move Azure VM with static IP to another Subnet
+      #+begin_src bash
+        Get-AzureVM -ServiceName TestVMCloud -Name TestVM `
+        | Remove-AzureStaticVNetIP `
+            | Update-AzureVM
+        Get-AzureVM -ServiceName TestVMCloud -Name TestVM `
+        | Set-AzureSubnet -SubnetNames Subnet-2 `
+            | Update-AzureVM
+      #+end_src
+   2. Enable Remoting
+      #+begin_src bash
+      Enable-PSRemoting -SkipNetworkProfileCheck -Force
+      Set-Item WSMan:\localhost\client\TrustedHosts -Value *
+      Enter-PSSession -ComputerName 104.210.114.4 -Credential (Get-Credential)
+      #+end_src
+** Points to ponder
+  - Affinity Group
+    - Deprecated
+  - Availability Set
+    - upto 3 Fault Domains and 20 Update Domain in ARM Model
+    - upto 2 Fault Domains and 5 update domain in ASM Model
+  - Azure Classic Architecture
+    - Uses Container called Cloud Service
+    - Cloud Service is exposed to public internet
+    - Cloud service will have virtual IP.
+    - Cloud service has a connection which could be accessed anywhere in the world called endpoint
+  - A standard disk is expected to handle 500 IOPS or 60MB/s throughput
+  - A P30 Premium disk is expected to handle 5000 IOPS or 200MB/s throughput
+  - Types of states
+    1. Running
+    2. Stopped (deallocated)
+       - billed only for storage not for compute.
+       - IP address both private and public are lost unless they are static
+       - This is done via portal or cli
+    3. Stopped
+       - Shutdown from inside the VM
+       - Billed for both storage and compute
+       - IP addresses are not lost
+  - Azure Host Cache Types
+    - RW Cache
+    - RO Cache
+    - None
+
+** Basic vs Standard Tier
+   | Basic            | Standard            |
+   |------------------+---------------------|
+   | 18% Cheaper      |                     |
+   | Dev Only         | Production Workload |
+   | 300 IOPS         | 500 - 5000 IOPS     |
+   | A0 - A4          |                     |
+   | No Loadbalancing |                     |
+   | No Autoscale     |                     |
+
+** Instance Sizes
+   1. A0 - A11 Supported in Standard Tier
+   2. A8 - A11 Support High performace CPU and used for compute intensive
+   3. A8 - A9 has secondary NIC to RDMA backend network
+   4. D instance is Xeon Processors and 20% Faster than A instances
+   5. D instance has locally attached SSD Disk
+   6. D_V2 has same form factor as D instances. But Next generation processors
+   7. D15_V2 has 20 cores, 140G RAM
+   8. F Series is based on 2.4 GHz Intel Xeon® E5-2673 v3 (Haswell) processor
+   9. F series has the same CPU performance as the Dv2-series of VMs but low price.
+   10. From F series and anything new the number denotes the number of cores
+   11. G series has largest memory size
+   12. H Series is compute intensive
+   13. Standard vs premium storage => upto per disk  500 IOPS vs 5000 IOPS
+   14. DS or GS instance size supports premium storage
+   15. DS_V2 more cpu speed and more memory. Processor speed is upto 64% faster than DS
+
+** OS Images
+   - Types
+     1. Specialized
+        - Golden / Snapshot VM Image
+        - Includes Machine ID, hostname, static IP
+        - When you need exact duplicated of the VM
+     2. Generalized
+        - Windows: sysprep
+        - All images in azure image gallery
+        - For Linux need to install azure VM agent
+        - Run waagent -deprovision and shutdown the VM
+   - Azure supports only Generation 1 VHD Images
+   - Max Size of OS Disk is 127 GB and Data disk is 1 TB
+
+** Loadbalancer
+   - Layer 4 Loadbalancing
+   - Uses 5 tuple hash stickiness
+   - Direct Server Return (floatint IP) is used with SQL Server Always on availability Group
+   - Health check can be tcp or http
+   - Interval for health check is 15 seconds. Expected response with 31 seconds
+** ACL
+   - Whitelist for Endpoint Access
+   - <= 50 ACL Per Endpoint
+   - You can specify network ACLs for endpoints only
+   - By default all traffic is permitted to the endpoint
+     -
+** Availability Sets
+   - Virtual Machines in an availability set should be within a same cloud service
+   - 2 VMs in an AV Set gives you 99.95 SLA
+   - 2 VMs in an AV Set will be in a different Fault Domain
+   - Each AV Set has 5 update domains
+   - For autoscaling you need availability set
+   -
+* Azure Networking
+** Virtual Network
+   - ASM Model vs ARM Model
+     - Cloud Services Vs Network Interface
+     - Endpoint Vs NSG
+     - Service Management REST API vs Resource Manager REST API
+     - XML Vs JSON
+     - Serial Vs Parallel
+     - Non Idempotent Vs Idempotent
+   - Limits
+     |-------------------------------------+---------+-----------------|
+     | Limit                               | Default |             Max |
+     |-------------------------------------+---------+-----------------|
+     | VNet Per subscription               |      50 |             100 |
+     | DNS Servers per VNEt                |      20 |             100 |
+     | Private IP Per VNet                 |    4096 |            4096 |
+     | Concurrent TCP Connections for a VM |    500K |            500K |
+     | NSG                                 |     100 |             200 |
+     | NSG Rules Per NSG                   |     200 |             400 |
+     | Public Address Dynamic              |       5 | Contact Support |
+     | Reserved Public IP                  |      20 | Contact Support |
+     | Public VIP                          |         |                 |
+** Network Security Group
+*** Overview
+    - Bunch of inbound and outbound rules to restrict traffic to your VMs
+    - Can be applied to Subnet or to Individual VMs
+      #+BEGIN_NOTES
+      In AWS we use NACL at subnet level and Security Group at VM Level
+      Security Group in AWS is stateful and NACL is stateless
+      #+END_NOTES
+    - Azure NSG is stateless
+    - NSG is limited to region. NSG can only apply to resources within the region
+    #+REVEAL: split
+    - Default Rules:
+      1. Allow all traffic from / to any node in your virtual network
+      2. Allow all traffic from / to the loadbalancer (including internet)
+      3. Allow only outbound traffic to the internet and block the inbound from internet
+    - Special Rules:
+      1. Key management services run in port 1688. Donot block outbound traffic on 1688
+      2. DNS, DHCP and healthcheck are provided through virtualized host ip 168.63.129.16. Donot block this.
+    - Tags:
+      - VIRTUAL_NETWORK
+      - AZURE_LOADBALANCER
+      - INTERNET
+** VPN
+   - VPN Types
+     1. Site to Site
+        - IPSec / IKEV2
+        - 100 - 200 Mbps Throughput
+     2. Point to Site
+        - SSTP (SSL VPN)
+        - Always with dynamic gateway
+     3. VNet to VNet
+        - Same as Site to Site
+     4. Express Route
+        - Dedicated, Highspeed, Low Latency
+        - Uses Peered connection given by a service provider who is microsoft partner
+        - 500 - 2000 Mbps Throughput
+        - L2/L3 Connectivity to azure
+        - Dynamic routing via BGP
+        - Pricing
+          1. Standard Plans
+             - metered data plan
+               - unlimited inbound but pay for outbound
+             - unlimited data plan
+          2. Premium Add on
+             - Available fro both the standard plan
+             - 4000 - 10000 peering routes
+             - Transparent express route connectivity to any region
+   - Azure VPN Gateways
+     1. Policy Based
+        - Called Static Routing Gateways in Classic deployment model
+        - Requires Hardcoded Route table entries
+        - Supports IKEv1
+        - Only on Site to Site VPN Allowed
+        - No point to site VPN Allowed
+        - No VNet to VNet VPN Allowed
+     2. Route Based
+        - Called Dynamic Routing Gateways in Classic deployment model
+        -
+* Azure Storage
+** Understanding the Jargons
+   1. Storage Account
+      - Namespace to store your data
+   2. Recovery Time Objective (RTO)
+      - Max acceptable time before the application fully recovers after disruptive event
+      - RTO Measures maximum loss of availability during failures
+   3. Recovery Point Objective (RPO)
+      - Max acceptable data loss
+** Classic Vs ARM Storage Accounts
+   - ARM VMs cannot be deployed with ASM Storage Accounts and viceversa
+   - Both needs a globally unique url. .*.core.windows.net
+** Types of storage Services
+   1. [[File Storage][File]]
+   2. [[Table Storage][Table]]
+   3. [[Queue Storage][Queue]]
+   4. [[Blob Storage][Blob]]
+** Storage Replication
+   1. Locally Redundant Storage (LRS)
+      - Provides 3 replicas of the data within a region
+      - 20 Gbps inbound 30 Gbps outbound
+      - Replicas will be in separate fault and upgrade domain
+        #+BEGIN_NOTES
+        The data within a region is updated synchronously
+        #+END_NOTES
+   2. Geo Redundant Storage (GRS)
+      - Total 6 replicas, three in local and three in other region
+      - Data is available on the remote region only when microsoft declares a disaster in the region
+      - Updates across regions are done asynchronously
+      - 10 Gbps inbound 20 Gbps outbound
+      #+BEGIN_NOTES
+      The remote region is selected by azure
+      #+END_NOTES
+   #+REVEAL: split
+
+      Storage Replication...
+   1. Geo Redundancy with read only access
+      - Can read data from remote region before microsoft declares disaster
+   2. Premium Storage
+      - This has to be done at creation time
+      - Only Local redundancy is supported
+      - Low latency high performance persistent SSD
+      - Used for VM Disks (page blobs)
+   3. Zone Redundant Storage
+      - Can store Block blobs only. Available only during Storage Account Creation
+      - Replicated across 2-3 facilities in a region or across region if not available in a region
+      - Not supported for VMs
+      - 99.99% Read
+** Blob Storage
+
+   [[https://msdnshared.blob.core.windows.net/media/TNBlogsFS/BlogFileStorage/blogs_msdn/jnak/WindowsLiveWriter/WalkthroughSimpleBlobStorageSample_1000E/image_thumb_8.png]]
+   #+BEGIN_NOTES
+   Blob => Binary Large Object
+   Pseudo Foldering: Add forward slash to the Blobs and the application will consider it as folder
+   #+END_NOTES
+
+   #+REVEAL:split
+   Types of Blobs
+   1. Block
+      - Used for storing files
+      - Upto 200 GB
+      - Uploaded as 64 MB blocks
+      - Can only be used with regular storage
+   2. Page
+      - Used for random access files
+      - Upto 1 TB
+      - Read in 512 Byte Pages
+      - Can be used with both regular and premium storage
+   3. Append
+      - Supports appending data to blobs
+
+   #+REVEAL: split
+   Blob Access Permission
+   1. Private
+      - To access blobs inside container you need admin account rights / access key for storage account / SAS
+   2. Blob
+      - Allow anonymous download of blob using http/https url for the blob (Read only)
+   3. Container
+      - Allow anonymous of all blobs in the container (Read only)
+        #+BEGIN_NOTES
+        https://letzchatazure.blob.core.windows.net/presentation?restype=container&comp=list
+        #+END_NOTES
+
+   #+REVEAL: split
+   Accessing Blobs
+   1. REST Api
+   2. Client Libraries
+   3. Private URL + Shared Access Signature Token
+
+   #+REVEAL: split
+   Azure Storage Permission hierarchy
+   1. Service Administrator
+   2. ARM RBAC
+   3. Storage Key holder
+   4. SAS
+
+   Storage Key Facts
+   1. Keep Primary and share secondary. This way to revoke access regenerate secondary key
+   2. We have primary and secondary for periodic key rollover
+
+   #+REVEAL: split
+   Custom Domains
+   With Downtime
+     - Add a CNAME to your blob service endpoint
+     - Register the domain with your azure storage account
+   Without Downtime
+     - In your public DNS create a CNAME record that maps asverify.subdomain.yourmain.com to asverify.account.blob.core.windows.net
+     - Register the domain with your azure
+
+   Currently you cannot bind custom domain with your own ssl certificates
+   Workaround: CORS
+
+
+   #+REVEAL: split
+   Type of Blob Properties
+   1. Blob Property
+      - BlobType, Container, CopyState, name
+   2. System Property
+      - Used by external systems when accessing it
+      - cacheControl, contentEncoding, contentType
+
+   #+REVEAL: split
+   Metadata Types
+   1. User Defined
+   2. System
+
+   #+REVEAL: split
+   Leasing
+   - Only who leased the Blob can write to it
+   - Read is allowed for others
+   - Can take lease for infinite time or 15 to 60 second
+   - Actions are acquire, release, renew, change, break
+   - Can put a lease on a container which controls only the delete action on the container
+     #+BEGIN_NOTES
+     409 Error is thrown out when others try to write to a leased blob
+     #+END_NOTES
+
+   #+REVEAL: split
+   Snapshots
+   - Multiple versions of same blob
+   - Taking snapshots copies base blob + metadata + system properties
+   - Promoting is copying a version to base version
+   - Copying a blob does not copy the snapshots
+   - To delete a blog, need to delete all the snapshots
+
+   #+REVEAL: split
+   Security
+   - Shared Access Signature: allow limited timed access without the key
+   - Ways to create SAS URI
+     1. Ad Hoc
+        - To revoke change storage account key, move files
+     2. Stored Access Policy
+        - Revoke Stored Access Policy
+   - Stored Access Policy
+     - Container Level
+     - 5 per container
+   - SAS Types
+     1. Account Level
+        - Access to storage services
+        - Access to options that are not permitted in Service Level
+     2. Service Level
+        - Access to specific resource in specific storage service
+
+   #+REVEAL: split
+   Async Blob Copy
+    - Can copy between different storage accounts
+    - Can copy between different subscriptions
+    - Use AzCopy to Supports copy across region
+    - Async copy job lasting more than 2 weeks will be nuked by azure
+    - AzCopy
+   Azure Import/Export Service to send hard disks for loading or downloading blobs
+
+   #+REVEAL: split
+   Limits
+   |-------------------------+-----------|
+   | Blob Limits             | Max Limit |
+   |-------------------------+-----------|
+   | Max Throughput per blob | 60 MB/s   |
+   | Max Request per blob    | 500 Req/s |
+   |                         |           |
+** Table Storage
+   - Scalable NoSQL Datastore
+   - Single Clustered Index
+   - No secondary index, No Foreign keys, No complex joins or Stored Procedures
+   - Each Entity contains Primary Key (Partition key and Row Key), Timestamp and List of properties (Key Value Pairs)
+   - Max of 252 properties
+   - Supports Batch Transaction of 100 entities at a time. Should be on same partition and max size of 4 MB
+   - [[http://www.robbagby.com/wp-content/uploads/working-with-azure-table-storage-from-php/image_thumb.png]]
+   - Max throughput 2000 entities / second (1kb entities) per table partition
+** Queue Storage
+   - Each message is 64Kb
+   - Best Effort FIFO
+   - Application should have idempotency to handle a message multiple times
+   - Invisibility time and Dequeue Count
+   - Max TTL = 7 days
+   - Max throughput = 2000 messages / second (1KB Messages)
+   #+BEGIN_NOTES
+   Service bus has much more features than queues like duplicate detection, automatic dead lettering, pub/sub, FIFO etc
+   #+END_NOTES
+** File Storage
+   - Cloud based File share
+   - Can access files via REST anywhere
+   - SMB stands for Server Message Block
+   - Layer 7 File sharing protocol
+   - TCP Port 445 and TCP/UDP 137-139
+   - Supports SMB 2.1 and 3.0
+   - net use command for mounting
+   - AD Authentication is on the roadmap that is not currently supported
+
+   |---------------------------------+------------|
+   | Limits                          | Max Limits |
+   |---------------------------------+------------|
+   | Max IOPS                        | 1000 IOPS  |
+   | Throughput                      | 60 MB/s    |
+   | Replication                     | LRS & GRS  |
+   | Max File Share Size             | 5 TB       |
+   | Individual File size in a share | 1 TB       |
+   | Logging Support                 | No         |
+   |---------------------------------+------------|
+
+   - Mount on linux
+     #+begin_src bash
+       sudo apt-get install cifs-utils
+       sudo mkdir /mnt/mountpoint
+       sudo mount -t cifs //storageacct.file.windows.net/share /mnt/mountpoint -o vers=3.0,username=acct,password=mykey,dir_mode=0777,file_mode=0777
+     #+end_src
+      #+BEGIN_NOTES
+      They are true folder and files unlike Blob storage
+      SMB 2.1 has no encryption, cross region support and can map only on azure
+      SMB 3 has encryption and cross region support and can map share on desktop (need SMB Port 445)
+      #+END_NOTES
+
+** CDN
+   - supported origins
+     1. web apps
+     2. blob storage
+     3. cloud service
+     4. azure media service
+   - ASM has one off endpoint
+   - ARM has CDN Profiles
+   - CDN Profiles
+     - collection of endpoints
+     - Organized by domain or webapp
+     - Max 4 profiles per subscription
+     - Max 10 endpoint per profile
+   - Steps
+     1. Set container to public
+     2. Add CDN Endpoint to container
+     3. No custom domain
+     4. Takes upto 90 minutes to propogate world wide
+     5. To remove: remove blob, change permission to private
+** Storage Metrics & Logging
+   - 20 TB Limit
+   - Max Retention is 1 Year
+   - There is a container called $logs which stores the logs
+   - Metrics can be hour / minute. By default it is hour and they cannot be changed via portal
+   - Metrics are Stored in Table. $MetricsHourPrimaryTransactionsBlob & $MetricsCapacityBlob (blob only)
+   - Two types of summary: service level and API Level
+
+** Import & Export Services
+   - Import Job
+     - Send hard disk to microsoft
+     - azure will populate blob storage
+   - Export
+     - send hard disk to microsoft
+     - azure will populate the disk from a blob storage and send it to you
+   - Not available for ARM
+   - 3.5 inch SATA 2/3 internal hard disk <= 8 TB
+   - Hard disk should have single volume NTFS Formatted
+   - 80 Dollar per storage device flat fee
+   - Prepare you disk using azure import/export tool (WAImportExport Tool)
+   - You need OS that supports bitlocker
+   - Creates BL key, Device ID in a journal file
+   -
+** Tools
+   Azure Management Console [[http://cerebrata.com/]]
+   Azure Management Portal [[http://portal.azure.com]]
+   AzCopy
+** Azure Key Vault
+** Diagnostics and monitoring
+   - 20 TB Limit on logs
+   - Azure Message Analyzer
+   - Max retention is 365 days
+   - Tools to analyze logs
+     - Message Analyzer
+     - Storage Explorer
+     - Visual Studio
+** Limits
+   |-----------------------------------+-----------|
+   | Subscription Limits               | Max Limit |
+   |-----------------------------------+-----------|
+   | Total storage per storage account | 500 TB    |
+   | Max Disks                         | 40        |
+   | Max IOPS                          | 20000     |
+   | Premium Storage Max Disk Capacity | 35 TB     |
+   | Premium Storage Snapshot Capacity | 10 TB     |
+   | Premium Storage Total Bandwidth   | 50 GBPs   |
+   | Storage Accounts per Subscription | 100       |
+   | Max Disks per VM                  | 16        |
+   | Max Size of OS Disk               | 127 GB    |
+   | Max Size of Data Disk             | 1 TB      |
+** Backup
+   - Extension of windows server backup
+   - Integrates with System Center DPM (Data Protection Manager)
+   - Install MARS (Microsoft Azure Recovery Services)
+   - Backups are available in Blob Storage
+   - Restore is performed from windows using powershell or backup tools
+   - Azure Site Recovery
+     - Use Azure as a DR Site
+     - Use System Center Virtual Machine Manager
+   - Vault
+     - Site Recovery Vault
+     - Backup Vault
+   - Install MARS Agent
+* Azure Webapp
+** Understanding the Jargons
+   1. Service Plan
+   2. Traffic Manager
+      - Loadbalances across regions
+      - Geo-Replicated
+      #+BEGIN_NOTES
+      Loadbancer in azure loadbalances within the region
+      #+END_NOTES
+   3. SNI
+      - Extension to TLS wherein multiple certificates can be used for same ip
+** What is it ?
+   In AWS world it is Elastic Beanstalk
+   It is part of Azure App Services. Other app services are Mobile, Logic, API
+** how do i create one ?
+   1. Visual Studio
+   2. Management Portal
+   3. Powershell
+   4. xpat-cli
+   #+BEGIN_NOTES
+   DEMO
+   #+END_NOTES
+** Service Plans
+   Has to be in same geographic area and subscriptionhj4
+   |----------+--------------------------------------------------------------------------------------------------------------------------------------------|
+   | Type     | Features                                                                                                                                   |
+   |----------+--------------------------------------------------------------------------------------------------------------------------------------------|
+   | Shared   | 1GB Storage + custom domains + 100 (web,mobile,api) + 200 logic app action                                                                 |
+   | Basic    | scale upto 3 instances + unlimited (web,mobile,api) + 200 logic app action + Unlimited SNI SSL Certs + 10 GB                               |
+   | Standard | Basic + 50 GB + SSL + Autoscale upto 10 instances + Backups + Deployment Slots + Traffic Manager + 10,000 Logic App + 2 backup + 5 staging |
+   | Premium  | Standard + 50 instances autoscale + 250 GB + 50000 logic app action + 50 backup + 20 staging                                               |
+   |          |                                                                                                                                            |
+
+** Deployment Methods
+   - FTP
+   - FTP in Visual Studio
+   - Web Deploy in Visual Studio
+   - Web Deploy Package using powershell
+   - Continuous Integration using service hooks
+** Deployment Slots
+   - Create a stage slot. Swap with production instantly
+     #+BEGIN_NOTES
+     914660641267-aiur5ngmvgobn34cv2sh08i29sdjoe5h.apps.googleusercontent.com
+     2fviJw5XvIdkBH8N6gt4ppnM
+     .auth/login/google/callback
+     #+END_NOTES
+   - Settings that swap
+     1. General Settings
+     2. App Settings
+     3. Connection Strings
+     4. Handler Mappings
+     5. Monitoring / diagnostic settings
+     6. Webjobs content
+   - Settings that do not swap
+     - Custom Domain names
+     - SSL Certificates and bindings
+     - Scale settings
+     - Webjobs scheduler
+** Custom Domains and SSL
+   - Enforce HTTPS
+** Authentication and Authorization
+   - support oauth using twitter, facebook, google
+   - support microsoft AD
+   #+BEGIN_NOTES
+   DEMO
+   #+END_NOTES
+** webjobs
+   - Running Background tasks on azure webapps
+   - Types
+     1. ondemand
+     2. continuous (Uses Azure Scheduler)
+     3. scheduled  (Uses Azure Scheduler)
+   - Can run any .cmd, .bat, .exe, .ps1, .sh, .php, .py, .js
+   - Upload in zip format
+   - Powershell does not support scheduled web job. Triggered and continuous only are supported
+   - Classic portal supports scheduled job. When deleting webjob in classic portal delete the azure scheduler task as well.
+** Continuous Deployment
+** Backup and Restore
+** Diagnostics
+   - Diagnostic logs can be stored in File system, BLOB, Tables
+   - site diagnostic logs generated by IIS server
+   | Logs                    | Folder                          |
+   |-------------------------+---------------------------------|
+   | Application Diagnostics | D:\home\LogFiles\Application    |
+   | Web Server Logs         | D:\home\LogFiles\HTTP\RawLogs   |
+   | Detailed Errors         | D:\home\LogFiles\DetailedErrors |
+   | Failed Request Traces   | D:\home\LogFiles\W2SVC<random#> |
+   - Retrieve Diagnostic Logs
+     - BLOB, Table, FTP
+     - Kudu
+     - Webjobs
+     - Visual Studio
+     - Powershell
+** Application Settings
+   - Always On
+   #+BEGIN_NOTES
+   DEMO
+   #+END_NOTES
+** Networking
+   - Custom Domains
+   - Traffic Routing
+** Monitoring
+   - Endpoint monitoring from different geolocations
+   - Set Alerts based on Endpoint Monitoring
+   - Log Files
+     1. Site Diagnostic Logs
+     2. Webserver logs
+     3. Detailed Error logs and Failed request Tracing
+   - Live streaming diagnostic logs via xplat cli, powershell, visualstudio
+** How do i debug ?
+   1. Azure Application Insights
+   2. Console
+   3. Kudu
+   4. Visual Studio
+** Extensions
+** Application Insights
+** Handlers and Virtual Directories
+   - Handler mappings are custom script processor for different file types
+   -
+** Console
+   - Default location is D:\Home\site\wwwroot
+   - It also has app_data folder under the wwwroot
+** kudu
+   #+BEGIN_NOTES
+   1. Debug Console
+   2. Site Extensions
+   #+END_NOTES
+** Powershell
+   To change azure website settings
+   #+begin_src bash
+     set-azurewebsite -Name 'Mywebsite' -AppSettings $settings -ConnectionStrings $conn
+
+     New-AzureRmWebAppSlot -ResourceGroupName 'funhacksRG' -Name 'funhacks' -Slot 'staging'
+
+     Publish-AzureWebsiteProject -Name 'funhacks' -Package 'C:\practice\funhacks123.zip' -Slot 'staging'
+
+     Swap-AzureRmWebAppSlot -SourceSlotName 'staging' -DestinationSlotName 'Production' -Name 'funhacks' -ResourceGroupName 'funhacksRG'
+
+
+     New-AzureWebsiteJob -JobName 'funjob' -JobType Continuous -JobFile C:\practice\funjob.zip -Name 'funhacks'
+
+     Set-AzureWebsitejob
+     Save-AzureWebSiteLog -Name 'funhacks' -Output 'Filename'
+     Get-AzureWebSiteLog -Name 'funchacks' -Tail  -Message Error
+   #+end_src
+** Traffic Manager
+   - Traffic Routing Methods
+     1. Priority Method / Failover Method
+     2. Weighted Method / Round Robin Method
+     3. Performance Method
+** Quotas and Metrics
+   - Quotas for Free/shared app
+     - CPU(Short): amount of cpu allowed for the application in 3 min interval. Quota resets every 3 mins
+     - CPU(Long): Total cpu allowed per day.
+     - Memory: Total memory allowed
+     - Bandwidth: Total bw allowed per day.
+   - If quota is exceeded 403 error is thrown
+   - Metrics granularity and retention policy
+     - Minute granularity metrics are retained for 48 hours
+     - Hour granularity metrics are retained for 30 days
+     - Day granularity metrics are retained for 90 days
+* Azure SQL
+  - Paas Solution for SQL
+  - Creates .*.database.windows.net
+  - Performance levels are measure in unit called DTU (Database Transaction Unit). Its a combination of cpu, memory, reads and writes
+  - PIT (Point in Time) Restore
+  - ERT is Estimated Recovery Time
+  - Service Tiers
+    | Feature                | Basic               | standard            | premium             |
+    |------------------------+---------------------+---------------------+---------------------|
+    | Max size               | 2 GB                | 250 GB              | 1 TB                |
+    | Point in time restore  | within 7 days       | 35 days             | 35 days             |
+    | Performance Levels     |                     | s0/s1/s2/s3         | p1/p2/p4/p6/p11/p15 |
+    | Auditing               |                     |                     |                     |
+    | PIT Restore            |                     |                     |                     |
+    | DTU                    |                     |                     |                     |
+    | Geo Restore            | ERT < 12h, RPO < 1h | ERT < 12h RPO < 1h  | ERT < 12h, RPO < 1h |
+    | Geo Replication        |                     | ERT < 30s, RPO < 5s | ERT < 30s, RPO < 5s |
+    | Active Geo Replication |                     |                     | ERT < 30s, RPO < 5s |
+  - Elastic Database Pools
+    - Manages multiple databases in a single pool
+    - All databases share the resources of eDTU and storgae resources of the pool
+    - Avoid over provisioning based on peak usage of each database
+    - Performance is measured using eDTU. 1 DTU = 1 eDTU
+  - Shardlet
+    - Group of related rows across tables are on same shards
+  - Shard Map Manager
+    - Directs request to right shard
+  - Shard Set Executor
+  - Transparent Data Encryption
+  - Always Encrypted
+  - Dynamic Data Masking
+  - Row level security
+  - Query Performance Insights
+    - can drill into poor performing queries
+  - SQL Database Advisor
+    - Recommendations for indexes, parameterization and schema issues
+  - Database Scalability Options
+    1. Single Database
+       - Scale up and down by moving to higher tiers
+    2. Vertically Partitioning
+       - Splitting database based on work loads.
+    3. Single Tenant Sharding
+    4. Multi Tenant Sharding
+  - Export Database
+    - BACPAC : schema + data + stored procedure + ...
+    - DACPAC: schema only
+  - Import database from premium storage not supported
+  - Geo Replication
+    - Standard
+      - Only one remote server. 0.75 cost.
+      - Asynchronous replication
+      - Secondary is inaccessible
+    - Premium
+      - Active replication
+      - 4 online secondary
+      - you can query the secondary
+  - Scale out is sharding the database
+  - Elastic Pools
+    - Group multiple database in a pool and manage them as a group
+  - Choose the appropriate database tier and performance level; configure point-in-time recovery and geo-replication; import and export data and schema; design a scaling strategy
+
+* Azure Cloud Services
+** Test
+   - Create a cloud service using portal and powershell
+   - Increase number of instance using powershell
+   - Get limits of your subscription using powershell
+   - Get os version and family using powershell
+   - Enable rdp using powershell
+   - Deploy dedicated and colocated caching
+   - makecert, pvk2pfx
+   - SSL Certificates
+   - Reserved IP Address
+   - Multiple Websites
+   - Create a cloud service project using powershell and package it using cspack
+** Points to ponder
+   - PaaS
+   - Stateless VM
+   - Loadbalanced Endpoints
+   - Dynamically Scalable
+   - .cscfg and .csdef contains cloudservice configuration and definition
+   - Worker Role & Web Role
+   - All IAAS Virtual Machine Can be used for cloud services
+   - IAAS Virtual Machine cannot be used for cloud services together
+   - Visual studio to create cspkg and cscfg
+   - .cspkg is just a zip file
+   - Service definition file .csdef
+     - cannot be changed while the vm is running
+     - role definition
+     - instance size
+     - local storage
+     - certificates
+     - startup tasks
+     - networking
+     - module import (diagnostics and caching)
+   - Service Configuration file .cscfg
+     - Can be changed while instance is running
+     - instances per role
+     - osFamily
+     - osVersion
+     - parameters
+     - virtualNetwork Configuration
+   - Startup Tasks
+     - commandline (.exe, ps1,bat, cmd, ...)
+     - Task types
+       1. simple
+       2. foreground
+       3. background
+     - Context
+       1. Limited
+       2. Elevated
+   - Webdeploy needs remote desktop
+   - Changes done in webdeploy are not available to other instances
+   - Can do ci from Visual Studio Online
+   - VIP Swap
+   - In Place Upgrade
+     - Automatic: does rolling upgrade
+   - Caching
+     - colocated caching
+     - dedicated caching
+   - Load Balancer is Layer 4 with idle timeout from 4 - 40 mins
+   - Affinity suppot is 2/3/5
+   - 15 seconds probe
+   - Caching Types in Web/Worker Role
+     - Dedicated
+       - A cache worker role is used to host the cache.
+       - It can only be in a worker role
+     - colocated
+       - Can be hosted by web role or worker role
+   - Only a singe cache cluster is supported per cloud service
+   - local storage directory C:\Resources\Directory
+   - Default Reserved IP Address allocation is 5 IP
+   - Network Traffic rules
+     - Input Endpoint
+     - Internal Endpoint
+       - Allow communication between the roles within cloud services
+   - cspack for packaging
+   - Autoscale
+     - CPU
+     - Scale
+     - Schedule
+   - Notification Hub
+     - Notification can be done to Windows Notification Service, Apple push NS, Google cloud messaging, microsoft push NS
+   - Azure diagnostics 1.0 is deployed while cloud service is deployed
+   - Azure diagnostics >1.0 is an extension to cloud service
+   - Azure diagnostics 1.2 and 1.3 allow data from ETW (Event Tracing for windows) and .NET source events
+   -
+
+* Azure Secure Resources
+** Points to Ponder
+   - Active Directory
+     - Types
+       - Azure AD
+       - On Premises AD
+     - Concepts
+       - Domain
+         A security Boundary. Member can be part of only one domain
+       - Forest
+         A collection of domian
+       - Site
+         A collection of computers connected by high speed networks
+       - Organizational Unit
+       - Schema
+         - Define objects in AD
+   - Azure AD
+     - Support Multiple directories each with independent resource, administrator and sync
+     -
+* Active Directory
+** Points to Ponder
+   - AD = Active Directory Domain Services
+   - Active Directory has
+     1. Active Directory Certificate Services
+     2. Active Directory Domain Services
+     3. Active Directory Federation Services
+        - It is a secure Token Service
+     4. Active Directory Lightweight Directory Services
+     5. Active Directory Rights Management Services
+   - Active Directory Domain Services
+     1. LDAP
+        For querying and modifying data using directory services over TCP/IP
+     2. DNS based naming
+     3. Kerberos
+     4. Centralized Administration
+     5. Group Policy
+   - Components
+     1. Logical Components
+        - Domain
+        - Tree
+        - Forest
+     2. Physical Components
+        - Site
+          one or more subnet connected by highspeed link and they are defined by Geolocation
+        - Domain Controller
+   - Domain
+     - Logical unit for organizing users, group, computer, files, folders and printers
+     - Security Boundary
+     - Each domain has its own active directory database
+   - Domain Controller
+     - server containing copy of Active directory database for the domain
+     - Replication happens across DC for consistency
+     - Multimaster
+   - Build AD
+     - Install / Configure DNS
+     - Install ADDS
+     - Promote DC
+   - Flexible Single Master Operations
+     - Forest
+       1. Domain Naming Master
+       2. Schema Master
+     - Domain
+       1. Infrastructure Master
+       2. RID Master
+       3. PDC Emulator
+   - Objects
+     1. Organizational Unit (OU)
+   - Groups
+     - Types
+       1. security groups
+       2. Distribution groups
+     - Scopes
+       1. Universal
+          - contains global groups from multiple domains
+          - They can contain users, global groups and other universal groups
+       2. Global
+          - contain users and other global groups from the same domain
+       3. Domain Local
+          - Contains universal and global groups. Can contain other domain local groups and users
+   - Type of accounts in Azure AD
+     1. Cloud Identity
+     2. microsoft account
+     3. hybrid identity
+     4. synchronized identity
+   - Same Sign on vs Single Sign On
+   - AAD Connect
+     1. Synchronization Engine
+     2. AD FS component
+     3. Monitoring component
+   - Deploying AAD with Express/Custom Settings
+   - Work/school account vs microsoft account
+     - by default work/school account has .onmicrosoft domain
+   - Pricing Tiers
+     1. Free
+     2. Basic
+        - 10 Saas Apps
+     3. Premium
+        1. MFA
+        2. MIM 2016
+        3. Password Reset with write back
+        4. MDM auto-enrollment
+        5. Advanced Reports
+        6. Unlimited Saas Apps
+   - Default domain is *.onmicrosoft.com.
+   - Add a custom domain
+     - Register your new domain in Azure AD
+     - Add a domain DNS entry pointing to azure
+     - Verify the domain name in azure
+   - AD Forest UPN (User Principal Name) Address or UPN Suffixes is way to identify uniquely an AD user account in the forest
+   - Install AD FS
+     - Run AD Connect and select Federation for single sign on method
+   - AD FS contains Federation server, Web Application Proxy,
+   - Monitor AD
+     - Compliance: Need for tracking account activity
+     - Identify Suspicious activity
+     - Basic and Premium Reports
+       - Portal
+       - Graph API
+     - Azure AD Connect Health
+   - miisclient: synchronization service manager. Also Gives statistics, metadata about your synchronization
+   - Cloud App Discovery Tool
+   - WS Fed vs SAML vs OAuth
+     - Sign In Protocol
+       - WS Fed
+       - SAML
+       - OAuth
+     - Authorization Protocol
+       - Outside Firewall Forms based, Inside Firewall Kerberos
+     - Token
+       - For WSFED it is SAML
+       - SAML it is SAML
+       - OAuth it is JSON Web Token (JWT)
+   - OWIN
+   - OData
+     - open standard that allows creation and consumption of queryable and interoperable REST api
+   - Azure AD B2C
+     - is in classic portal
+     - is a comprehensive cloud identity management solution for your consumer-facing web and mobile applications
+       -
+   - Azure AD B2B
+     - Azure AD B2B collaboration is based on an invite and redeem model
+     - Your admin invites partner users by uploading a structured .csv file using the Azure portal.
+     - The portal sends invite emails to these partner users.
+     - The partner users click the link in the email, and are prompted to sign in using their work credentials
+     -
+   - Types of SSO
+     1. Federated SSO
+        - Enables the users in your organization to be automatically signed in to a third-party SaaS
+          application by Azure AD using the user account information from Azure AD.
+        - Azure AD can support federated single sign-on with applications that support the SAML 2.0, WS-Federation, or OpenID connect protocols.
+     2. Password Based SSO
+        - enables the users in your organization to be automatically signed in to a third-party SaaS
+          application by Azure AD using the user account information from the third-party SaaS application
+        - password storage and replay is done using a web browser extension or mobile app
+        - By using a custom browser plugin, AAD automates the user’s sign in process via securely retrieving
+          application credentials such as the username and the password from the directory, and enters these
+          credentials into the application’s sign in page on behalf of the user
+        - Two use cases
+          1. Administrator Manages Credential
+          2. User Manages Credential
+     3. Existing SSO
+        - enables Azure AD to leverage any existing single sign-on that has been set up for the application,
+          but enables these applications to be linked to the Office 365 or Azure AD access panel portals
+   - repadmin is used to diagnose replication problem between DC
+   - Azure Subscription Roles
+     1. Account Administrator
+        - 1 per account
+     2. Service Administrator
+        - 1 per subscription
+        - No billing access
+     3. Co-Administrator
+        - All access to resources except AD settings and billing
+     4. RBAC
+   - Install AAD Connect
+     - Express Settings
+       - Single Forest
+       - 10 GB Limit
+       - 100000 objects
+     - Custom Settings
+   - Azure AAD Creates
+     - User with prefix Sync_ on AD
+     - On Local server ADSyncAdmins, ADSyncBrowse, ADSyncOperators, ADSyncPasswordSet
+     -
+* ARM
+** Points to ponder
+   - Deploy, manage and monitor resources as a group
+   - Anatomy
+     1. $schema
+     2. contentVersion
+     3. parameters
+     4. variables
+     5. resources
+     6. outputs
+* Azure Backup
+** Points to ponder
+   - Azure Recovery Services Agent (ARS) can be installed on onpremeise or on cloud
+   - Agent (Azure Recovery Services Agent) can be installed on
+     1. Windows servers (Windows 2008 SP2 and newer)
+     2. windows clients (Windows 7 SP1 and newer)
+     3. System Center 2012 SP1/R2 Data Protection Manager (DPM)
+     4. Microsoft Azure Backup Server (MABS) Windows Server 2012 R2
+   - VM Extension (Windows and Linux)
+   - Azure Backup integration module
+   - Limits
+     |-------------------------+---------------------------------------|
+     | Limits                  | Max                                   |
+     |-------------------------+---------------------------------------|
+     | Number of backup vaults | 25 per subscription                   |
+     | Servers                 | 50 per vault => 1250 per subscription |
+     | Retention               | 99 years                              |
+     | Backup Frequency        | 3 backups per day                     |
+     | Retention options       | daily weekly monthly and yearly       |
+   - Cannot migrate data between subscription
+   - Hard links are not supported
+   - Reparse points are not supported
+   - Encrypted + Compressed and Encrypted + sparse are not supported
+   - Compressed Stream and Sparse Stream are not supported
+   - only NTFS is supported
+   - Read only drive is not supported
+   - Removable media not supported
+   - End to End Share point protection
+   - End to End Exchange Protection
+   - End to End SQL Server Protection
+     - Every 15 minutes
+   - Backup Agent Windows
+     - NTFS Formatted
+     - Must be on fixed disks
+     - Must be online and writable (due to VSS Dependency)
+     - Bitlocker encryption is allowed but should be unlocked
+   - DPM
+     - OS
+       - Windows 2008 SP2 or newer
+       - DPM SP1 or newer
+     - Protected OS
+       - All Windows Servers
+       - Windows Clients (Windows 7 and newer)
+       - SQL Server (2008 and newer)
+       - Sharepoint Server (2010 and newer)
+       - Hyper-V (2008 R2 SP1 and newer)
+       - Exchange (2010 and newer)
+   - MABS
+     - OS is Windows Server 2012 R2
+     - Supported OS is same as DPM
+   - VM Extension
+     - Backup VMs with 16 Disks
+     - 99 Years retention
+   - Vault
+     - Can be LRS or GRS
+     - Once registered cannot be changed
+   - Integration Module
+   - Site Recovery Services
+     - for replication and recovery of physical and virtual machines
+   - Azure Backup is only for files and folders
+   -
+* Azure Governance
+** Points to ponder
+   - Azure EA Portal for Enterprise
+   - Resource Locks
+     - scoped at subscription, RG and Resource
+     - Read only  and Do not delete
+   - Azure security center
+   - Key Vault
+   - Operations Management Suite (OMS)
+   - Enterprise Azure Roles
+     1. Enterprise Admin
+        - Top Level Account
+        - Can Add department
+     2. Department Admin
+        - Manage department admins
+     3. Account Owner
+        - Add subscription
+     4. Service Admin
+        - No access to ea portal
+   - Use Resource Group and Tags for organizing your resources
+   - Max 15 tags per resource
+   - Can more resources between subscription or resource groups
+   - To move subscription it should be within same AD tenant
+   - To control resources within subscription
+     1. Policies
+     2. RBAC
+        - Defines what actions that a user or group can perform on a resource
+        - users and groups are added to roles
+        - Roles are applied to subscription or RG or Resource level
+   - Three Roles
+     1. Owner
+        - allow all actions
+     2. Contributor
+        - all actions except writing or deleting role assignments
+     3. Reader
+   - Roles are applied to specific scopes. They are Subscription, RG, Resource
+   - Role Anatomy
+     1. Name
+     2. Id
+     3. Description
+     4. IsCustom
+     5. Assignable Scopes
+     6. Actions Allowed
+     7. Actions Not allowed
+   - Azure policies
+     - scoped at subscription, RG, Resource
+     - Used for
+       - Enforcing naming convention
+       - Tag Requirements
+       - Supported SKU
+       - Supported Services
+       - Restricting by region
+     - Actions: deny, audit, append
+     - Policy at parent scope cannot be overridden in child scope unless user is Owner of parent scope
+   - Express route circuit per subscription is 10
+* Test
+  - Load Balancer
+  - Pricing Tiers
+  - AD SSO
+  - Web App
+    - [D] Create a Web App by portal
+    - [D] Create a Web App by Visual Studio
+    - [D] Deploy to web app using visual studio
+    - [D] Deploy to web app using powershell
+    - [D] Deploy to slot using powershell and switch slot
+    - [D] Create a Webjob using portal and powershell (triggered and continuous)
+    - [D] Use inbuilt git repo
+    - App Settings
+    - Handlers and Virtual Directories
+    - Deploy another web app in another region
+    - Setup the Custom Domain and SSL Certs
+  - Storage
+    - [D] Create Storage Account in both ASM and ARM
+    - [D] Create Storage Account in both ASM and ARM using powershell
+    - [D] Create a new container using powershell
+    - [D] Add file to the container using powershell
+    - Get properties for Storage Account
+    - Use Storage Emulator
+    - [D] Async copy using powershell
+    - Async copy using AzCopy
+    - Create a db server and db in portal and powershell
+    - Create a smb file share using portal, powershell and xplat cli
+    - Custom Domain for Blob Storage
+    - compare customain with web app
+    - [D] CDN
+    - SAS and profiles using Powershell
+* Questions
+  - signalR
+  - publish webapplication.ps1
+  - Enable monitoring
+  - create a vm using powershell
+  - traffic manager
+  - output of package of web application
+  - AD B2C
+  - Set-AzureResource move from one plan to another
+  - vhdx to vhd and create a vm
+  - point to site and
+  - ARM Templates
+  - protection group
+  - FIM
+  - encryption
+  - awsverify
+* Answers
+1. To create a loadbalancer
+   - Create a virtual network and a private ip address for the front end IP address pool
+   - Create a front end and backend ip address pool
+   - Create Load balancing rules and NAT Rules
+   - Create a Loadbalancer
+   - Create and configure network interfaces
+2. To move AD DC to azure
+   - Create a new Datadisk
+   - Cache preference to none
+   - AD Database could be corrupted before writing to db the DC fails
+   -
+3. Convert VHD
+   - Converts VHDX to VHD
+4. Add VHD
+   - Uploads a VHD to azure
+5. Add-AzureVMImage
+   - Makes a VM Image from VHD
+6.
+#+begin_src bash
+#region Login both in ASM and ARM
+Login-AzureRmAccount
+Select-AzureRmSubscription  -SubscriptionName 'Azure Pass'
+
+Add-AzureAccount
+#endregion
+
+#region login using published settings
+Get-AzurePublishSettingsFile
+Import-AzurePublishSettingsFile mysettings.publishsettings
+#endregion
+
+#region Show all available Locations
+
+Get-AzureLocation | select Name
+
+#endregion
+
+#region show all available Images for a image family
+
+Get-AzureVMImage | Where-Object { $_.ImageFamily -contains 'Windows Server 2012 R2 Datacenter' } | `
+   Select-Object -Property ImageName | `
+   Sort-Object -Property ImageName -Descending
+
+#endregion
+
+#region create a linux vm quickly
+
+New-AzureStorageAccount -StorageAccountName 'hackerspace' -Location 'Australia East'
+
+$imageName = Get-AzureVMImage | Where-Object { $_.ImageFamily -contains 'Ubuntu Server 16.04 LTS' } | `
+   Select-Object -Property ImageName | `
+   Sort-Object -Property ImageName -Descending | Select-Object -ExpandProperty ImageName -First 1
+
+Set-AzureSubscription -SubscriptionName 'Azure pass' -CurrentStorageAccountName 'hackerspace'
+
+New-AzureQuickVM -Linux -ServiceName 'hackerservice' -Name 'rico' `
+   -LinuxUser 'tom' -Location 'Australia East' `
+   -Password 'Cha0sric01!' -ImageName $imageName -InstanceSize 'Small' `
+   -VNetName 'hacknet' -SubnetNames 'mgmt' -AvailabilitySetName 'hackerset'
+
+#endregion
+
+#region Add a static IP Address
+Get-AzureVM -ServiceName 'hackerService' -Name 'private' | Set-AzureStaticVNetIP -IPAddress '10.1.0.10' | Update-AzureVM
+#endregion
+
+#region add a data disk
+Get-AzureVm -ServiceName 'hackerService' -Name 'private' | Add-AzureDataDisk -CreateNew -DiskSizeInGB 128 -LUN 0 -DiskLabel 'privateData' | Update-AzureVM
+#endregion
+
+#region add azure endpoint for loadbalancer
+$vm = Get-AzureVm -ServiceName 'hackerService' -Name 'kowalski'
+Add-AzureEndpoint -Name kowalskiHTTP -Protocol tcp -LocalPort 80 -PublicPort 8080 `
+    -LBSetName HTTPLB -ProbeProtocol http -ProbePort 80 -ProbePath / -ProbeIntervalInSeconds 30 -VM $vm | Update-AzureVM
+
+#endregion
+
+#region add internal azure loadbalancer
+Add-AzureInternalLoadBalancer -InternalLoadBalancerName iLB -SubnetName 'mgmt' -ServiceName hackerService
+
+#endregion
+
+#region stop a vm
+
+Stop-AzureVM -Name 'private' -ServiceName 'hackerservice' -StayProvisioned
+
+Stop-AzureVM -Name 'private' -ServiceName 'hackerservice'
+
+#endregion
+
+#region Save an azure image as specialized
+Save-AzureVMImage -ServiceName 'hackerservice' -Name 'private' -ImageName 'UbuntuEmacs' `
+    -ImageLabel 'Ubuntu 16.04 Server with Emacs' `
+    -OSState Specialized
+
+#endregion
+
+#region Save an azure image as Generalized
+Save-AzureVMImage -ServiceName 'hackerservice' -Name 'private' -ImageName 'UbuntuEmacsGen' `
+    -ImageLabel 'Ubuntu 16.04 Server with Emacs' `
+    -OSState Generalized
+
+#endregion
+
+#region Register a VHD as VM Image
+Add-AzureVMImage -ImageName 'UbuntuEmacs' -MediaLocation https://hackerspace.blob.core.windows.net/vhds/UbuntuEmacs-os-2016-12-11-6CBCB6D4.vhd -OS Linux
+#endregion
+
+#region delete a VM Image
+Remove-AzureVMImage -ImageName 'UbuntuEmacs' -DeleteVHD
+#endregion
+
+#region delete a vm
+
+Remove-AzureVM -Name 'kowalski' -ServiceName 'hackerservice' -DeleteVHD
+
+#endregion
+
+#region create a windows vm with a disk
+
+$imageName = Get-AzureVMImage | Where-Object { $_.ImageFamily -contains 'Windows Server 2012 R2 Datacenter' } | `
+   Select-Object -Property ImageName | `
+   Sort-Object -Property ImageName -Descending | Select-Object -ExpandProperty ImageName -First 1
+
+$config = New-AzureVMConfig -Name 'skipper' -InstanceSize 'Small' -ImageName $imageName  | `
+    Add-AzureProvisioningConfig -Windows -AdminUsername 'skipper' -Password 'xxxx' | `
+    Add-AzureEndpoint -Name 'HTTP' -Protocol tcp -LocalPort 80 -PublicPort 80
+
+New-AzureVm -ServiceName 'hackerService' -Location 'Australia East' -VMs $config
+
+#endregion
+
+#region Add an vm access extension
+Get-AzureVm -ServiceName 'hackerService' -Name 'skipper' | Set-AzureVMAccessExtension -UserName 'captain' -Password 'xxxx' | Update-AzureVM
+#endregion
+
+#region Add a custom script extension
+New-AzureStorageContainer -Name 'myscripts' -Permission Container -Context (Get-AzureStorageAccount -StorageAccountName 'hackerspace').Context
+Set-AzureStorageBlobContent -File C:\practice\getmydate.ps1 -Container 'myscripts'  -Context (Get-AzureStorageAccount -StorageAccountName 'hackerspace').Context
+Get-AzureVm -ServiceName 'hackerService' -Name 'skipper' | Set-AzureVMCustomScriptExtension -FileName 'getmydate.ps1'  -ContainerName 'myscripts' -Run getmydate.ps1  | Update-AzureVM
+#endregion
+
+#region Publish the webapp from the webdeploy package
+
+
+Select-AzureRmSubscription -SubscriptionName 'Azure Pass'
+
+New-AzureRmWebAppSlot -ResourceGroupName 'funhacksRG' -Name 'funhacks' -Slot 'staging'
+
+Publish-AzureWebsiteProject -Name 'funhacks' -Package 'C:\practice\funhacks123.zip' -Slot 'staging'
+
+Swap-AzureRmWebAppSlot -SourceSlotName 'staging' -DestinationSlotName 'Production' -Name 'funhacks' -ResourceGroupName 'funhacksRG'
+
+
+#endregion
+
+#region delete a cloud service
+
+Remove-AzureService -ServiceName 'funService' -DeleteAll
+
+#endregion
+
+#region Webjob
+
+New-AzureWebsiteJob -JobName 'funjob' -JobType Continuous -JobFile C:\practice\funjob.zip -Name 'funhacks'
+
+#endregion
+
+#region Deploy the infrastructure from the arm template
+New-AzureRmResourceGroupDeployment -ResourceGroupName 'tangentMgmtRG' -TemplateParameterFile 'C:\practice\tangentMgmtInfra.parameters.json'  -TemplateFile 'C:\practice\tangentMgmtInfra.json'
+#endregion
+
+#region Create a new storage account
+New-AzureRmResourceGroup -Name 'funhacksRG' -Location 'Australia East'
+New-AzureRmStorageAccount -ResourceGroupName funhacksRG -Name 'funhacks' -Location 'Australia East' -SkuName Standard_LRS
+New-AzureStorageAccount -StorageAccountName 'funhacksclassic' -Location 'Australia East' -Type 'Standard_LRS'
+New-AzureStorageAccount -StorageAccountName 'supercoolclassic' -Location 'Australia East' -Type 'Standard_LRS'
+#endregion
+
+#region Add a new container
+$stgkey = Get-AzureStorageKey -StorageAccountName 'funhacksclassic'
+
+$ctx = New-AzureStorageContext -StorageAccountName 'funhacksclassic' -StorageAccountKey $stgkey.Primary
+New-AzureStorageContainer -Name 'scripts' -Permission Container -Context $ctx
+
+Set-AzureStorageBlobContent -File 'C:\practice\commands.ps1' -Container 'scripts' -Context $ctx
+
+#endregion
+
+#region Copy Blob from one storage to another
+$srcstgkey = Get-AzureStorageKey -StorageAccountName 'funhacksclassic'
+$dststgkey = Get-AzureStorageKey -StorageAccountName 'supercoolclassic'
+
+$srcctx = New-AzureStorageContext -StorageAccountName 'funhacksclassic' -StorageAccountKey $srcstgkey.Primary
+$dstctx = New-AzureStorageContext -StorageAccountName 'supercoolclassic' -StorageAccountKey $dststgkey.Primary
+
+New-AzureStorageContainer -Name 'scripts' -Permission Container -Context $dstctx
+
+Start-CopyAzureStorageBlob -SrcBlob 'commands.ps1' -DestBlob 'commands.ps1' -SrcContainer 'scripts' -DestContainer 'scripts' -Context $srcctx -DestContext $dstctx
+
+#endregion
+
+#region Create an SMB Share
+
+New-AzureStorageShare -Name 'scripts' -Context $srcctx
+#endregion
+
+#+end_src

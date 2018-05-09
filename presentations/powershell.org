@@ -1,0 +1,37 @@
+* powershell
+** Commands
+   - get-verb
+   - get-command -full -example -online
+   - get-help
+   - get-member
+   - update-help
+   - Get-WMIobject
+   - Get-CimClass
+   - icacls
+   - Set-ExecutionPolicy
+
+** Points to ponder
+   - Functions vs cmdlets
+   - WMI - Windows Management Instrumentation
+     - To gather information about OS, hardware
+   - CIM - Common Information Model
+     - Replacement for WMI Commands
+   - WinRM has remoting disabled by default. For remote management you need to enable it.
+     - Enable-PSRemoting
+     - Get-PSSessionConfiguration
+     - Set-PSSessionConfiguration
+     - Set-NetFirewallRule
+   - backtick for new line
+   - Param( [Parameter(mandatory=$true)][string]$computerName )
+   - Foreach( $a in $service) { }
+   - <# #> or # for comment
+   - measure -Sum
+   - Invoke-Command -computerName clientComputer { get-psdrive | where name="C"}
+   - [Math]::Round(1.65553,2)
+   - Get-AzureRole -ServiceName xxx | % { set-AzureRole -ServiceName $_.ServiceName }
+   - Create a Hash table
+     #+begin_src bash3
+     $setting = New-Object Hashtable
+     $setting['key'] = value
+     $conn = (@{key1='value1'; key2='value2'})
+     #+end_src

@@ -1,0 +1,37 @@
+* Step by Step Development of DevMate App
+** Day 1
+   - Installed react native, android studio
+   - Did not feel android studio right for react native so configured javascript and react layer in emacs
+   - From a [[http://makeitopen.com/tutorials/building-the-f8-app/planning/][Facebook Planning F8 Blog]] found about nuclide. So installed atom and nuclide plugin to see how it is
+   - Searched for few open source react native projects for sample code. 
+** Day 2 
+   - Understanding the Ecosystem.
+     - nvm -> Node version manager. To manage multiple versions of node. 
+     - Selecting the package manager
+       - NPM
+         Package Manager for both Frontend and Backend. It manages nested dependencies. 
+       - Bower
+         Used to be Package Manager for frontend. Now there is no benefit using Bower. It is getting phased out.
+       - Yarn
+         New package manager from facebook. Has Yarn.lock, parallel, faster, offline installation supported.
+     - Selecting the Task Runner. Task runner is for automating tasks like minification, compilation, unit testing and linting
+       - Grunt
+         It uses configuration. 
+       - Gulp
+         It uses code. It is faster. Easier pipelining. Replacing Grunt.
+     - Selecting the Module Bundler
+       - Browserify
+         Uses gulp/grunt or plugins to get things done. It is simple. 
+       - Webpack
+         It is simply better than anything out there. It is dethroning browserify. 
+     - Selecting the Scaffolding Tools. You can also use some github boilerplate codes.
+       Slush
+       Yeoman
+     - Web Application Framework
+       Express
+   - I chose nvm, yarn, gulp and webpack. I installed them.          
+   - Created a sample react-native project. It uses Yarn as package manager. 
+     Compared the performance with npm and it is amazingly fast and less verbose.
+** Day 3
+   - Started to Learn React Basics from Plural Sight. (Reference: [[https://app.pluralsight.com/library/courses/react-js-getting-started/table-of-contents][React.js Getting Started]])
+   - 

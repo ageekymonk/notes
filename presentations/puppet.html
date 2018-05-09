@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Puppet</title>
+<meta name="author" content="(Ramz)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/css/reveal.css"/>
+
+<link rel="stylesheet" href="file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/css/theme/moon.css" id="theme"/>
+
+<link rel="stylesheet" href="file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/lib/css/zenburn.css"/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">Puppet</h1><h2 class="author">Ramz</h2><p class="date">Created: 2016-11-14 Mon 08:29</p>
+</section>
+<section id="table-of-contents">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#/slide-org84afa9d">Hello world</a></li>
+<li><a href="#/slide-org2a76488">Centralized Architecture</a></li>
+<li><a href="#/slide-org2376506">Decentralized Architecture</a></li>
+<li><a href="#/slide-orgd77d6bd">Resources</a>
+<ul>
+<li><a href="#/slide-org05bfab8">What</a></li>
+<li><a href="#/slide-org19be3d3">Example</a></li>
+<li><a href="#/slide-org766ff0f">Namevars</a></li>
+</ul>
+</li>
+<li><a href="#/slide-org643a867">Facter</a>
+<ul>
+<li><a href="#/slide-orgc663083">Overview</a></li>
+<li><a href="#/slide-orgaa6727d">Facts</a></li>
+<li><a href="#/slide-org51d059d">How to use it ?</a></li>
+</ul>
+</li>
+<li><a href="#/slide-org153dbb3">Conditionals</a></li>
+<li><a href="#/slide-org0d78318">Metaparameters</a></li>
+<li><a href="#/slide-orgfddbece">Ecosystem Overview</a>
+<ul>
+<li><a href="#/slide-org2706dc4">Facter</a></li>
+<li><a href="#/slide-orgf9ce8f4">PuppetDB</a>
+<ul>
+<li><a href="#/slide-orgb677386">What is it for ?</a></li>
+<li><a href="#/slide-orge65aab5">How does puppet uses the db ?</a></li>
+</ul>
+</li>
+<li><a href="#/slide-orgb6d0ec4">Hiera</a></li>
+<li><a href="#/slide-org3ada341">Mcollective</a>
+<ul>
+<li><a href="#/slide-orgf9b4ac4">What is it ?</a></li>
+<li><a href="#/slide-org9c91f14">Architecture Overview</a></li>
+<li><a href="#/slide-org1f228b2">Architecture: Server</a></li>
+<li><a href="#/slide-org7d0097f">Architecture: Client</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#/slide-orgf692feb">Hiera</a></li>
+<li><a href="#/slide-orgd9648a4">Mcollective</a></li>
+<li><a href="#/slide-org06a1efa">PuppetDB</a></li>
+<li><a href="#/slide-org363ac61">Style Guide</a></li>
+<li><a href="#/slide-orgb6c29d0">References</a></li>
+</ul>
+</div>
+</div>
+</section>
+<section>
+<section id="slide-org84afa9d">
+<h2 id="org84afa9d">Hello world</h2>
+<div class="org-src-container">
+
+<pre><code class="bash" >puppet apply -e "notice('hello world')"
+</code></pre>
+</div>
+
+<aside class="notes">
+<p>
+puppet apply -e "err('hello world')"
+puppet apply -e "debug('hello world')"
+</p>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-org2a76488">
+<h2 id="org2a76488">Centralized Architecture</h2>
+
+<div class="figure">
+<p><img src="images/puppet_centralized_architecture.jpg" alt="puppet_centralized_architecture.jpg" />
+</p>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org2376506">
+<h2 id="org2376506">Decentralized Architecture</h2>
+</section>
+</section>
+<section>
+<section id="slide-orgd77d6bd">
+<h2 id="orgd77d6bd">Resources</h2>
+<div class="outline-text-2" id="text-orgd77d6bd">
+</div></section>
+</section>
+<section>
+<section id="slide-org05bfab8">
+<h3 id="org05bfab8">What</h3>
+<ul>
+<li class="fragment appear">Basic Building block of Puppet</li>
+<li class="fragment appear">State definitions</li>
+<li class="fragment appear">Example: file, package, service</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org19be3d3">
+<h3 id="org19be3d3">Example</h3>
+<p>
+In config.pp
+</p>
+<div class="org-src-container">
+
+<pre><code class="puppet" >file { '_some_name':
+  path   =&gt; '/tmp/test',
+  content =&gt; 'Hello world',
+  ensure =&gt; file,
+}
+</code></pre>
+</div>
+<div class="org-src-container">
+
+<pre><code class="bash" >puppet apply config.pp
+</code></pre>
+</div>
+<aside class="notes">
+<p>
+Template for Resource
+</p>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-org766ff0f">
+<h3 id="org766ff0f">Namevars</h3>
+<p>
+Resources have a parameter / attribute which is called Namevar which has to be unique
+Namevar for file Resource is path
+</p>
+</section>
+</section>
+<section>
+<section id="slide-org643a867">
+<h2 id="org643a867">Facter</h2>
+<div class="outline-text-2" id="text-org643a867">
+</div></section>
+</section>
+<section>
+<section id="slide-orgc663083">
+<h3 id="orgc663083">Overview</h3>
+<p>
+Cross platform system profiling library
+</p>
+
+<div class="org-src-container">
+
+<pre><code class="bash" >facter
+</code></pre>
+</div>
+
+<p>
+Output
+</p>
+<div class="org-src-container">
+
+<pre><code class="bash" >architecture =&gt; x86_64
+fqdn =&gt; IIT-LAPTOP-169
+hostname =&gt; IIT-LAPTOP-169
+id =&gt; ramz.sivagurunathan
+productname =&gt; MacBookAir7,2
+os =&gt; {"name"=&gt;"Darwin", "family"=&gt;"Darwin", "release"=&gt;{"major"=&gt;"15", "minor"=&gt;"5", "full"=&gt;"15.5.0"}}
+osfamily =&gt; Darwin
+...
+</code></pre>
+</div>
+
+<aside class="notes">
+<p>
+It gives details like interfaces, ip addresses, path, memory, &#x2026;
+</p>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-orgaa6727d">
+<h3 id="orgaa6727d">Facts</h3>
+<p>
+Types
+</p>
+<ul>
+<li><p>
+Core Facts
+</p>
+<ol>
+<li>Legacy Facts</li>
+<li>Modern / Structured Facts</li>
+
+</ol>
+<div class="org-src-container">
+
+<pre><code class="bash" >facter --show-legacy
+</code></pre>
+</div></li>
+<li>Custom Facts</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org51d059d">
+<h3 id="org51d059d">How to use it ?</h3>
+<p>
+$fact<sub>name</sub> or $facts[fact<sub>name</sub>]
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org153dbb3">
+<h2 id="org153dbb3">Conditionals</h2>
+</section>
+</section>
+<section>
+<section id="slide-org0d78318">
+<h2 id="org0d78318">Metaparameters</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-orgfddbece">
+<h2 id="orgfddbece">Ecosystem Overview</h2>
+<div class="outline-text-2" id="text-orgfddbece">
+</div></section>
+</section>
+<section>
+<section id="slide-org2706dc4">
+<h3 id="org2706dc4">Facter</h3>
+</section>
+</section>
+<section>
+<section id="slide-orgf9ce8f4">
+<h3 id="orgf9ce8f4">PuppetDB</h3>
+<div class="outline-text-3" id="text-orgf9ce8f4">
+</div></section>
+</section>
+<section>
+<section id="slide-orgb677386">
+<h4 id="orgb677386">What is it for ?</h4>
+<p>
+Stores
+</p>
+<ol>
+<li>Most recent facts of all nodes</li>
+<li>Most recent catalog of all nodes</li>
+<li>Optionally, 14 days(configurable) of event reports of all nodes</li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-orge65aab5">
+<h4 id="orge65aab5">How does puppet uses the db ?</h4>
+<p>
+If we are using exported resources then puppet uses puppetDB for searching and retrieving facts
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgb6d0ec4">
+<h3 id="orgb6d0ec4">Hiera</h3>
+</section>
+</section>
+<section>
+<section id="slide-org3ada341">
+<h3 id="org3ada341">Mcollective</h3>
+<div class="outline-text-3" id="text-org3ada341">
+</div></section>
+</section>
+<section>
+<section id="slide-orgf9b4ac4">
+<h4 id="orgf9b4ac4">What is it ?</h4>
+<ul>
+<li>Framework
+<ol>
+<li>For building server orchestration</li>
+<li>For building parallel job execution systems</li>
+
+</ol></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org9c91f14">
+<h4 id="org9c91f14">Architecture Overview</h4>
+
+<div class="figure">
+<p><img src="images/mcollective_architecture.gif" alt="mcollective_architecture.gif" />
+</p>
+</div>
+
+<aside class="notes">
+<p>
+Enter speaker notes here.
+</p>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-org1f228b2">
+<h4 id="org1f228b2">Architecture: Server</h4>
+
+<div class="figure">
+<p><img src="images/mcollective_server.gif" alt="mcollective_server.gif" />
+</p>
+</div>
+<ul>
+<li>Mandatory Plugins
+<ol>
+<li>Connector Plugin</li>
+<li>Security Plugin</li>
+
+</ol></li>
+<li>Optional Plugins
+<ol>
+<li>Agent Plugins</li>
+<li>Registration Plugin</li>
+<li>Data Plugins</li>
+<li>Authorization Plugin</li>
+<li>Audit Plugin</li>
+
+</ol></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org7d0097f">
+<h4 id="org7d0097f">Architecture: Client</h4>
+
+<div class="figure">
+<p><img src="images/mcollective_client.gif" alt="mcollective_client.gif" />
+</p>
+</div>
+<ul>
+<li>Mandatory Plugins
+<ol>
+<li>Connector Plugin</li>
+<li>Security Plugin</li>
+
+</ol></li>
+<li>Optional Plugins
+<ol>
+<li>Agent Plugin DDL Files</li>
+<li>Discovery Plugins</li>
+<li>Validator Plugin</li>
+<li>Aggregate Plugin</li>
+<li>Application Plugins</li>
+
+</ol></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgf692feb">
+<h2 id="orgf692feb">Hiera</h2>
+</section>
+</section>
+<section>
+<section id="slide-orgd9648a4">
+<h2 id="orgd9648a4">Mcollective</h2>
+</section>
+</section>
+<section>
+<section id="slide-org06a1efa">
+<h2 id="org06a1efa">PuppetDB</h2>
+</section>
+</section>
+<section>
+<section id="slide-org363ac61">
+<h2 id="org363ac61">Style Guide</h2>
+</section>
+</section>
+<section>
+<section id="slide-orgb6c29d0">
+<h2 id="orgb6c29d0">References</h2>
+</section>
+</section>
+</div>
+</div>
+<script src="file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/lib/js/head.min.js"></script>
+<script src="file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+ { src: 'file:///Users/ramz.sivagurunathan/projects/sw/opensource/repos/github/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

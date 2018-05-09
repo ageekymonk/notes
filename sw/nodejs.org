@@ -1,0 +1,100 @@
+* Unsorted
+  - Building Blocks
+    - libuv
+    - Google JS Engine V8
+    - c++
+    - js
+  - Nodes Event Loop
+  - module
+    - require
+      #+BEGIN_SRC javascript
+        var fs = require('fs')
+        var x = require('somemodule').somefunction
+      #+END_SRC
+    - module.exports
+  - require
+    - Include Module
+    - Include your project files
+      #+BEGIN_SRC javascript
+        # Includes data.js file
+        var data = require('./data');
+      #+END_SRC
+    - require.resolve to check if a module exist or not. It will not load the module
+    - for require('mymodule'), 
+      - it will look for mymodule.js
+      - mymodule.json
+      - mymodule.node, a compiled addon file
+      - mymodule/index.js
+      - any filename defined as main property in package.json
+      - 
+    - require.extensions gives list of file extension that it looks for
+  - exports
+    - is syntactic sugar for exports = module.exports at top of file
+    - so you can do exports.something = x but you cant export = { something: x}
+  - Asynchronous Non blocking
+    - Callbacks
+      - Request / Reply
+      - No results until all results
+      - Either error or results
+    - Events
+      - Publish / Subscribe
+      - Act on results as they arrive
+      - partial results before error
+  - Stream
+    - Built on top of Events
+    - Pipe from read stream to write stream
+  - process
+    - streams: stdin, stdout, stderr
+    - env
+  - Buffers
+  - socket.io
+  - Testing
+    - assert
+    - mocha and shouldjs
+  - Child Processes
+    - spawn
+    - exec
+    - execFile
+    - fork
+    - cluster
+  - v8 options node cli options
+  - v8 module
+  - REPL
+    - Has a builtin module called repl
+    - rlwrap to use ctrl+r to reverse search
+    - -c syntax check. Can be used for pre commmit hook
+    - -p print
+    - you can customize your repl using repl module. you can preload modules.
+    - .editor -> for multi line functions in repl
+    - .save -> save session
+    - .load -> load another file
+  - global module contains all global objects by default
+  - Buffer
+    - buffer is binary object store. Need encoding to display it.
+    - toString vs String Decoder (handles incomplete string as well)
+  - process
+    - env
+    - Emits events like exit, uncaughtException. you can handle it, if needed.
+  - "module" module
+  - npm
+    - npm install npm -g
+    - npm config list -l
+    - npm shrink-wrap to lock down dependencies
+    - npm home lodash -> to open home page of package
+    - npm repo lodash -> to open repo page of package
+    - npm prune
+    - npm xmas
+  - Timer
+    - setTimeout
+    - setImmediate
+    - process.nextTick
+
+
+
+* Packages
+  1. lodash
+  2. immutable
+  3. aws-sdk
+  4. cheerio
+  5. request-promise
+  6.

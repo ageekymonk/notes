@@ -114,3 +114,22 @@
      /etc/subuid and /etc/subgid
    - Flag to enable in docker daemon is
      --userns-remap=default
+
+* Commands
+  capsh --print
+  sudo capsh --drop=cap_chown,cap_setpcap,cap_setfcap,cap_sys_admin --chroot=$PWD/rootfs --
+  sudo setcap cap_net_bind_service=+ep listen
+  getcap listen
+  mkdir /sys/fs/cgroup/memory/demo
+  echo "100000000" > /sys/fs/cgroup/memory/demo/memory.limit_in_bytes
+  echo "0" > /sys/fs/cgroup/memory/demo/memory.swappiness
+  echo $$ > /sys/fs/cgroup/memory/demo/tasks
+  sudo mount --bind -o ro $PWD/readonlyfiles $PWD/rootfs/var/readonlyfiles
+  sudo nsenter --pid=/proc/29840/ns/pid \
+    unshare -f --mount-proc=$PWD/rootfs/proc \
+    chroot rootfs /bin/bash
+  sudo unshare -p -f --mount-proc=$PWD/rootfs/proc \
+    chroot rootfs /bin/bash
+
+* Articles
+  https://ericchiang.github.io/post/containers-from-scratch/
