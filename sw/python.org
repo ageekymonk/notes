@@ -1,9 +1,28 @@
 * Python
+** Fundamental Datatypes
+*** integer
+    - underscore in numeric literal
+      #+BEGIN_SRC python
+     one_billion = 1_000_000_000
+      #+END_SRC
+*** string
+    - Format string
+      #+BEGIN_SRC python
+     print(f'{hello}')
+      #+END_SRC
 ** Modules
 *** What is a Module ?
     - A module is a python file consisting of code
     - Module is also a python object
     - Like any object it is just a dictionary
+    - Path of the module should be in sys.path
+*** Naming convention
+    - lowercase
+    - Leading underscore to keep module private
+    - Do not use module name to match standard library
+*** Types of Import
+    - Explicit Relative import with dots
+    - Absolute import
 *** How to create a module ?
     - Simply create a python file
     - Since a module is also a python object we can create it without creating a file
@@ -22,10 +41,90 @@
       : {'__name__': 'spam', '__doc__': None}
       : <module 'sys' (built-in)>
       : {'setrecursionlimit': <built-in function setrecursionlimit>, 'dont_write_bytecode': False, 'getrefcount': <built-in function getrefcount>, 'long_info': sys.long_info(bits_per_digit=30, sizeof_digit=4), 'path_importer_cache': {'/usr/lib/python2.7/lib-old': <imp.NullImporter object at 0x7f07762e1070>, '/usr/local/lib/python2.7/dist-packages': None, '/usr/lib/python2.7/encodings': None, '/usr/lib/python2.7/plat-x86_64-linux-gnu': None, '/usr/lib/python2.7/dist-packages/ubuntu-sso-client': None, '/usr/lib/python2.7/lib-tk': None, '/usr/lib/python2.7/lib-dynload': None, '/usr/lib/python2.7/dist-packages/gtk-2.0': None, '/usr/lib/python2.7/dist-packages': None, '/usr/lib/pymodules/python2.7': None, '/usr/lib/python2.7': None, '/usr/lib/python2.7/dist-packages/PILcompat': None, '/usr/lib/python2.7/': None}, 'stdout': <open file '<stdout>', mode 'w' at 0x7f07763e8150>, 'getprofile': <built-in function getprofile>, '__stdin__': <open file '<stdin>', mode 'r' at 0x7f07763e80c0>, 'version_info': sys.version_info(major=2, minor=7, micro=6, releaselevel='final', serial=0), 'exc_clear': <built-in function exc_clear>, 'prefix': '/usr', 'getfilesystemencoding': <built-in function getfilesystemencoding>, 'byteorder': 'little', '_clear_type_cache': <built-in function _clear_type_cache>, 'excepthook': <built-in function excepthook>, '_multiarch': 'x86_64-linux-gnu', 'exc_type': None, 'maxint': 9223372036854775807, '__excepthook__': <built-in function excepthook>, 'executable': '/usr/bin/python', 'float_info': sys.float_info(max=1.7976931348623157e+308, max_exp=1024, max_10_exp=308, min=2.2250738585072014e-308, min_exp=-1021, min_10_exp=-307, dig=15, mant_dig=53, epsilon=2.220446049250313e-16, radix=2, rounds=1), 'copyright': 'Copyright (c) 2001-2014 Python Software Foundation.\nAll Rights Reserved.\n\nCopyright (c) 2000 BeOpen.com.\nAll Rights Reserved.\n\nCopyright (c) 1995-2001 Corporation for National Research Initiatives.\nAll Rights Reserved.\n\nCopyright (c) 1991-1995 Stichting Mathematisch Centrum, Amsterdam.\nAll Rights Reserved.', 'setdlopenflags': <built-in function setdlopenflags>, 'exec_prefix': '/usr', 'getdlopenflags': <built-in function getdlopenflags>, 'getrecursionlimit': <built-in function getrecursionlimit>, 'py3kwarning': False, 'path_hooks': [<type 'zipimport.zipimporter'>], '__package__': None, '_current_frames': <built-in function _current_frames>, 'platform': 'linux2', 'maxsize': 9223372036854775807, 'version': '2.7.6 (default, Jun 22 2015, 17:58:13) \n[GCC 4.8.2]', 'exit': <built-in function exit>, 'call_tracing': <built-in function call_tracing>, 'callstats': <built-in function callstats>, 'flags': sys.flags(debug=0, py3k_warning=0, division_warning=0, division_new=0, inspect=0, interactive=0, optimize=0, dont_write_bytecode=0, no_user_site=0, no_site=0, ignore_environment=0, tabcheck=0, verbose=0, unicode=0, bytes_warning=0, hash_randomization=0), 'setcheckinterval': <built-in function setcheckinterval>, '__doc__': "This module provides access to some objects used or maintained by the\ninterpreter and to functions that interact strongly with the interpreter.\n\nDynamic objects:\n\nargv -- command line arguments; argv[0] is the script pathname if known\npath -- module search path; path[0] is the script directory, else ''\nmodules -- dictionary of loaded modules\n\ndisplayhook -- called to show results in an interactive session\nexcepthook -- called to handle any uncaught exception other than SystemExit\n  To customize printing in an interactive session or to install a custom\n  top-level exception handler, assign other functions to replace these.\n\nexitfunc -- if sys.exitfunc exists, this routine is called when Python exits\n  Assigning to sys.exitfunc is deprecated; use the atexit module instead.\n\nstdin -- standard input file object; used by raw_input() and input()\nstdout -- standard output file object; used by the print statement\nstderr -- standard error object; used for error messages\n  By assigning other file objects (or objects that behave like files)\n  to these, it is possible to redirect all of the interpreter's I/O.\n\nlast_type -- type of last uncaught exception\nlast_value -- value of last uncaught exception\nlast_traceback -- traceback of last uncaught exception\n  These three are only available in an interactive session after a\n  traceback has been printed.\n\nexc_type -- type of exception currently being handled\nexc_value -- value of exception currently being handled\nexc_traceback -- traceback of exception currently being handled\n  The function exc_info() should be used instead of these three,\n  because it is thread-safe.\n\nStatic objects:\n\nfloat_info -- a dict with information about the float inplementation.\nlong_info -- a struct sequence with information about the long implementation.\nmaxint -- the largest supported integer (the smallest is -maxint-1)\nmaxsize -- the largest supported length of containers.\nmaxunicode -- the largest supported character\nbuiltin_module_names -- tuple of module names built into this interpreter\nversion -- the version of this interpreter as a string\nversion_info -- version information as a named tuple\nhexversion -- version information encoded as a single integer\ncopyright -- copyright notice pertaining to this interpreter\nplatform -- platform identifier\nexecutable -- absolute path of the executable binary of the Python interpreter\nprefix -- prefix used to find the Python library\nexec_prefix -- prefix used to find the machine-specific Python library\nfloat_repr_style -- string indicating the style of repr() output for floats\n__stdin__ -- the original stdin; don't touch!\n__stdout__ -- the original stdout; don't touch!\n__stderr__ -- the original stderr; don't touch!\n__displayhook__ -- the original displayhook; don't touch!\n__excepthook__ -- the original excepthook; don't touch!\n\nFunctions:\n\ndisplayhook() -- print an object to the screen, and save it in __builtin__._\nexcepthook() -- print an exception and its traceback to sys.stderr\nexc_info() -- return thread-safe information about the current exception\nexc_clear() -- clear the exception state for the current thread\nexit() -- exit the interpreter by raising SystemExit\ngetdlopenflags() -- returns flags to be used for dlopen() calls\ngetprofile() -- get the global profiling function\ngetrefcount() -- return the reference count for an object (plus one :-)\ngetrecursionlimit() -- return the max recursion depth for the interpreter\ngetsizeof() -- return the size of an object in bytes\ngettrace() -- get the global debug tracing function\nsetcheckinterval() -- control how often the interpreter checks for events\nsetdlopenflags() -- set the flags to be used for dlopen() calls\nsetprofile() -- set the global profiling function\nsetrecursionlimit() -- set the max recursion depth for the interpreter\nsettrace() -- set the global debug tracing function\n", 'api_version': 1013, 'pydebug': False, 'getdefaultencoding': <built-in function getdefaultencoding>, 'getcheckinterval': <built-in function getcheckinterval>, 'maxunicode': 1114111, 'settrace': <built-in function settrace>, 'setprofile': <built-in function setprofile>, 'argv': [''], '__stdout__': <open file '<stdout>', mode 'w' at 0x7f07763e8150>, 'meta_path': [], '__name__': 'sys', 'subversion': ('CPython', '', ''), 'builtin_module_names': ('__builtin__', '__main__', '_ast', '_bisect', '_codecs', '_collections', '_functools', '_heapq', '_io', '_locale', '_md5', '_random', '_sha', '_sha256', '_sha512', '_socket', '_sre', '_struct', '_symtable', '_warnings', '_weakref', 'array', 'binascii', 'cPickle', 'cStringIO', 'cmath', 'errno', 'exceptions', 'fcntl', 'gc', 'grp', 'imp', 'itertools', 'marshal', 'math', 'operator', 'posix', 'pwd', 'select', 'signal', 'spwd', 'strop', 'sys', 'syslog', 'thread', 'time', 'unicodedata', 'xxsubtype', 'zipimport', 'zlib'), 'stdin': <open file '<stdin>', mode 'r' at 0x7f07763e80c0>, '__stderr__': <open file '<stderr>', mode 'w' at 0x7f07763e81e0>, 'displayhook': <built-in function displayhook>, 'float_repr_style': 'short', 'gettrace': <built-in function gettrace>, 'modules': {'copy_reg': <module 'copy_reg' from '/usr/lib/python2.7/copy_reg.pyc'>, 'sre_compile': <module 'sre_compile' from '/usr/lib/python2.7/sre_compile.pyc'>, '_sre': <module '_sre' (built-in)>, 'encodings': <module 'encodings' from '/usr/lib/python2.7/encodings/__init__.pyc'>, 'site': <module 'site' from '/usr/lib/python2.7/site.pyc'>, '__builtin__': <module '__builtin__' (built-in)>, 'sysconfig': <module 'sysconfig' from '/usr/lib/python2.7/sysconfig.pyc'>, '__main__': <module '__main__' from '<stdin>'>, 'encodings.encodings': None, 'abc': <module 'abc' from '/usr/lib/python2.7/abc.pyc'>, 'posixpath': <module 'posixpath' from '/usr/lib/python2.7/posixpath.pyc'>, '_weakrefset': <module '_weakrefset' from '/usr/lib/python2.7/_weakrefset.pyc'>, 'errno': <module 'errno' (built-in)>, 'encodings.codecs': None, 'sre_constants': <module 'sre_constants' from '/usr/lib/python2.7/sre_constants.pyc'>, 're': <module 're' from '/usr/lib/python2.7/re.pyc'>, '_abcoll': <module '_abcoll' from '/usr/lib/python2.7/_abcoll.pyc'>, 'types': <module 'types' from '/usr/lib/python2.7/types.pyc'>, '_codecs': <module '_codecs' (built-in)>, 'encodings.__builtin__': None, '_warnings': <module '_warnings' (built-in)>, 'genericpath': <module 'genericpath' from '/usr/lib/python2.7/genericpath.pyc'>, 'stat': <module 'stat' from '/usr/lib/python2.7/stat.pyc'>, 'zipimport': <module 'zipimport' (built-in)>, '_sysconfigdata': <module '_sysconfigdata' from '/usr/lib/python2.7/_sysconfigdata.pyc'>, 'warnings': <module 'warnings' from '/usr/lib/python2.7/warnings.pyc'>, 'UserDict': <module 'UserDict' from '/usr/lib/python2.7/UserDict.pyc'>, 'encodings.utf_8': <module 'encodings.utf_8' from '/usr/lib/python2.7/encodings/utf_8.pyc'>, 'sys': <module 'sys' (built-in)>, 'virtualenvwrapper': <module 'virtualenvwrapper' (built-in)>, 'codecs': <module 'codecs' from '/usr/lib/python2.7/codecs.pyc'>, '_sysconfigdata_nd': <module '_sysconfigdata_nd' from '/usr/lib/python2.7/plat-x86_64-linux-gnu/_sysconfigdata_nd.pyc'>, 'os.path': <module 'posixpath' from '/usr/lib/python2.7/posixpath.pyc'>, 'sitecustomize': <module 'sitecustomize' from '/usr/lib/python2.7/sitecustomize.pyc'>, 'signal': <module 'signal' (built-in)>, 'traceback': <module 'traceback' from '/usr/lib/python2.7/traceback.pyc'>, 'linecache': <module 'linecache' from '/usr/lib/python2.7/linecache.pyc'>, 'posix': <module 'posix' (built-in)>, 'encodings.aliases': <module 'encodings.aliases' from '/usr/lib/python2.7/encodings/aliases.pyc'>, 'exceptions': <module 'exceptions' (built-in)>, 'sre_parse': <module 'sre_parse' from '/usr/lib/python2.7/sre_parse.pyc'>, 'os': <module 'os' from '/usr/lib/python2.7/os.pyc'>, '_weakref': <module '_weakref' (built-in)>}, 'warnoptions': [], 'getsizeof': <built-in function getsizeof>, '_mercurial': ('CPython', '', ''), '__displayhook__': <built-in function displayhook>, '_getframe': <built-in function _getframe>, 'stderr': <open file '<stderr>', mode 'w' at 0x7f07763e81e0>, 'exc_info': <built-in function exc_info>, 'path': ['', '/usr/lib/python2.7', '/usr/lib/python2.7/plat-x86_64-linux-gnu', '/usr/lib/python2.7/lib-tk', '/usr/lib/python2.7/lib-old', '/usr/lib/python2.7/lib-dynload', '/usr/local/lib/python2.7/dist-packages', '/usr/lib/python2.7/dist-packages', '/usr/lib/python2.7/dist-packages/PILcompat', '/usr/lib/python2.7/dist-packages/gtk-2.0', '/usr/lib/pymodules/python2.7', '/usr/lib/python2.7/dist-packages/ubuntu-sso-client'], 'hexversion': 34014960}
+    - init file if present can be used to combine all the imports across
+      different files in the module
+      #+BEGIN_SRC python
+      # __init__.py
+      # now importing the module gets all of the thins in both file1 and file2
+      from . import file1
+      from . import file2
+      #+END_SRC
+    - __all__ variable in a file is used to expose what to export when using
+      from x import *
+    - python -m spam.foo runs spam.foo modules as main. It understands relative
+      imports. If you try to python spam/foo.py if there is relative import it
+      will fail. -m is good for this case.
+    - Using python3 -m pip install xxx is better because we know which python it
+      is going to use, especially if you are using multiple version of python.
+    - If there is __main__.py in the package, if you use -m option it will go to
+      the __main__.py file.
+    - Tools that use -m option is
+      - profile
+      - pdb
+      - coverage
+      - trace
+      - http.server
+      - zipfile
+    - create zipfile
+      #+BEGIN_SRC bash
+      python3 -m zipfile -c hola.zip hola/*
+      #+END_SRC
+    - if zip file has __main__, python can execute the zipfile, if the zipfile
+      contains __main__.py file
+    - Append the zipfile to shell script with #!/usr/bin/env python3 . Now you
+      can execute the shellscript
+    - Run python3 -vv , will show all the thing that python is trying to import
+    - How does python fill the sys.path
+      - sys.prefix is a variable which gets set based on where python is installed
+      - sys.path adds prefix + path for forming the entries
+      - sys.exec_prefix tells where is the shared c code
+      - sys.path can contain directories, zipfile, egg file
+      - All the virtual environments are messing with sys.prefix to give what we need
+      - PYTHONHOME is the environment variable which can be set to alter the
+        location python. which in turn will alter the sys.prefix and all your
+        modules will be loaded from that prefix.
+      - PYTHONPATH is the environment variable which could be used to prepend
+        some directories to the sys.path
+      - site.py is imported for adding third party packages locations to the sys.path
+      - You can add .pth file in the site-packages with list of paths in it, it
+        will get appended to the sys.path
+      - If your .pth file contains line with import then it will get executed as
+        python code
+      - You can write sitecustomize.py and usercustomize.py in site-packages to
+        further customize the sys.path
+    - In python 3 you dont need __init__.py file because by default python3
+      treats directories as modules
+    - If two different directories contain the same directory as subdir, and if
+      both of them are in sys.path then python will merge the common subdir into
+      one and you can import any file in both subdir
+    - If there is no __init__.py then python3 makes a new namespace
+    - Plugin system can be built with namespace, subdir
+    - Create a module programmatically
+      #+BEGIN_SRC python
+      import types
+      mod = types.ModuleType('mymodule')
+      #+END_SRC
+    - __package__ variable in the module says which package it belongs to. This
+      helps in relative import
+    - package is also a module
+    - sys.meta_path contains bunch of importer objects when we run import each
+      object is called with the name to see if anyone has any info about it
+    - Module specs is returned when we do find_spec on each element of sys.meta_path
+    - Using module specs we can find out whether the module could be imported or not
+    - sys.path_hooks contains objects to check if it can handle such a file
+      type. you can add handler for http url in sys.path
+    -
 *** What are module attributes
     It is a bunch of default attributes of a module
     __name__, __doc__, __path__, etc
-** Internals
+*** pathlib
+    - fspath
+*** Reimport a module
+    modules are cached in sys.modules
+    #+BEGIN_SRC python
+    import importlib
+    importlib.reload(some_module)
+    #+END_SRC
 *** Execute a string in python
     #+BEGIN_SRC python :results output
     loop_str = 'for i in range(3): print(i)'
@@ -72,14 +171,10 @@
     This controls how the import is done. In python 2.7 it is implemented in C.
     In python 3 it will have values
     #+BEGIN_SRC python :results output
-    import sys
-    print(sys.path)
-    print(sys.meta_path)
+import sys
+print(sys.path)
+print(sys.meta_path)
     #+END_SRC
-
-    #+RESULTS:
-    : ['', '/home/chaos/.virtualenvs/default/lib/python2.7', '/home/chaos/.virtualenvs/default/lib/python2.7/plat-x86_64-linux-gnu', '/home/chaos/.virtualenvs/default/lib/python2.7/lib-tk', '/home/chaos/.virtualenvs/default/lib/python2.7/lib-old', '/home/chaos/.virtualenvs/default/lib/python2.7/lib-dynload', '/usr/lib/python2.7', '/usr/lib/python2.7/plat-x86_64-linux-gnu', '/usr/lib/python2.7/lib-tk', '/home/chaos/.virtualenvs/default/local/lib/python2.7/site-packages', '/home/chaos/.virtualenvs/default/lib/python2.7/site-packages']
-    : []
 *** ModuleSpec and Import hooks
     It is a python 3.4 feature
     #+BEGIN_SRC python :results output
@@ -89,34 +184,33 @@
 
     #+RESULTS:
 *** path hooks
-** Idioms
+** Magic Methods
 *** Named Tuple
 *** __len__
 *** __getitem__
 *** eval
-***
 ** Metaprogramming
    - inspect.signature
    - bind
    - descriptor
    - C cube linearization algorithm
    - self starts from star, super calls next in line
-** Dictionaries     
+** Dictionaries
    - globals is a dictionary
    - locals acts like a dictionary but has more efficient implementation
      instead. When we look into locals then it becomes a dictionary
    - vars
    - key sharing dictionary
-   - 3.6 dictionary is ordered. 
+   - 3.6 dictionary is ordered.
 ** Underscore
    - In interpreter it holds the last value of the expression
    - For ignoring values
      #+BEGIN_SRC python
-     x, _, y = (1, 2, 3) # x = 1, y = 3 
-     x, *_, y = (1, 2, 3, 4, 5) # x = 1, y = 5  
+     x, _, y = (1, 2, 3) # x = 1, y = 3
+     x, *_, y = (1, 2, 3, 4, 5) # x = 1, y = 5
      # Ignore the index
-     for _ in range(10):     
-         do_something() 
+     for _ in range(10):
+         do_something()
      #+END_SRC
    - Variable with leading underscore. This convention is used for declaring private variables, functions, methods and classes in a module
      #+BEGIN_SRC python
@@ -130,7 +224,7 @@
            def _double_price(self): # private method
                return self._price * self._hidden_factor
            def get_double_price(self):
-               return self._double_price() 
+               return self._double_price()
      #+END_SRC
    - single_trailing_underscore_. This convention could be used for avoiding conflict with Python keywords or built-ins.
      #+BEGIN_SRC python
@@ -148,10 +242,53 @@
        print(bin_base) # 240
        print(hex_base) # 305441741
      #+END_SRC
-   - 
+   -
 ** Snippets
    - == vs is
    - Function Argument Unpacking func(*list) func(*tuple) func(*generator_expression) func(**dict)
-   - 
-   - 
+   - __import__() is a built in function that imports. import foo calls that
+     function. you can call it directly too
+   - you can wrap __import__ for your custom import statement
+   - Recommended way is importlib.import_module()
+   -
+** class
+   - Preserve class attribute definition order
 
+** annotations
+   - class level
+   - variable annotations
+** GIL
+   - Global Interpreter Lock
+   - Protects the interpreter internal implementation resources, C extensions
+   - It comes to play in multiple threads
+   - Major GIL Issues
+     1. Threads using multiple CPUs for computation.
+     2. Uninterruptible instruction (in python VM)
+     3. Bad behaviour of CPU bound threads
+* Things to when you write python code
+  - Export decorator
+    #+BEGIN_SRC python
+    def export(func):
+        globals()[func.__name__] = func
+        __all__.append(func.__name__)
+        return func
+    #+END_SRC
+* Cli
+** Pip install with ssl cert verify ignored
+   #+BEGIN_SRC bash
+   pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org splunk-sdk
+   #+END_SRC
+** Build package
+   #+BEGIN_SRC bash
+   python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools wheel
+   python3 setup.py sdist bdist_wheel
+   #+END_SRC
+** Upload to pypi test
+   #+BEGIN_SRC bash
+   python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade twine
+   python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+   #+END_SRC
+** Upload to pypi
+   #+BEGIN_SRC bash
+   python3 -m twine upload dist/*
+   #+END_SRC

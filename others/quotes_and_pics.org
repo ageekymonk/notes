@@ -49,3 +49,14 @@
    In the beginner's mind there are many possibilities,
    but in the expert's there are few.
    #+END_QUOTE
+*** Knowing
+    #+BEGIN_QUOTE
+    The most dangerous thought you can have as a creative person is to think you know what you're doing.
+    #+END_QUOTE
+** Flow
+   #+BEGIN_QUOTE
+   The best moments usually occur when a person’s body or mind is stretched to
+   its limits in a voluntary effort to accomplish something difficult and
+   worthwhile.
+   - Mihaly Csikszentmihalyi
+   #+END_QUOTE

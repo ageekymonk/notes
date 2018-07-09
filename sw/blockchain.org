@@ -7,6 +7,17 @@
 ** Bitcoin
    - Virtual Currency
    - Max 21 Million. 12 Millions are already there
+* Hyperledger
+** Hyperledger Fabric
+   - Enterprise grade, Distributed Ledger with smart contracts
+   - Higher Transactions per second
+   - Components
+     1. CA
+     2. Peer
+     3. Ordering service 
 * To Research
   1. Elliptic Curve
   2. mathematical trap door
+  3. Byzantine Fault Tolerant (BFT)
+  4. Crash Fault Tolerant (CFT)
+  5. 

@@ -258,43 +258,18 @@
     | SPC h l        | Go back helm buffer                                    |                          |
     | SPC h m        | man pages                                              |                          |
     | SPC j =        | indent buffer                                          |                          |
-    | SPC g s        | magit status                                           |                          |
     | SPC g b        | magit blame microstate                                 |                          |
     | SPC p p        | projects, Alt-g shows git status, Ctr-s for search     |                          |
     | SPC n +        | increase number                                        |                          |
     | SPC n -        | decrease number                                        |                          |
-    | SPC            |                                                        |                          |
-    | gg             | move to start of buffer                                |                          |
-    | G              | move to end of buffer                                  |                          |
-    | %              | move to matching paranthesis                           |                          |
-    | :%s/old/new    | replace in whole buffer old by new                     |                          |
-    | o              | insert line below                                      |                          |
-    | O              | insert line above                                      |                          |
-    | R              | Replace word                                           |                          |
-    | Ctrl R         | Redo                                                   |                          |
     | Ctrl e         | to scroll down                                         |                          |
     | Ctrl y         | to scroll up                                           |                          |
-    | [ SPC          | Insert above                                           |                          |
     | v              | visual Mode                                            |                          |
     | V              | visual Mode with selected line                         |                          |
     | Ctrl v         | Visual mode but vertical selection                     |                          |
     | gv             | select previously selected block                       |                          |
     | m a-z          | mark location                                          |                          |
     | ' a-z          | jump to mark                                           |                          |
-    | w              | move to forward beginning of word                      |                          |
-    | e              | move to forward end of word                            |                          |
-    | ge             | move to backward end of word                           |                          |
-    | W              | move forward word                                      |                          |
-    | b              | move backword to beginning of word                     |                          |
-    | 0              | beginning of line                                      |                          |
-    | $              | end of line                                            |                          |
-    | )              | jump forward one sentence                              |                          |
-    | (              | jump backward one sentence                             |                          |
-    | }              | jump forward one paragraph                             |                          |
-    | {              | jump backward one paragraph                            |                          |
-    | H              | jump to top of screen                                  |                          |
-    | M              | jump to middle of screen                               |                          |
-    | L              | jump to bottom of screen                               |                          |
     | C              | Change till end of line                                |                          |
     | D              | Delete till end of line                                |                          |
     | Y              | copy till end of line                                  |                          |
@@ -310,8 +285,6 @@
     | SPC z x +      | font size increase/decrease                            |                          |
     | > >            | Indent line                                            |                          |
     | SPC x J/K      | Move Line down/Up                                      |                          |
-    | :%s/old/new/gc | replace old by new with confirmation                   |                          |
-    | :%s/old/new/g  | replace old by new                                     |                          |
     | s <char>       | wrap by char in visual mode                            |                          |
     | SPC s e        | Start IEdit Mode.                                      |                          |
     |                | F - Limit to function                                  |                          |
@@ -326,10 +299,19 @@
     | SPC ;          | comment blocks                                         |                          |
     | #              | Mark under cursor                                      |                          |
     |                |                                                        |                          |
-*** TODO To research
-    - relative line number
-    - indent guide
 ** Elisp
+*** defcustom
+    When you specify variables in defcustom others can customize it using
+    customize feature
+*** defgroup
+    You can specify all defcustom variables in a single group
+*** defface
+    You can define a custom graphical attributes for font, color etc
+    [[http://ergoemacs.org/emacs/elisp_define_face.html]]
+*** defvar / defconst
+    A variable definition is a construct that announces your intention to use a
+    symbol as a global variable. It uses the special forms defvar or defconst
+
 *** Symbol
     - Symbol is a variable in its un-evaluated state. It is similar to eval(string) in other languages
     - To define a symbol put apostrophe in front of it
@@ -422,6 +404,96 @@
     |          | delete-region          |                                                   |                                       |
     |          | erase-buffer           |                                                   |                                       |
     |          |                        |                                                   |                                       |
+* Best in Emacs
+** Navigation
+    | Shortcuts | Action                             |   |
+    |-----------+------------------------------------+---|
+    | gg        | move to start of buffer            |   |
+    | G         | move to end of buffer              |   |
+    | %         | move to matching paranthesis       |   |
+    | j         | move down                          |   |
+    | k         | move up                            |   |
+    | h         | move left                          |   |
+    | l         | move right                         |   |
+    | C-d       | page down                          |   |
+    | C-u       | page up                            |   |
+    | w         | move to forward beginning of word  |   |
+    | e         | move to forward end of word        |   |
+    | ge        | move to backward end of word       |   |
+    | W         | move forward word                  |   |
+    | b         | move backword to beginning of word |   |
+    | 0         | beginning of line                  |   |
+    | $         | end of line                        |   |
+    | )         | jump forward one sentence          |   |
+    | (         | jump backward one sentence         |   |
+    | }         | jump forward one paragraph         |   |
+    | {         | jump backward one paragraph        |   |
+    | H         | jump to top of screen              |   |
+    | M         | jump to middle of screen           |   |
+    | L         | jump to bottom of screen           |   |
+** Edit Buffer
+    | Shortcuts      | Action                               |   |
+    |----------------+--------------------------------------+---|
+    | :%s/old/new/g  | replace in whole buffer old by new   |   |
+    | :%s/old/new/gc | replace old by new with confirmation |   |
+    | o              | insert line below                    |   |
+    | O              | insert line above                    |   |
+    | R              | Replace word                         |   |
+    | C-R            | Redo                                 |   |
+    | C-/            | Undo                                 |   |
+    | [ SPC          | Insert above                         |   |
+    | ] SPC          | Insert below                         |   |
+    |                |                                      |   |
+** Magit
+    | Shortcuts | Action       |   |
+    |-----------+--------------+---|
+    | SPC g s   | magit status |   |
+    |           |              |   |
+
+** Dired Mode
+   1. 'w' for copy filename, '0w' for copy absolute filename
+   2. C-x C-q to make dired buffer writable
+   3. dired-do-shell-command (!) on file
+** Case Intelligent replacement
+** Rectangular Copy
+** Eshell-
+    | Shortcuts               | Action                        |   |
+    |-------------------------+-------------------------------+---|
+    | Helm Find Files + C-c i | Insert filename               |   |
+    | Helm Find Files + M-e   | Create shell in the directory |   |
+    | Helm Find Files + M-p   | History of cd locations       |   |
+    | > #<buffername>         | to redirect to buffer         |   |
+    | M-l                     | command history               |   |
+    | SPC p '                 | Open shell in project root    |   |
+    | 2 SPC '                 | Open second shell             |   |
+    |                         |                               |   |
+** Org Mode
+*** Agenda Mode
+*** Habits
+*** Gcalc
+*** Excel
+** Calculator
+** Narrow and Widen Section
+** Neotree
+** Avy Jump
+** Layouts & Windows
+** Undo Tree
+** Kill Ring
+** Relative Numbering
+** Json Format
+** Prodigy & Process Management
+** Programmers
+*** Flycheck
+*** Smart Tab
+*** Direnv
+*** Smart Selection
+*** Repl
+** Tramp Mode
+** smartparens
+** dig
+** origami
+** Image dired
+** golden rule
 * Tmux
   | command | action                         |
   |---------+--------------------------------|

@@ -1,0 +1,5 @@
+* Commands
+** Add splunk server to universal forwarder
+   #+BEGIN_SRC bash
+   splunk add forward-sever splunk-server.com:9997
+   #+END_SRC

@@ -1,8 +1,7 @@
 * Australia
-** Beaches
-*** NSW
-    1. Milk Beach
-    2. 
+** NSW
+   1. Milk Beach
+   2. Mount Wilson
 ** Camping Places
   1. Yalwal
   2. Oberon
@@ -21,4 +20,4 @@
 ** Bushwalking
    1. Kurnell to cronulla Walk
    2. Smugglers Cave walk
-   3. 
+   3.

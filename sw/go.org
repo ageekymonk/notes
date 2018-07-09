@@ -1,4 +1,17 @@
 * golang
 ** Features
    1. Compiled & Statically Typed language
-   2.
+** Concurrency
+   - concurrency is not parallelism
+   - Well written concurrent program run efficiently on multiple processors
+   -
+** Libraries
+   - hterm
+   -
+** Snippets
+*** GOROOT
+    #+BEGIN_SRC bash
+    go env GOROOT
+    #+END_SRC
+* Articles
+  [[https://blog.cloudflare.com/using-go-as-a-scripting-language-in-linux/][Using go as a scripting language]]

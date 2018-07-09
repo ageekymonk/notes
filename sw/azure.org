@@ -2,254 +2,282 @@
   - 150 Minutes
   - Multiple choice / Drag and Drop
   - Case Study ( With Multiple choice and Drag and Drop)
-* Azure Iaas
+** Azure Iaas
 
-** Terminologies
-   - Azure compute unit: A1 instance has 100
-   - Service Healing is migrating a VM from one failed host to a good one
-   - Availability Set deploys VM in separate rack
-   - Fault Domain is the physical rack
-   - Upgrade Domain is to isolate VM for host upgrade.
-   - Hybrid Connectivity to connect Azure with On Premise network
-
-** General Info
-   - When scaled up the VM has to be rebooted and all storage on temporary disk is lost
-   - There are 3 Fault Domains for Resource Manager
-   - There are 5 - 20 Upgrade Domains
-   - Power and Switch in a rack is a single point of failure
-   - Hybrid Connectivity
-     1. Point to site
-        - Connect up to 128 Client machines using certificate authentication to azure network
-        - 80 - 200 Mbps
-        - Remote Dev / test or for secure remote admin
-     2. Site to Site
-        - Connect on premise with azure using IPSEC over internet
-        - 80 - 200 Mbps
-     3. Express Route
-        - Direct connectivity through Exchange provider (colocated dc) or network service provider to azure
-        - 10 Mbps - 10 Gbps
-
-** Azure Media Services
 *** Terminologies
-    - Assets
-      Digital Media Files (audio/video/images/closed caption)
-*** Points to Ponder
-    - Assets are mapped to a BLOB container in azure storage
-    - Files inside an assets as stored as BLOB in BLOB Container
-    - An Asset should contain unique instance of media content
-    - Asset Encryption
-      - No encryption
-      - Storage Encrypted
-        Encrypted locally and stored
-      - Common Encryption Protected
-        Encrypted with common Encryption or PlayReady DRM
-      - Envelope Encryption Protected
-        Protecting HTTP Live streaming
-    - BLOB container is the boundary point for access control
-    - Azure storage account can host unlimited number of BLOB Container under 500TB
-    - Locator provides an entry point for accessing files within an asset
-    - Locator Types
-      1. OnDemandOrigin
-         Used for streaming
-      2. SAS URL
-         Used for upload and download of media files from azure storage
-    - Jobs are used to process audio/video
-    - Jobs contain tasks
-    - Channels processes live stream content. It is 5 per account
-    - Programs allow admins to control publishing and storage of live streaming content
-    - ArchiveWindowLength property that says how long the recorded content will be retained. (5min - 25 hours)
-    - Streaming Endpoint delivers content directly to client player app or CDN
-    - Streaming Endpoint supports live stream or Video on Demand
-    - Scale unit 200 Mbps
-    - 2 Streaming Endpoint per Media Service Account
-*** CDN
-    - Only public available BLOBs are cached using CDN
-    - HTTPS is supported but you can't your certificates. You should use only CDN FQDN
+    - Azure compute unit: A1 instance has 100
+    - Service Healing is migrating a VM from one failed host to a good one
+    - Availability Set deploys VM in separate rack
+    - Fault Domain is the physical rack
+    - Upgrade Domain is to isolate VM for host upgrade.
+    - Hybrid Connectivity to connect Azure with On Premise network
+
+*** General Info
+    - When scaled up the VM has to be rebooted and all storage on temporary disk is lost
+    - There are 3 Fault Domains for Resource Manager
+    - There are 5 - 20 Upgrade Domains
+    - Power and Switch in a rack is a single point of failure
+    - Hybrid Connectivity
+      1. Point to site
+         - Connect up to 128 Client machines using certificate authentication to azure network
+         - 80 - 200 Mbps
+         - Remote Dev / test or for secure remote admin
+      2. Site to Site
+         - Connect on premise with azure using IPSEC over internet
+         - 80 - 200 Mbps
+      3. Express Route
+         - Direct connectivity through Exchange provider (colocated dc) or network service provider to azure
+         - 10 Mbps - 10 Gbps
+
+*** Azure Media Services
+**** Terminologies
+     - Assets
+       Digital Media Files (audio/video/images/closed caption)
+**** Points to Ponder
+     - Assets are mapped to a BLOB container in azure storage
+     - Files inside an assets as stored as BLOB in BLOB Container
+     - An Asset should contain unique instance of media content
+     - Asset Encryption
+       - No encryption
+       - Storage Encrypted
+         Encrypted locally and stored
+       - Common Encryption Protected
+         Encrypted with common Encryption or PlayReady DRM
+       - Envelope Encryption Protected
+         Protecting HTTP Live streaming
+     - BLOB container is the boundary point for access control
+     - Azure storage account can host unlimited number of BLOB Container under 500TB
+     - Locator provides an entry point for accessing files within an asset
+     - Locator Types
+       1. OnDemandOrigin
+          Used for streaming
+       2. SAS URL
+          Used for upload and download of media files from azure storage
+     - Jobs are used to process audio/video
+     - Jobs contain tasks
+     - Channels processes live stream content. It is 5 per account
+     - Programs allow admins to control publishing and storage of live streaming content
+     - ArchiveWindowLength property that says how long the recorded content will be retained. (5min - 25 hours)
+     - Streaming Endpoint delivers content directly to client player app or CDN
+     - Streaming Endpoint supports live stream or Video on Demand
+     - Scale unit 200 Mbps
+     - 2 Streaming Endpoint per Media Service Account
+**** CDN
+     - Only public available BLOBs are cached using CDN
+     - HTTPS is supported but you can't your certificates. You should use only CDN FQDN
+     -
+
+*** MFA
+    - Supports Telephone call, SMS, OTP, App Password, App generated Time based code
     -
+*** Azure Storage
+**** VM Storage
+     - Every VM Has atleast two disks. One for OS and other for temporary disk
+     - A VM can have additional disks attached called data disks
+     - Data disks and OS disk can have max size of 1 TB.
+     - Data disks and OS disks are stored in azure storage.
+     - Temporary disks is locally attached disk
+     - There are 3 copies of VHD (disks) in azure storage in local region
+     - Allows Geo redundancy where 3 more replica can be stored in other region
+     - Data disk does not have caching by default. OS disk has caching by default
+     - Max 4 data disk can have caching enabled.
+**** Important Points
+     - Store account hierarchy: account -> containers -> blobs
+     - Storage account
+       - can have 500 TB capacity
+       - 20000 IOPS
+       - LRS: 20 Gbps inbound 30 Gbps outbound
+       - GRS: 10 Gbps inbound 20 Gbps outbound
+       - Security through management certificate or name and authentication key
+       - 4 endpoints: blobs, files, tables, queues
+       - storage in azure is organized by containers.
+     - Containers have 3 levels of security
+     - If you want to recreate access key for storage account. Shut down all virtual machine before creation otherwise VM become unusable
+     - Add-AzureRmVHD to upload vhd file. It uploads only the written data not empty zeros. Converts dynamic disk to fixed disk on upload
+     - Azure only supports VHD
+     - Save-AzureRmVHD only download written data.
+     - Attaching existing disk use powershell / portal
+     - To move Blob across accounts use Asynchronous blob copy
+     - Azure Storage resources are divided into stamps.
+     - Multiple storage account in a stamp. Each stamp has an ip
+     - Intra stamp copy is instant. Inter stamp copy is asynchronous and will take time
+     - For optimum performance:
+       - Implement RAID 0 (disk stripping with no parity) or storage spaces (one column per disk)
+       - Group multiple disk to large volume
+       - Enable Readwrite caching
+     - Types of storage
+       1. Standard
+          - Based on Page blobs, supports geo redundancy
+          - 500 IOPS per disk , 1 TB Max
+          - Can be attached to Any instance
+          - Supports Readwrite, Readonly, None caching for Data disk
+          - Supports Readwrite, Readonly caching for os disk
+          - Max 4 data disk can have caching enabled
+       2. Premium
+          - Upto 5000 IOPS per disk
+          - DS, GS, DS_V2 instance
+          - Local Redundancy only
+          - Only Read only caching supported on data disk or No caching. Readonly is default
+          - Read Write and Read only caching supported on os disk
+          - 32 TB disk max per account
+          - Three sizes
+            1. P10 128GB/500IOPS/100MBps
+            2. P20 512GB/2300IOPS/150MBps
+            3. P30 1024GB/5000IOPS/200MBps
+*** Azure Networking
+**** Points to Ponder
+     - Azure provides dns server
+     - All VMs created after will automatically assigned the dns server. Existing VM has to be restarted.
+     - Load balancer is Layer 4
+     - Load balancer supports upto 100 VM
+     - Load balancer Idle timeout from 4 mins upto 30 mins
+     - Health is TCP / HTTP
+     - Affinity is 5/3/2
+     - Supports max of 5 public ip & 1 private ip for the Frontend ip. More than 1 needs template or powershell
+     - Azure App Gateway
+       - http/https loadbalancer
+       - Session affinity via cookies
+       - SSL Offloading
+     - Network Security Group
+       - can be associated with vm / subnet
+       - Tags
+         1. VIRTUAL_NETWORK
+         2. AZURE_LOADBALANCER
+         3. INTERNET
+     - Traffic Manager
+       - Performance / Weighted / priority (fail over)
+       -
 
-** MFA
-   - Supports Telephone call, SMS, OTP, App Password, App generated Time based code
-   -
-** Azure Storage
-*** VM Storage
-    - Every VM Has atleast two disks. One for OS and other for temporary disk
-    - A VM can have additional disks attached called data disks
-    - Data disks and OS disk can have max size of 1 TB.
-    - Data disks and OS disks are stored in azure storage.
-    - Temporary disks is locally attached disk
-    - There are 3 copies of VHD (disks) in azure storage in local region
-    - Allows Geo redundancy where 3 more replica can be stored in other region
-    - Data disk does not have caching by default. OS disk has caching by default
-    - Max 4 data disk can have caching enabled.
-*** Important Points
-    - Store account hierarchy: account -> containers -> blobs
-    - Storage account
-      - can have 500 TB capacity
-      - 20000 IOPS
-      - LRS: 20 Gbps inbound 30 Gbps outbound
-      - GRS: 10 Gbps inbound 20 Gbps outbound
-      - Security through management certificate or name and authentication key
-      - 4 endpoints: blobs, files, tables, queues
-      - storage in azure is organized by containers.
-    - Containers have 3 levels of security
-    - If you want to recreate access key for storage account. Shut down all virtual machine before creation otherwise VM become unusable
-    - Add-AzureRmVHD to upload vhd file. It uploads only the written data not empty zeros. Converts dynamic disk to fixed disk on upload
-    - Azure only supports VHD
-    - Save-AzureRmVHD only download written data.
-    - Attaching existing disk use powershell / portal
-    - To move Blob across accounts use Asynchronous blob copy
-    - Azure Storage resources are divided into stamps.
-    - Multiple storage account in a stamp. Each stamp has an ip
-    - Intra stamp copy is instant. Inter stamp copy is asynchronous and will take time
-    - For optimum performance:
-      - Implement RAID 0 (disk stripping with no parity) or storage spaces (one column per disk)
-      - Group multiple disk to large volume
-      - Enable Readwrite caching
-    - Types of storage
-      1. Standard
-         - Based on Page blobs, supports geo redundancy
-         - 500 IOPS per disk , 1 TB Max
-         - Can be attached to Any instance
-         - Supports Readwrite, Readonly, None caching for Data disk
-         - Supports Readwrite, Readonly caching for os disk
-         - Max 4 data disk can have caching enabled
-      2. Premium
-         - Upto 5000 IOPS per disk
-         - DS, GS, DS_V2 instance
-         - Local Redundancy only
-         - Only Read only caching supported on data disk or No caching. Readonly is default
-         - Read Write and Read only caching supported on os disk
-         - 32 TB disk max per account
-         - Three sizes
-           1. P10 128GB/500IOPS/100MBps
-           2. P20 512GB/2300IOPS/150MBps
-           3. P30 1024GB/5000IOPS/200MBps
-** Azure Networking
-*** Points to Ponder
-    - Azure provides dns server
-    - All VMs created after will automatically assigned the dns server. Existing VM has to be restarted.
-    - Load balancer is Layer 4
-    - Load balancer supports upto 100 VM
-    - Load balancer Idle timeout from 4 mins upto 30 mins
-    - Health is TCP / HTTP
-    - Affinity is 5/3/2
-    - Supports max of 5 public ip & 1 private ip for the Frontend ip. More than 1 needs template or powershell
-    - Azure App Gateway
-      - http/https loadbalancer
-      - Session affinity via cookies
-      - SSL Offloading
-    - Network Security Group
-      - can be associated with vm / subnet
-      - Tags
-        1. VIRTUAL_NETWORK
-        2. AZURE_LOADBALANCER
-        3. INTERNET
-    - Traffic Manager
-      - Performance / Weighted / priority (fail over)
-      -
+*** Availability Set
+    - Classic Mode: 50 VM Max across 2 Racks
+    - Resource Manager Mode: 100 VM across 3 Racks
+*** Classic
+**** Cloud Services
+     - Container for VM
+     - Max 50 per Cloudservice
+     - Shares a common IP
+*** VM Extensions
+    - There is an agent running on every VM
+    -
+** Azure Web apps
+*** Points to ponder
+    - App services
+    - App Service Plans: Managed compute resources to run your app services
+    - Resource groups: Logical containers to organize and manage resources
+    - App Service Plans
+      1. Free
+         - Shared VMs
+      2. Shared
+         - 1 GB Storage
+         - Shared VMs
+         - Custom Domains
+      3. Basic
+         - 10GB Storage
+         - Shared VMs
+         - Custom Domains
+         - Scale upto 3 instances
+      4. Standard
+         - Dedicated VMs and No Quotas
+         - SSL
+         - Traffic Manager
+         - Autoscaling
+         - Backups
+         - oauth
+         - Deployment Slots
+      5. Premium
+    - Publish: FTP, Web deploy using Visual Studio, Continuous Integration
+** Azure Cloud Services
+*** Points to ponder
+    - Stateless VM
+    - Equivalent to Elastic Bean Stalk
+    - Can be Paas or Iaas
+    - In Iaas, 50 VMs per cloud service
+    - Two types of roles
+      1. Web Role
+      2. Worker Role
+    - Deploy Cloudservices from
+      1. Visual Studio
+      2. Visual Studio Online
+      3. Management Portal
+      4. powershell
+      5. Web Deploy -> Not persistent across new instance but fast for dev
+    - Colocated and Dedicated Caches
+    -
+** Azure Governance
+*** Tools for governance
+    1. Azure EA Portal
+    2. Azure AD
+    3. Operation Management Suite (OMS)
+    4. Security center and key vault
+*** Points to ponder
+    - Enterprise Azure Roles
+      - Enterprise Admin - ea.azure.com
+      - Department Admin - ea.azure.com
+      - Account Owner    - Account Portal (account.windowsazure.com)
+      - Service Admin    - portal.azure.com
+    - Department/Account/Subscription Methodology
+      - Functional
+      - Business Division
+      - Geographic
+    - Resource Groups and tags will help to check for cost per resource group / tag
+    - 15 tags per resource group
+    - Controlling Resources within subscription
+      - Policies
+        - Manage what resources or configurations are available at subscription/Resource group/resource level
+      - RBAC
+        - Which users/groups can perform which action on which resources
+        - Role
+          1. Owner
+             - allow all actions on all resources
+          2. Contributor
+             - similar to owner except for managing policies and subscriptions
+          3. Reader
+      - Resource Providers and Resource Types
+    - Each azure subscription is linked to azure AD
 
-** Availability Set
-   - Classic Mode: 50 VM Max across 2 Racks
-   - Resource Manager Mode: 100 VM across 3 Racks
-** Classic
-*** Cloud Services
-    - Container for VM
-    - Max 50 per Cloudservice
-    - Shares a common IP
-** VM Extensions
-   - There is an agent running on every VM
-   -
-* Azure Web apps
-** Points to ponder
-   - App services
-   - App Service Plans: Managed compute resources to run your app services
-   - Resource groups: Logical containers to organize and manage resources
-   - App Service Plans
-     1. Free
-        - Shared VMs
-     2. Shared
-        - 1 GB Storage
-        - Shared VMs
-        - Custom Domains
-     3. Basic
-        - 10GB Storage
-        - Shared VMs
-        - Custom Domains
-        - Scale upto 3 instances
-     4. Standard
-        - Dedicated VMs and No Quotas
-        - SSL
-        - Traffic Manager
-        - Autoscaling
-        - Backups
-        - oauth
-        - Deployment Slots
-     5. Premium
-   - Publish: FTP, Web deploy using Visual Studio, Continuous Integration
-* Azure Cloud Services
-** Points to ponder
-   - Stateless VM
-   - Equivalent to Elastic Bean Stalk
-   - Can be Paas or Iaas
-   - In Iaas, 50 VMs per cloud service
-   - Two types of roles
-     1. Web Role
-     2. Worker Role
-   - Deploy Cloudservices from
-     1. Visual Studio
-     2. Visual Studio Online
-     3. Management Portal
-     4. powershell
-     5. Web Deploy -> Not persistent across new instance but fast for dev
-   - Colocated and Dedicated Caches
-   -
-* Azure Governance
-** Tools for governance
-   1. Azure EA Portal
-   2. Azure AD
-   3. Operation Management Suite (OMS)
-   4. Security center and key vault
-** Points to ponder
-   - Enterprise Azure Roles
-     - Enterprise Admin - ea.azure.com
-     - Department Admin - ea.azure.com
-     - Account Owner    - Account Portal (account.windowsazure.com)
-     - Service Admin    - portal.azure.com
-   - Department/Account/Subscription Methodology
-     - Functional
-     - Business Division
-     - Geographic
-   - Resource Groups and tags will help to check for cost per resource group / tag
-   - 15 tags per resource group
-   - Controlling Resources within subscription
-     - Policies
-       - Manage what resources or configurations are available at subscription/Resource group/resource level
-     - RBAC
-       - Which users/groups can perform which action on which resources
-       - Role
-         1. Owner
-            - allow all actions on all resources
-         2. Contributor
-            - similar to owner except for managing policies and subscriptions
-         3. Reader
-     - Resource Providers and Resource Types
-   - Each azure subscription is linked to azure AD
-
-
-* Install
-  #+begin_src bash
+** Install
+   #+begin_src bash
   Install-Package -Name AzureRM.NetCore.Preview -Source https://www.powershellgallery.com/api/v2 -ProviderName NuGet -ExcludeVersion -Destination <Folder you want this to be installed>
   Import-Module AzureRM.NetCore.Preview
   Install-Module -Name Azure.Storage
   Login-AzureRMAccount
-  #+end_src
-* Powershell commands
-  #+begin_src bash
+   #+end_src
+** Powershell commands
+   #+begin_src bash
   # Allow to run local scripts
   Set-ExecutionPolicy –ExecutionPolicy ByPass –Scope CurrentUser
   # Reset the permission to not allow local scripts
   Set-ExecutionPolicy –ExecutionPolicy Default –Scope CurrentUser
-  #+end_src
-* Questions
-  1. x-plat cli
-  2.
+   #+end_src
+** Questions
+   1. x-plat cli
+   2.
+
+* Commands / Snippets
+** Give AKS access to ACR
+   #+BEGIN_SRC bash
+#!/bin/bash
+
+AKS_RESOURCE_GROUP=myAKSResourceGroup
+AKS_CLUSTER_NAME=myAKSCluster
+ACR_RESOURCE_GROUP=myACRResourceGroup
+ACR_NAME=myACRRegistry
+
+# Get the id of the service principal configured for AKS
+CLIENT_ID=$(az aks show --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query "servicePrincipalProfile.clientId" --output tsv)
+
+# Get the ACR registry resource id
+ACR_ID=$(az acr show --name $ACR_NAME --resource-group $ACR_RESOURCE_GROUP --query "id" --output tsv)
+
+# Create role assignment
+az role assignment create --assignee $CLIENT_ID --role Reader --scope $ACR_ID
+   #+END_SRC
+** Login to azure container registry
+   #+BEGIN_SRC bash
+   az acr login --name registryName
+   #+END_SRC
+* Debug
+** To check if AD Tenant is valid
+   #+BEGIN_SRC
+   https://login.microsoftonline.com/<tenant>/.well-known/openid-configuration
+   #+END_SRC

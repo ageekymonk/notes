@@ -2,6 +2,31 @@
 ** Investments
 *** Key Ideas
 **** When Currency Weakens Invest on Export Companies
+** Terminologies
+*** EBITDA
+    - Earnings Before Interest, Tax, Depreciation and Amortization
+    - It is not applicable for Banks
+    - It shows operating profits
+    - Compare with companies in same industry
+    - EBITDA Margin = (EBITDA / Revenue) * 100
+    - It is the profitability of the company. Can be used to compare how company
+      is performing in each quarter. What is the EBITDA Margin for each product etc.
+*** EPS
+    - Earnings Per Share
+    - Profit / Shares
+    - Forward EPS is projected EPS for next quarter or year
+    - Trailing EPS is the current EPS for the last year / quarter
+*** P/E
+    - Price / (EPS)
+    - Can be used to compare companies in the same sector or how companies
+      perform at different times
+*** ROE
+    - Return on Equity
+    - Profit / Shareholders Funds
+    - Shareholders funds = Share Capital + Free reserves
+    - ROCE = Return on Capital Employed
+    - ROCE = EBIT / Capital Employed
+    - Capital Employed = Capital + Debt
 ** Notes
    - Interest Rate depends upon
      1. opportunity cost
@@ -81,4 +106,4 @@
      - It is inflation caused by sudden spike in increase in price of something.
        That causes a ripple effect and brings the entire economy down by
        increasing inflation of everything else
-     - 
+     -

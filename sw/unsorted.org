@@ -150,3 +150,33 @@
     - For financial services and banking
     - Ricardian contract. Legally Enforceable
     -
+* Microservices
+  - Should be event driven (should be the preferred way)
+    [[http://blog.christianposta.com/microservices/why-microservices-should-be-event-driven-autonomy-vs-authority/]]
+  - Loosely coupled
+  - Domain Events Pattern ???
+    [[https://lostechies.com/jimmybogard/2014/05/13/a-better-domain-events-pattern/]]
+  - Event Sourcing ???
+    [[https://martinfowler.com/eaaDev/EventSourcing.html]]
+  - Apache Camel
+  - Netflix Hystrix
+  - Adding resiliency to Microservices
+    [[http://blog.christianposta.com/microservices/3-easy-things-to-do-to-make-your-microservices-more-resilient/]]
+    - Promises and Fallbacks
+    - Consumer Contracts
+    - Idempotent consumers
+  - [[http://fabric8.io/]]
+  - Data in Microservices
+    [[http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data/]]
+  - [[http://blog.christianposta.com/microservices/the-hardest-part-of-microservices-calling-your-services/]]
+  - Conversation Patterns
+    [[http://www.enterpriseintegrationpatterns.com/docs/Conversations_loosely_coupled.pdf]]
+  - [[http://blog.christianposta.com/microservices/application-network-functions-with-esbs-api-management-and-now-service-mesh/]]
+  - http://philcalcado.com/2017/08/03/pattern_service_mesh.html
+  - To read
+    - [[https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/]]
+    - https://cloudevents.io/
+    - https://serverless.com/event-gateway/
+    - https://github.com/virtual-kubelet/virtual-kubelet
+    - Repository pattern
+    - https://www.openservicebrokerapi.org/

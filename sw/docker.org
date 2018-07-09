@@ -1,3 +1,21 @@
+* Containerd
+  - Industry standard core container runtime
+  - manage complete container lifecycle of its host system
+  - Components
+    - CTR (containerd CLI)
+    - A daemon exposing gRPC API over a local unix socket
+    - Protobuf specs between components
+  - Where docker sits
+#+DOWNLOADED: https://containerd.io/img/chart-c.png @ 2018-06-12 22:17:14
+  [[file:Containerd/chart-c_2018-06-12_22-17-14.png]]
+    - Architecture
+#+DOWNLOADED: https://containerd.io/img/chart-a.png @ 2018-06-12 22:16:28
+[[file:Containerd/chart-a_2018-06-12_22-16-28.png]]
+
+  - containerd cli can be used to pull and push images
+  - containerd cli can be used to run an image
+  - You can plug in any container runtimes like runc
+  - containerd does not do build. Does not have docker compose
 * Networking
   - Three pillars of networking
     1. CNM
@@ -101,7 +119,7 @@
   - funktion
   - parse
   - calico
-  -
+    - 
 * Namespaces
 ** PID
 ** Mount
@@ -114,7 +132,6 @@
      /etc/subuid and /etc/subgid
    - Flag to enable in docker daemon is
      --userns-remap=default
-
 * Commands
   capsh --print
   sudo capsh --drop=cap_chown,cap_setpcap,cap_setfcap,cap_sys_admin --chroot=$PWD/rootfs --
@@ -131,5 +148,14 @@
   sudo unshare -p -f --mount-proc=$PWD/rootfs/proc \
     chroot rootfs /bin/bash
 
+    #+BEGIN_SRC bash
+    pred='process matches ".*(ocker|vpnkit).*" || (process in {"taskgated-helper", "launchservicesd", "kernel"} && eventMessage contains[c] "docker")'
+    /usr/bin/log stream --style syslog --level=debug --color=always --predicate "$pred"
+    #+END_SRC
 * Articles
   https://ericchiang.github.io/post/containers-from-scratch/
+
+* Tools
+** Buildkit
+   [[https://github.com/genuinetools/img][img]]
+   [[https://github.com/moby/buildkit][buildkit]]

@@ -29,36 +29,8 @@
    2. Autoscale disk size from initial to no limit
    3.
 * GCP
-** BigData
-*** Cloud Dataflow
-    - Data Processing Service
-    - Supports both batch and stream
-    -
-*** Cloud DataProc
-    - Hadoop and Spark
-    -
-*** Cloud Datalab
-    - Interactive tool for data exploration, analysis, visualization and machine learning
-    - Built on top of Jupyter
-    -
-*** Cloud Dataprep
-    - Explore, clean, and prepare data for analysis
-*** Cloud PubSub
-    - Messaging Middleware
-    -
-** ML
-*** Machine Learning Engine
-*** Cloud Natural Language API
-*** Cloud Translate API
-*** Cloud Speech API
-*** Cloud Video Intelligence
-** Storage
-*** BigTable
-    - NoSQL Analytics
-    - Terabytes to Petabytes
-    - High Volume Writes
-    - Latency in ms
-    -
+** Foundation
+*** Compute Engine
 *** Cloud Storage
     - Equivalent to S3
     - Cannot nested Bucket
@@ -72,13 +44,46 @@
       4. coldline
     - All classes have same throughput, low latency, high durability. Difference
       is in availability, storage durations,
+    - Transfer services (one or recurring) can be setup to inject data
+** Data Frameworks
+*** Cloud Dataflow
+    - Data Processing Service
+    - Supports both batch and stream
+    -
+*** Cloud DataProc
+    - Google Managed Hadoop, HDFS, Pig, Hive and Spark
+    -
+*** Cloud Dataprep
+    - Explore, clean, and prepare data for analysis
+*** Cloud PubSub
+    - Messaging Middleware
+    -
+** Analytics ML
+*** BigQuery
+*** Cloud Datalab
+    - Interactive tool for data exploration, analysis, visualization and machine learning
+    - Built on top of Jupyter
+*** Machine Learning Engine
+*** Cloud Natural Language API
+*** Cloud Translate API
+*** Cloud Speech API
+*** Cloud Video Intelligence
+** Databases
+*** BigTable
+    - NoSQL Analytics
+    - Terabytes to Petabytes
+    - High Volume Writes
+    - Latency in ms
 *** Cloud Datastore
     - Supports ACID Transactions
     - NoSQL
     - 0 to terabytes
-*** SQL
+*** Cloud SQL
+    - Managed SQL
+    - Automatic Backups & Replication
+    - 
 *** Spanner
     - SQL
-    -
+      -
 ** App Engine
    -
