@@ -29,6 +29,13 @@
    There are only two ways to live your life. One is as though nothing is a
    miracle. The other is as though everything is a miracle. - Albert Einstein
    #+end_quote
+
+   #+BEGIN_QUOTE
+   The purpose of life is not to be happy. It is to be useful, to be honorable,
+   to be compassionate, to have it make some difference that you have lived and
+   lived well
+   - Ralph Waldo Emerson
+   #+END_QUOTE
 ** Success
    #+begin_quote
    Don't measure yourself by what you have accomplished, but by what you should have accomplished with your ability. -- John Wooden

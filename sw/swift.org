@@ -1,0 +1,18 @@
+* Swift
+* MacOS Application Development
+  - Layout 
+    - Window controller
+      - Handle window specific tasks like resizing, reposition, renaming title, etc
+    - View controller
+      - Everything else is handled in view controller 
+      - Types
+        - NSViewController
+        - NSSplitViewController
+        - NSTabViewController
+      - Each split and tab has its own view controller
+  - View
+  - Control
+    - All buttons, textfields are controls
+  - Core data
+    - framework used to manage model layer objects in your app
+    - 

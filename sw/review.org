@@ -1,0 +1,41 @@
+# -*- mode: org; coding: utf-8 -*-
+#+STARTUP: showall
+
+* Machine Learning 
+** Linear Regression :drill:
+   SCHEDULED: <2018-10-13 Sat>
+   :PROPERTIES:
+   :ID:       D7815C8B-9879-42B9-8610-9CBC02C38D35
+   :DRILL_LAST_INTERVAL: 4.14
+   :DRILL_REPEATS_SINCE_FAIL: 2
+   :DRILL_TOTAL_REPEATS: 1
+   :DRILL_FAILURE_COUNT: 0
+   :DRILL_AVERAGE_QUALITY: 5.0
+   :DRILL_EASE: 2.6
+   :DRILL_LAST_QUALITY: 5
+   :DRILL_LAST_REVIEWED: [2018-10-09 Tue 14:55]
+   :END:
+   Types of Learning Algorithms
+*** Answer
+    1. Supervised
+    2. Unsupervised
+** Linear Regression :drill:
+   SCHEDULED: <2018-10-13 Sat>
+   :PROPERTIES:
+   :ID:       DE387F4F-09FF-4F6B-9EE8-8F78B7FA8147
+   :DRILL_LAST_INTERVAL: 4.14
+   :DRILL_REPEATS_SINCE_FAIL: 2
+   :DRILL_TOTAL_REPEATS: 1
+   :DRILL_FAILURE_COUNT: 0
+   :DRILL_AVERAGE_QUALITY: 5.0
+   :DRILL_EASE: 2.6
+   :DRILL_LAST_QUALITY: 5
+   :DRILL_LAST_REVIEWED: [2018-10-09 Tue 14:55]
+   :END:
+   Linear Regression is a supervised/unsupervised algorithm
+*** Answer   
+    Supervised Learning Algorithm
+** Linear Regression
+   What is the cost function J(θ) in Linear Regression ?
+*** Answer
+    (1/2m) ∑(h(x) - y)²

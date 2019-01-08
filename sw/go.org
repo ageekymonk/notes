@@ -15,3 +15,8 @@
     #+END_SRC
 * Articles
   [[https://blog.cloudflare.com/using-go-as-a-scripting-language-in-linux/][Using go as a scripting language]]
+* Tools
+  - go-skel
+  - trash
+  - dapper
+    - 

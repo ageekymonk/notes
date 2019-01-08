@@ -5,31 +5,213 @@
   4.
 ** Compute
    1. Can have custom cpu and memory size
-   2. You can have read only disk attached to multiple instances
-   3. rest and cli options are given in the webpage
-   4. Shows cost in the page and even the breakup
-   5. You can select processor
-   6. You can add gpus
-   7. Custom Metadata is supported
-   8. Sustained usage it gives you discount
-   9. Shows snapshot size based on incremental snapshot
-   10. Restful UI
+   2. You can pick persistent disks which can be standard or SSD
+   3. You can also opt for local SSD for scratch space
+   4. You can have read only disk attached to multiple instances
+   5. Persistent disks can be resized while it is attached and running
+   6. rest and cli options are given in the webpage
+   7. Shows cost in the page and even the breakup
+   8. You can select processor
+   9. You can add gpus
+   10. Custom Metadata is supported
+   11. Sustained usage it gives you discount
+       - For predefined machine types
+       - vcpus and system memory for custom machine types
+       - vcpus and system memory occupied by sole tenanat nodes
+   12. Shows snapshot size based on incremental snapshot
+   13. Restful UI
 ** Network
    1. Google does not support point to site VPN
    2. Network and subnet can span regions and zones
-   3. VPC can span regions
-   4. Each region has an Internet gateway and VPN Gateway
-   5. We can make ephemeral ip to static.
-   6. Firewall can be created for network/instance
-   7. Firewall can allow deny based on ip, port and protocol
-   8.
+   3. VPC is of global scope. subnets are regional.
+   4. Can create resources in a subnet which are in different zones.
+   5. Dynamically increase the size of the subnet without affecting the existing resources
+   6. Each region has an Internet gateway and VPN Gateway
+   7. We can make ephemeral ip to static.
+   8. Firewall can be created for network/instance
+   9. Firewall can allow deny based on ip, port and protocol
+   10. Organized in Regions and zones. (similar to aws region and aws
+      availability zones)
+   11. Interconnect options
+       1. VPN
+          - Uses Cloud Router
+          - uses BGP
+       2. Direct Peering
+          - Not covered by googles SLA
+       3. Carrier Peering
+          - using partner network
+          - Not covered by google SLA
+       4. Dedicated Interconnect
 ** Storage
-   1. Cloud storage Vs S3. All classes have save throughput, low latency and
+   1. Cloud storage Vs S3. All classes have same throughput, low latency and
       high durability
    2. Autoscale disk size from initial to no limit
-   3.
 * GCP
 ** Foundation
+*** General
+    - Resources are organzied in projects. Projects can be in folders. Folders
+      can be in other folders. Above folders is organization node.
+    - Folders are only available to G-Suite and Cloud Identity customers that
+      have an organization resource
+    - Each project has an unique project id that user choses. Project also has
+      project name which is for user's reference. This is mutable. GCP assigns
+      project number for each project. You cannot reuse project id after
+      deletion. 
+    - Notable organization roles are
+      1. Organization policy administrator
+      2. Billing Account Creator
+      3. Project creator
+    - Three types of IAM roles
+      1. Primitive
+         - They are coarse grained
+         - Existed before introduction of cloud IAM
+         - Owner (can do billing), Editor, Viewer
+      2. Predefined
+         - Finer grained roles for resources
+      3. Custom
+         - can be created at project or organization level. Cannot be created at
+           folder level
+         - If the predefined role that custom role uses changes, it is not
+           inherited by custom role
+    - Cloud Source Repositories
+      - Allow any number of source repositories
+    - Cloud Functions
+      - Written in JS
+    - Deployment Manager
+    - StackDriver
+      1. Monitoring, Logging, Trace, Error Reporting and Debugging
+*** Loadbalancing
+    - Divided based on
+      1. Global vs Regional
+         - Global Load balancing requires Premium Tier
+         - Regional requires standard Tier 
+    #+DOWNLOADED: https://cloud.google.com/load-balancing/images/choose-lb-2.svg @ 2018-08-27 10:23:02
+    [[file:GCP/choose-lb-2_2018-08-27_10-23-02.svg]] 
+
+    #+DOWNLOADED: https://cloud.google.com/load-balancing/images/choose-lb-3.svg @ 2018-08-27 10:25:06
+    [[file:GCP/choose-lb-3_2018-08-27_10-25-06.svg]]
+      1. External vs Internal
+         - External Load Balancer - HTTP(S), SSL Proxy, TCP Proxy, Network TCP/UDP
+         - Internal LB - Internal TCP/UDP LB
+      2. Traffic Type
+      3. Global Load Balancer
+         1. HTTP(S) Load Balancer
+         2. SSL Proxy
+         3. TCP Proxy
+      4. Regional Load Balancer
+         1. Internal TCP/UDP Load Balancer
+         2. Network TCP/UDP Load Balancer
+      5. There are 5 types of loadbalancing
+         1. Global HTTP(S)
+            - TLS 1.0 and up is only supported
+         2. Global SSL Proxy
+            - TCP with SSL Offload
+         3. Global TCP Proxy
+            - TCP without SSL Offload
+         4. Regional Network
+         5. Regional Internal
+      6. Managed Instance Groups
+         - Can be regional or zonal
+      7. Cloud CDN
+
+#+DOWNLOADED: https://cloud.google.com/cdn/images/cdn-response-flow.png @ 2018-08-27 10:35:12
+
+[[file:GCP/cdn-response-flow_2018-08-27_10-35-12.png]]
+      1. Cloud Armour
+         - Protect your load balanced services
+         - Blacklist or whitelist IP
+         -
+#+DOWNLOADED: https://cloud.google.com/armor/images/ip-bl-wl-2.svg @ 2018-08-27 10:40:22
+[[file:GCP/ip-bl-wl-2_2018-08-27_10-40-22.svg]] 
+         - Cloud Identity Aware proxy
+#+DOWNLOADED: https://cloud.google.com/armor/images/ip-bl-wl-6.svg @ 2018-08-27 10:42:55
+[[file:GCP/ip-bl-wl-6_2018-08-27_10-42-55.svg]] 
+*** Networking
+    - VPC
+      - Provides connectivity for Compute Engine, Kubernetes Engine, App Engine Flex
+      - Subnets are regional
+      - Instances with private IP can communicate with google API if you enable
+        private google access for the subnet
+      - VPC Peering allows connectivity across two VPC regardless of projects, organization
+      - shared VPC
+        - Connects projects within the same organization
+        - Host project contains one or more shared VPC
+        - Service project is a project that is attached to host project
+        - A project that is neither host project or service project is a
+          standalone project
+        - When a host project is enabled, all of its VPC becomes shared vpc
+        - App Engine Flexible cannot participate in shared vpc
+      - Types of VPC Network
+        1. Auto mode
+           - subnet in each region is automatically created
+        2. Custom mode
+           - No subnets are created
+    - When to choose 
+#+DOWNLOADED: https://cloud.google.com/interconnect/images/interconnect-baybridge-flowchart.svg @ 2018-08-27 10:13:42
+[[file:GCP/interconnect-baybridge-flowchart_2018-08-27_10-13-42.svg]] 
+    - Cloud VPN
+      - connects your on premise network to GCP VPC using IPSEC VPN Tunnel
+#+DOWNLOADED: https://cloud.google.com/vpn/images/cloud-vpn-overview-01.svg @ 2018-08-27 09:14:28
+      [[file:GCP/cloud-vpn-overview-01_2018-08-27_09-14-28.svg]]
+
+      - 99.9% service availability
+      - Site to site VPN 
+      - supports static routing
+      - Supports dynamic routing using cloud router
+      - Cloud VPN Gateway is a regional resource. It can connect to another
+        cloud VPN Gateway or on premise VPN Gateway
+      - Two VPN tunnels must be established
+      - Three routing types for vpn tunnels
+        1. Dynamic Routing
+           - BGP
+           - Recommended as tunnels does not need to be recreated if the route changes
+           - Use cloud router for this
+#+DOWNLOADED: https://cloud.google.com/router/images/cloud-router-for-vpns-with-vpc-network.svg @ 2018-08-27 10:01:39
+[[file:GCP/cloud-router-for-vpns-with-vpc-network_2018-08-27_10-01-39.svg]]
+        1. Policy Based Routing
+           - You specify the remote ip network and local ip network when
+             creating cloud VPN tunnel
+           - static routes are automatically created
+        2. Route based VPN
+           - You specify only the remote ip network.
+           - You create the routes manually
+        3. cloud VPN only supports pre shared key for authentication
+        4. Setup
+           1. Create a VPN Gateway with static IP Address
+           2. Create the forwarding rules
+           3. Create a tunnel to the remote gateway
+           4. Create the static route
+        5. Cloud Router
+           - Provides BGP Routing
+        6. Cloud Interconnect
+           - Types
+             1. Dedicated Interconnect
+                - Minimum 10Gbps
+                - Traffic flows directly between networks not through internet
+                - Requires routing equipment in a colocation facility
+                - End to end SLA
+                - Data is not encrypted
+                - Can't use cloud VPN
+             2. Partner Interconnect 
+                - Minimum of 50Mbps
+                - Traffic flows through a service provider not through internet
+                - SLA Between google and service provider
+           - enterprise grade connection to gcp
+           - provides access to private network addresses (RFC1918)
+           - Max 10Gbps cable to max of 8 cables to gcp network
+        7. Peering
+           - Provides access to Google's public IP only without SLA
+           - Types
+             - Direct Peering
+               - If you can satisfy the google's peering requirements
+               - 10 Gbps for each link
+             - Carrier Peering
+               - If you cannot satisfy the google's peering requirements
+        8. Shared VPC
+           - Single VPC across multiple projects
+        9. VPC Peering
+        10. Types
+            - Default Networking
 *** Compute Engine
 *** Cloud Storage
     - Equivalent to S3
@@ -37,19 +219,72 @@
     - For high performance it is better to have few buckets and lots of objects
       inside it
     - Max 5TB file size
+    - Petabytes of capacity
     - Storage Class
       1. MultiRegional
       2. Regional
       3. Nearline
       4. coldline
     - All classes have same throughput, low latency, high durability. Difference
-      is in availability, storage durations,
+      is in availability, storage durations
     - Transfer services (one or recurring) can be setup to inject data
+    - Use ACL or IAM for controlling bucket access
+    - Use ACL for controlling bucket content access
+    - Can be regional or multi regional
+    - Immutable
+    - All storage classes offer millisecond access time
+    - you can specify storage class per object as well
+    - Cloud Storage Transfer Service
+      - scheduled batch transfer from other cloud provider or different cloud
+        storage region of from different end point
+    - Transfer Appliance
+    
+#+DOWNLOADED: https://cloud.google.com/images/storage-options/flowchart.svg @ 2018-08-27 13:29:52
+[[file:GCP/flowchart_2018-08-27_13-29-52.svg]]  
+*** App Engine
+    - Type of Environments
+      1. Standard
+         - Supports Java, Python, Go, Nodejs and PHP as runtime
+         - All request timeout at 60s
+         - Limits on third party sw
+         - millisecond startup
+         - cannot write to local disk
+         - Background threads with restrictions is supported
+         - Does not support background processes
+         - Scale to zero
+         - 
+      2. Flexible
+         - Runs on docker containers
+         - minute start up
+         - Can ssh to the VM
+         - write to local disk
+         - Scale to one
+         - Max request timeout is 60 minutes
+*** Cloud Endpoints & Apigee Edge
+    - Helps to create and manage API
+*** Cloud Scanner
+    - identifies security vulnerabilities in your App Engine and Compute Engine web applications.
+    - Currently supports 
+      1. App Engine standard environment
+      2. Compute Engine instances
+    - Detects following
+      - XSS
+      - Flash injection
+      - Mixed-content
+      - Clear text passwords
+      - Usage of insecure JavaScript libraries
+*** IAM 
+    - In cloud IAM, you can grant access to members
+    - There are 5 types of members
+      1. google account
+      2. service account
+      3. google group
+      4. gsuite domain
+      5. cloud identity
 ** Data Frameworks
 *** Cloud Dataflow
     - Data Processing Service
     - Supports both batch and stream
-    -
 *** Cloud DataProc
     - Google Managed Hadoop, HDFS, Pig, Hive and Spark
     -
@@ -63,27 +298,82 @@
 *** Cloud Datalab
     - Interactive tool for data exploration, analysis, visualization and machine learning
     - Built on top of Jupyter
-*** Machine Learning Engine
+*** Cloud ML
+*** Cloud Vision API
+    - Gain insights from Images
+    - Detect inappropriate content
+    - Sentiment analysis
 *** Cloud Natural Language API
 *** Cloud Translate API
 *** Cloud Speech API
 *** Cloud Video Intelligence
 ** Databases
 *** BigTable
-    - NoSQL Analytics
+    - NoSQL, wide column database service
     - Terabytes to Petabytes
+    - Single row transactions
     - High Volume Writes
+    - 10MB per cell and 100MB per row
     - Latency in ms
+    - Accessed using HBase API
+    - Data can be streamed through
+      - Cloud Dataflow
+      - Spark stream
+      - Storm
 *** Cloud Datastore
     - Supports ACID Transactions
     - NoSQL
     - 0 to terabytes
+    - Supports transactions for multiple rows
+    - SQL Queries
+    - 1MB Per entity
 *** Cloud SQL
     - Managed SQL
     - Automatic Backups & Replication
-    - 
+    - Offers MySQL and Postgres
+    - Supports vertical and horizontal scaling
+    - OLTP
 *** Spanner
     - SQL
-      -
-** App Engine
-   -
+    - Petabytes of capacity
+    - Global strong consistency
+    - OLTP
+    - 10 GB Row
+    - Good for more than 2 TB database
+* Design
+  1. Gather Qualitative Requirements
+     - Why
+       1. Why is this system needed ?
+       2. What problem does this solve ?
+     - Who
+       1. Who are the stakeholders ?
+       2. Who are the users ?
+       3. Who is developing this ?
+     - What
+       1. What does the system do ?
+       2. What are the priorities ?
+       3. What are the nice to have ?
+       4. What is in scope ?
+       5. What is feasible ?
+       6. What is not feasible ?
+     - When
+       1. When do the users need the solution ?
+       2. Any tradeoffs for time and value ?
+  2. Gather Quantitative requirements
+     1. Time
+        - operational downtime
+        - Cost of downtime
+     2. Data
+        - Cost of data loss
+        - Data volume
+        - Throughput
+     3. Users
+        - Number of users
+        - Location of users
+  3. Scaling Requirements
+  4. Size Requirements
+     - which factors are important
+       1. Dimensions
+       2. Replication
+       3. Rate of chang
+          

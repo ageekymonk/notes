@@ -179,3 +179,16 @@
    - Four Visual Breakpoints
      - xs, sm, md, lg
    - Need to setup viewport meta tag for this to work
+* Library
+** Preprocessor
+   1. Less
+   2. Sass
+   3. Stylus
+** Postprocessor
+   1. PostCSS
+      1. autoprefixer
+      2. cssnext
+      3. css modules
+      4. styleint
+** Methodologies
+   1. 

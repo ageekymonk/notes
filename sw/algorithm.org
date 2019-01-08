@@ -1,0 +1,19 @@
+* Algorithms
+** Dynamic Programming
+   - Overlapping subproblem
+     1. Memoization
+     2. Tabulation
+   - Optimal substructure property
+     A given problems has Optimal Substructure Property if optimal solution of
+     the given problem can be obtained by using optimal solutions of its
+     subproblems.
+*** Problems
+    1. Longest Increasing Subsequence
+    2. Edit Distance
+    3. Longest Common Subsequence
+    4. Min cost path
+    5. Coin Change
+    6. Matrix Chain Multiplication
+    7. Binomial Coefficient
+    8. 
+

@@ -300,6 +300,41 @@
     | #              | Mark under cursor                                      |                          |
     |                |                                                        |                          |
 ** Elisp
+*** Conditional Statements
+    #+BEGIN_SRC emacs-lisp
+    (if t (print "true") (print "false"))
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+    (if condition (progn a b c) nil)
+    (when condition a b c)
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+    (if condition nil a b c)
+    (unless condition a b c)
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+    (cond (condition1 action) (condition2 action) (condition3 action) )
+    #+END_SRC
+
+*** Common Macros
+**** let
+     #+BEGIN_SRC emacs-lisp
+     (let ((x (some-func)))
+  (if x
+      do-then
+    do-else
+    do-else-2))
+     #+END_SRC
+**** if-let
+     #+BEGIN_SRC emacs-lisp
+     (if-let ((x (some-func)))
+      do-then
+      do-else
+      do-else-2)
+     #+END_SRC
 *** defcustom
     When you specify variables in defcustom others can customize it using
     customize feature
@@ -321,8 +356,22 @@
       3. function
       4. property list
     - A symbol can be both a value and a function ??
-*** Alist and Hash table
-    Alist - ordered and can have duplicate keys. It is just a list with each entry as (cons key val)
+*** Alist, Plist and Hash table
+**** Alist
+   Alist - ordered and can have duplicate keys. It is just a list with each
+    entry as (cons key val)
+    #+BEGIN_SRC emacs-lisp
+    (setq test-alist '((a . 0) (b . 1)))
+    #+END_SRC
+**** Plist
+     Plists are used when attaching information to symbols. The doc strings of
+     variables and functions, for example, are just a key-value association in
+     the property list of the symbol in question.
+     #+BEGIN_SRC emacs-lisp
+     (let ((p1 '())) (setq p1 (plist-put p1 'a 100)))
+     #+END_SRC
+
+
     Hash table - unordered and cannot have duplicate keys
     #+begin_src elisp
     (setq myHash (make-hash-table :test 'equal))
@@ -344,66 +393,95 @@
     5. lambda
     6. special form
 *** Common Functions
-    |----------+------------------------+---------------------------------------------------+---------------------------------------|
-    | Category | Name                   | Action                                            | Usage                                 |
-    |----------+------------------------+---------------------------------------------------+---------------------------------------|
-    | Check    | boundp                 | check if a variable is defined                    | (boundp 'var-name)                    |
-    |          | fboundp                | check if a function is defined                    | (fboundp 'fn-name)                    |
-    |          | featurep               | check if a package is loaded                      | (featurep 'guru-mode)                 |
-    |          | symbolp                | check if it is a symbol                           | (symbolp 's)                          |
-    |          | subrp                  | Check if a object is builtin code                 | (subrp (symbol-function 'while))      |
-    |          | use-region-p           | Check if a region exists and active and not empty |                                       |
-    |          |                        |                                                   |                                       |
-    | symbol   | symbol-name            |                                                   |                                       |
-    |          | symbol-value           |                                                   |                                       |
-    |          | symbol-function        |                                                   |                                       |
-    |          | symbol-plist           |                                                   |                                       |
-    |          |                        |                                                   |                                       |
-    | map      | maphash                | Iterate over every element of hash                | (maphash myfun myHashtable)           |
-    |          |                        |                                                   |                                       |
-    |          |                        |                                                   |                                       |
-    | list     | car                    | Return the first element                          | (car (list 1 2 3))                    |
-    |          | nth                    | Return the nth element                            | (nth 2 (list 1 2 3 4))                |
-    |          |                        |                                                   |                                       |
-    |          | cdr                    | Return the list without first element             | (cdr (list 1 2 3))                    |
-    |          | nthcdr                 | Return the list without first n element           | (nthcdr 2 (list 1 2 3 4))             |
-    |          | last                   | Return the last element as list                   | (last (list 1 2 3))                   |
-    |          | butlast                | Return the list without last n element            | (butlast (list 1 2 3) 1)              |
-    |          |                        |                                                   |                                       |
-    |          | nbutlast               | Return the modified list without last n element   |                                       |
-    |          |                        |                                                   |                                       |
-    |          | cons                   | Returns a list with (car cdr)                     | (cons car cdr)                        |
-    |          | append                 | Append list                                       |                                       |
-    |          |                        |                                                   |                                       |
-    |          | push                   | Prepends element to list. Modifies list           |                                       |
-    |          | pop                    | Removes element at front from list. Modifies list |                                       |
-    |          | setcar                 | Replaces first element. Modifies list             |                                       |
-    |          | setcdr                 | Replaces all but first element. Modifies list     |                                       |
-    |          |                        |                                                   |                                       |
-    | Cursor   | point                  | Gets the current cursor position                  | (point)                               |
-    |          | region-beginning       | Gets the beginning of the region                  | (region-beginning)                    |
-    |          | region-end             | Gets the end of the region                        | (region-end)                          |
-    |          | point-min              | Gets the position of beginning of buffer          | (point-min) useful when narrow region |
-    |          | point-max              | Gets the position of end of buffer                | (point-max)                           |
-    |          | goto-char              |                                                   |                                       |
-    |          | forward-char           |                                                   |                                       |
-    |          | backward-char          |                                                   |                                       |
-    |          | skip-chars-forward     |                                                   |                                       |
-    |          | skip-chars-backward    |                                                   |                                       |
-    |          | search-forward         |                                                   |                                       |
-    |          | search-backward        |                                                   |                                       |
-    |          | search-forward-regexp  |                                                   |                                       |
-    |          | search-backward-regexp |                                                   |                                       |
-    |          | beginning-of-line      |                                                   |                                       |
-    |          | end-of-line            |                                                   |                                       |
-    |          | thing-at-point         |                                                   |                                       |
-    |          |                        |                                                   |                                       |
-    | Editing  | insert                 |                                                   |                                       |
-    |          | insert-file-contents   |                                                   |                                       |
-    |          | delete-char            |                                                   |                                       |
-    |          | delete-region          |                                                   |                                       |
-    |          | erase-buffer           |                                                   |                                       |
-    |          |                        |                                                   |                                       |
+    |---------------+------------------------+---------------------------------------------------+---------------------------------------|
+    | Category      | Name                   | Action                                            | Usage                                 |
+    |---------------+------------------------+---------------------------------------------------+---------------------------------------|
+    | Check         | boundp                 | check if a variable is defined                    | (boundp 'var-name)                    |
+    |               | fboundp                | check if a function is defined                    | (fboundp 'fn-name)                    |
+    |               | featurep               | check if a package is loaded                      | (featurep 'guru-mode)                 |
+    |               | symbolp                | check if it is a symbol                           | (symbolp 's)                          |
+    |               | subrp                  | Check if a object is builtin code                 | (subrp (symbol-function 'while))      |
+    |               | use-region-p           | Check if a region exists and active and not empty |                                       |
+    |               |                        |                                                   |                                       |
+    |               |                        |                                                   |                                       |
+    | symbol        | symbol-name            |                                                   |                                       |
+    |               | symbol-value           |                                                   |                                       |
+    |               | symbol-function        |                                                   |                                       |
+    |               | symbol-plist           |                                                   |                                       |
+    |               |                        |                                                   |                                       |
+    | map           | maphash                | Iterate over every element of hash                | (maphash myfun myHashtable)           |
+    |               |                        |                                                   |                                       |
+    |               |                        |                                                   |                                       |
+    | list          | car                    | Return the first element                          | (car (list 1 2 3))                    |
+    |               | nth                    | Return the nth element                            | (nth 2 (list 1 2 3 4))                |
+    |               |                        |                                                   |                                       |
+    |               | cdr                    | Return the list without first element             | (cdr (list 1 2 3))                    |
+    |               | nthcdr                 | Return the list without first n element           | (nthcdr 2 (list 1 2 3 4))             |
+    |               | last                   | Return the last element as list                   | (last (list 1 2 3))                   |
+    |               | butlast                | Return the list without last n element            | (butlast (list 1 2 3) 1)              |
+    |               |                        |                                                   |                                       |
+    |               | nbutlast               | Return the modified list without last n element   |                                       |
+    |               |                        |                                                   |                                       |
+    |               | cons                   | Returns a list with (car cdr)                     | (cons car cdr)                        |
+    |               | append                 | Append list                                       |                                       |
+    |               |                        |                                                   |                                       |
+    |               | push                   | Prepends element to list. Modifies list           |                                       |
+    |               | pop                    | Removes element at front from list. Modifies list |                                       |
+    |               | setcar                 | Replaces first element. Modifies list             |                                       |
+    |               | setcdr                 | Replaces all but first element. Modifies list     |                                       |
+    |               |                        |                                                   |                                       |
+    | Cursor        | point                  | Gets the current cursor position                  | (point)                               |
+    |               | region-beginning       | Gets the beginning of the region                  | (region-beginning)                    |
+    |               | region-end             | Gets the end of the region                        | (region-end)                          |
+    |               | point-min              | Gets the position of beginning of buffer          | (point-min) useful when narrow region |
+    |               | point-max              | Gets the position of end of buffer                | (point-max)                           |
+    |               | goto-char              |                                                   |                                       |
+    |               | forward-char           |                                                   |                                       |
+    |               | backward-char          |                                                   |                                       |
+    |               | skip-chars-forward     |                                                   |                                       |
+    |               | skip-chars-backward    |                                                   |                                       |
+    |               | search-forward         |                                                   |                                       |
+    |               | search-backward        |                                                   |                                       |
+    |               | search-forward-regexp  |                                                   |                                       |
+    |               | search-backward-regexp |                                                   |                                       |
+    |               | beginning-of-line      |                                                   |                                       |
+    |               | end-of-line            |                                                   |                                       |
+    |               | thing-at-point         |                                                   |                                       |
+    |               |                        |                                                   |                                       |
+    | Editing       | insert                 |                                                   |                                       |
+    |               | insert-file-contents   |                                                   |                                       |
+    |               | delete-char            |                                                   |                                       |
+    |               | delete-region          |                                                   |                                       |
+    |               | erase-buffer           |                                                   |                                       |
+    |               |                        |                                                   |                                       |
+    | Introspection | type-of                | Get the type of the variable                      |                                       |
+    |               |                        |                                                   |                                       |
+*** Libraries
+**** Dash
+     #+BEGIN_SRC emacs-lisp
+     (-let (((l &as a b c) (list 1 2 3))) (print l))
+     (-let (([a (b c) d] [1 (2 3) 4])) (list a b c d))
+     #+END_SRC
+**** subr-x
+     - string-join
+     - string-trim
+     - string-trim-right
+     - string-trim-left
+     - string-blank-p
+     - string-empty-p
+     - string-remove-prefix
+     - string-remove-suffix
+     - hash-table-empty-p
+     - hash-table-keys
+     - hash-table-values
+     - if-let
+     - when-let
+     - declare
+       #+BEGIN_SRC emacs-lisp
+         (declare (indent 1)
+           (debug (sexp body)))
+       #+END_SRC
+**** cl-lib
 * Best in Emacs
 ** Navigation
     | Shortcuts | Action                             |   |
@@ -456,7 +534,7 @@
    3. dired-do-shell-command (!) on file
 ** Case Intelligent replacement
 ** Rectangular Copy
-** Eshell-
+** Eshell
     | Shortcuts               | Action                        |   |
     |-------------------------+-------------------------------+---|
     | Helm Find Files + C-c i | Insert filename               |   |

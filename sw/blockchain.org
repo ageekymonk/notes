@@ -1,5 +1,11 @@
 * Cryptocurrency
-  Major Players
+** Why
+   - Traditional Banks takes care of
+     1. Identity Management
+     2. Allow Transactions
+     3. Record Keeping
+     4. Trust
+** Major Players
   1. Bitcoin
   2. Litecoin
   3. Namecoin
@@ -7,6 +13,37 @@
 ** Bitcoin
    - Virtual Currency
    - Max 21 Million. 12 Millions are already there
+   - Uses Unspent Transaction Output (UTXO)
+   - Bitcoin uses Sha256^2 hash which is they compute sha256 and then with the
+     output of sha256 they find the sha256 again
+   - Block contains
+     - Block header -> H(Previous Block Hash || Nonce || Merkle Root )
+     - Previous Block Hash
+     - Nonce (It is the Proof Of Work Part)
+     - Merkle Root
+   - Partial Image Hash Puzzle
+     - Find H(Previous Block Hash || Merkle Root || Nonce) < target
+     - the guessing hash should have certain number of leading zeros in its hash, that
+       should be less than number of leading zeros in target
+   - Each block should contain atleast on coinbase transactions
+   - Bitcoin scripts
+     - Language built for bitcoins
+     - No turing complete, no loops
+     - 
+** Other
+   - Hash Functions (Preimage -> H(x) -> Image)
+     1. Preimage Resistance
+        This means given H(x) it is difficult to find x
+     2. Second Preimage Resistance
+        Given x, it is computationally difficult to find x' which gives same H(x)
+     3. Collision Resistance
+        It is general to second point. H(x) == H(y) it is computationally
+        difficult to find
+   - Elliptical Curve Cryptography
+     - ECDSA stands for Elliptical curve Digital Signature Algorithm
+   - Bitcoin Address + Private Key = Bitcoin Wallet
+   - Bitcoin Address is derived from ECDSA
+   - 
 * Hyperledger
 ** Hyperledger Fabric
    - Enterprise grade, Distributed Ledger with smart contracts
@@ -14,10 +51,22 @@
    - Components
      1. CA
      2. Peer
-     3. Ordering service 
+     3. Ordering service
+   - cryptgen
+     - generate certificates for org, orderer, peer, user
+     - crypto-config.yaml
+   - Genesis Block
+     - First block of the blockchain
+     -
 * To Research
   1. Elliptic Curve
   2. mathematical trap door
   3. Byzantine Fault Tolerant (BFT)
   4. Crash Fault Tolerant (CFT)
-  5. 
+  5. Sybil attack
+  6. 51% attack
+  7. Bitcoin scripts
+  8. P2PKH
+  9. P2SH
+  10. Simple Payments Verifications
+  11. 

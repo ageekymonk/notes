@@ -1,0 +1,64 @@
+* Open Service Broker 
+** Azure Openservice Broker
+   - Create a aks cluster
+   - install helm client
+   - Install [[https://github.com/kubernetes-incubator/service-catalog][Service Catalog]].
+     Service Catalog is to allow kubernetes services to access Open service
+     broker api
+     #+BEGIN_SRC bash
+    helm repo add svc-cat https://svc-catalog-charts.storage.googleapis.com
+    helm install svc-cat/catalog --name catalog --namespace catalog --set rbacEnable=false
+     #+END_SRC
+   - Install open service broker api. For kubernetes to access azure api we need
+     to create a service principal in azure ad
+     #+BEGIN_SRC bash
+    helm repo add azure https://kubernetescharts.blob.core.windows.net/azure
+    az ad sp create-for-rbac
+     #+END_SRC
+   - Save the information above
+     #+BEGIN_SRC
+    {
+      "appId": "7248f250-0000-0000-0000-dbdeb8400d85",
+      "displayName": "azure-cli-2017-10-15-02-20-15",
+      "name": "http://azure-cli-2017-10-15-02-20-15",
+      "password": "77851d2c-0000-0000-0000-cb3ebc97975a",
+      "tenant": "72f988bf-0000-0000-0000-2d7cd011db47"
+    }
+    AZURE_CLIENT_ID=<appId>
+    AZURE_CLIENT_SECRET=<password>
+    AZURE_TENANT_ID=<tenant>
+     #+END_SRC
+   - Get the subscription id
+     #+BEGIN_SRC bash
+    az account show --query id --output tsv
+    AZURE_SUBSCRIPTION_ID=[your Azure subscription ID from above]
+     #+END_SRC
+   - Install Open service broker
+     #+BEGIN_SRC bash
+    helm install azure/open-service-broker-azure --name osba --namespace osba \
+      --set azure.subscriptionId=$AZURE_SUBSCRIPTION_ID \
+      --set azure.tenantId=$AZURE_TENANT_ID \
+      --set azure.clientId=$AZURE_CLIENT_ID \
+      --set azure.clientSecret=$AZURE_CLIENT_SECRET
+     #+END_SRC
+   - Check if broker is ready
+     #+BEGIN_SRC bash
+    ./svcat get brokers
+    ./svcat get classes
+    ./svcat get plans
+     #+END_SRC
+   - Install wordpress. Azure will create the mysql db in a resource group with
+     the same name as the namespace given below.
+     #+BEGIN_SRC bash
+    helm install azure/wordpress --name wordpress --namespace wordpress --set resources.requests.cpu=0
+     #+END_SRC
+   - Verify
+     #+BEGIN_SRC
+    ./svcat get instances -n lab
+    ./svcat get bindings -n lab
+     #+END_SRC
+   -
+*** Debug
+    - Check for the kube-dns is working.
+** Sample Applications
+   - [[https://github.com/reactioncommerce/reaction][Reaction Ecommerce]]

@@ -292,3 +292,10 @@ print(sys.meta_path)
    #+BEGIN_SRC bash
    python3 -m twine upload dist/*
    #+END_SRC
+* Libraries
+  - Requests
+  - pandas
+  - BeautifulSoup
+  - click
+  - dataset
+  - pathlib 

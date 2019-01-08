@@ -1,4 +1,9 @@
 * Java
+** Install 
+*** Home
+    $(/usr/libexec/java_home)
+*** Issues
+    
 ** Functional Interfaces
    - Single Abstract Method
    -

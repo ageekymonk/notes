@@ -1,0 +1,57 @@
+* Data Visualisation
+** Tools
+   1. Tableau
+   2. Looker
+* Datasets
+  1. [[https://blog.github.com/2017-01-19-github-data-ready-for-you-to-explore-with-bigquery/][Github]]
+
+* General
+  - Nate silver used very simple model, he himself tweeted about it. The main
+    work is data visualization and quantifying uncertainity
+  - Bibliometrics is the statistical analysis of books, articles and other publications
+  - Datascience is the merge of hacking skills, math and statistics knowledge
+    and substantial expertise in the data domain
+#+DOWNLOADED: https://static1.squarespace.com/static/5150aec6e4b0e340ec52710a/t/51525c33e4b0b3e0d10f77ab/1364352052403/Data_Science_VD.png?format=750w @ 2018-10-02 23:38:31
+[[file:General/Data_Science_VD_2018-10-02_23-38-31.png]]
+  - 80% of analytics is sums and averages -- Aaron kimball (CTO at zymergen)
+  - Science was earlier done by empirical methods then in last 200 years
+    Theoretical science has evolved and now computational is part of science.
+    Now escience (data science) is also a part now
+  - Volume, velocity and variety
+  - 
+* Statistics 
+  - False Positive is also called as Type I Error (alpha)
+  - False Negative is also called as Type II Error (1 - beta)
+  - P Value is the odds of getting a value different than null hypothesis purely
+    by chance
+  - 
+
+* R
+  - help()
+  - demo()
+  - example()
+  - vignette()
+  - Environments
+    - new.env()
+    - envname$varname <- 100
+    - envname[[varname] ] <- 100
+  - assign()
+  - Atomic Classes
+    - Character
+    - Numeric
+    - Integers
+    - Complex Numbers
+    - Boolean
+  - str() shows structure of a function
+  - vector() to create a vector of specific size
+  - c() to combine elements into a vector
+  - Factors for nominal values
+  - list()
+  - student1[c("label1", "label2")]
+  - dataframes
+  - matrix() or rbind() and cbind() for creating matrix
+  - rownames() for creating custom matrix names
+  - rowSums(), colSums(), colMeans(),
+  - arrays() are n dimensional
+  - Functions
+    - 

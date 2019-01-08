@@ -107,3 +107,5 @@
        That causes a ripple effect and brings the entire economy down by
        increasing inflation of everything else
      -
+** To Research
+   - VIX Futures

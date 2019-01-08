@@ -97,4 +97,6 @@
   3. aws-sdk
   4. cheerio
   5. request-promise
-  6.
+  6. moment
+  7. mathjs
+  8. 

@@ -1,0 +1,146 @@
+* Machine Learning
+  - Definitions
+    - Science of getting machine to learn without being explicitly programmed
+    - A computer program is said to learn from experience E with respect to some
+      class of tasks T and performance measure P, if its performance at tasks in
+      T, as measured by P, improves with experience E.
+  - Two types of algorithms
+    1. Supervised Learning
+    2. Unsupervised Learning
+  - Supervised Learning Algorithm
+    1. Linear Regression
+    2. Logistic Regression
+    3. Support Vector Machine
+  - Unsupervised Learning Algorithm
+    1. Clustering
+  - Gradient Descent Algorithm
+    - Jθⱼ := θⱼ - α δ/δθⱼ(J(θ⁰, θ¹))
+    - α is the learning rate.
+    - derivative of J is slope at the point
+    - Batch Gradient Descent, if we use all training samples for each
+      calculation
+    - Jθⱼ := θⱼ - α (1/m) ∑ (h(x) - y) * xⱼ 
+    - Feature Scaling
+      - if different features are on a similar scale then the algorithm can
+        converge quickly
+      - Get all the features to -1 <= xᵢ <= 1
+    - Mean Normalization
+      - Replace xᵢ with (xᵢ - μᵢ) / s(do not apply to x₀)
+    - Applying Feature scaling and Mean Normalization
+      - Replace xᵢ with (xᵢ - μᵢ) / sᵢ (do not apply to x₀)
+      - Where sᵢ is (standard deviation or (max - min))
+    - Plotting cost value after each iteration, the value should decrease. That
+      means the algorithm is working correctly
+    - Checking convergence can be done by checking if between two iteration the
+      cost value decreases only by 10⁻³
+    - Works well even with very large number of dimensions/features
+    - Complexity is O(kn²)
+  - Matrix that do not have an inverse is called singular matrix or degenerate matrix
+  - Linear Regression
+    - Univariate Linear Regression
+      - There is a single feature
+      - h(x) = θ₀ + θ₁x
+      - Cost Function 
+        - J(θ⁰, θ¹)
+        - Why we include 1/2 in (1/2m) ∑(h(x) - y)² ? To make math easier
+          for what ?
+        - Squared Error Cost Function
+        - This is particularly useful for regression problem
+        - To minimize the squared Error cost Function, use Gradient Descent Algorithm
+        - Squared Error Cost function has only one local optima which is its global optima
+    - Multivariate Linear Regression
+      - There are multiple features
+      - h(x) = θ₀ + ∑ θᵢ xᵢ (where i = 1 to n) n is the number of features
+      - If we consider x₀ = 1 then
+      - h(x) = θᵀ x (both θ and x are vectors)
+      - Cost Function
+        - J(θ) = 1/2m ∑ (h_θ(x) - y)²
+      - 
+    - Normal Equation
+      - Solving Linear Regression
+      - This is analytical method and not iterative
+      - This works by minimizing the Cost function by taking derivative and
+        setting it to zero
+      - θ = (Xᵀ X)⁻¹ Xᵀ y
+      - Feature scaling is not necessary
+      - If n is large the algorithm will be slower, because of matrix
+        multiplication is O(n³)
+      - if n is 100 or 1000 then this will perform well, Sometimes even with
+        10000 but beyond that gradient descent is the right choice over normal equation
+      - If Xᵀ X is non invertible that means there are 
+        1. Redundant Features
+        2. Too many features (m <= n) m is number of training samples and n is
+           number of features
+  - Logistic Regression
+    - This is a classification algorithm
+    - Cannot apply linear regression for classification problem because as it
+      is not a linear function
+    - Need 0 ≤ h(x) ≤ 1
+    - h(x) = g(θᵀ x) where g(z) = 1/(1 + e⁻ᶻ)
+    - g(z) is a sigmoid function or logistic function
+    - Interpretation
+      - It is the estimated probability that y=1 on input x, parameterized by theta
+      - h(x) = P(y=1 |x; θ)
+    - Cost Function
+      - Using the same cost function as linear regression will not work as it
+        will become a non convex due to sigmoid function of h(x)
+      - Non convex function is a function which has many local minima and it
+        means when finding global minima, there might not be convergence
+      - Cost (h(x),y) = -log(h(x)) if y = 1 and -log(1-h(x)) if y = 0
+      - J(θ) = 1/m ∑ Cost(h(x))
+    - Minimizing Cost Function we can use gradient descent
+    - Gradient Descent
+      - Iterate and Update θⱼ = θⱼ - α ∑ (h(xⁱ) - yⁱ) xⁱ
+      - This is same as for linear regression except the definition of h(x) changed
+    - Other Algorithm we can use are
+      1. Conjugate Gradient
+      2. BFGS
+      3. L-BFGS
+    - These above 3 algorithm does not need α and converge much faster.
+    - For these advanced algorithm, we need to provide a cost function which
+      returns j(θ) and gradient (partial derivative)
+    - Multiclass 
+      - Instead of binary, multiple outcomes (sunny, cloudy, rainy, etc)
+      - Use one vs all
+  - Overfitting
+    - Also called high variance
+    - Can be avoided by 
+      1. Reduce number of features
+      2. Regularization
+         - Keep all features but reduce the magnitude / values of parameters
+           θⱼ
+  - Underfitting
+    - It has high bias
+  - Regularization
+    - Small values for θ₁ ... θⱼ
+    - Less prone to overfitting
+    - Cost Function after adding regularization factor
+      - J(θ) = (1/2m) (∑ h(x) - y)² + λ ∑ θⱼ²
+      - λ is a regularization parameter
+    - It also takes care of singularity or degenerate matrix in case of Normal Equation
+  - Neural Networks
+    - Brain can use any part of brain to use for any function like see, smell, touch
+    - If you add third eye to a frog, it can see with third eye as well
+    - Each Neuron has input called dendrite and output called axon.
+    - Activation Function is the hypotheis function h(x)
+    - θ is called weights. In Linear and Logistic Regression it was called
+      parameters. 
+    - First Layer is called input layer, Last layer is called output layer and
+      anything in between is called hidden layer. There can be multiple hidden
+      layer.
+    - If a network has sⱼ units in layer j and sⱼ₊₁ in layer j+1 then θʲ will be
+      of dimension sⱼ₊₁ x (sⱼ + 1)
+    - Cost Function ???
+  - Back propagation algorithm
+  - If there are more errors in prediction, we can improve it by one of the
+    following 
+    1. Getting more training samples
+    2. Getting more features
+    3. Reducing the number of features
+    4. Adding polynomial features
+    5. Decreasing λ
+    6. Increasing λ
+  - Machine Learning Diagnostic is a test to run to check what is working or not
+    working in a learning algorithm and to gain guidance as to how to improve
+    its performance
+  - 

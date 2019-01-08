@@ -1,3 +1,10 @@
+* Ecosystem
+  - OCI Project (Open Container Interface)
+    - Industry standard container interface
+  - RunC
+    - It is the reference implementation for the runtime spec of OCI
+  - Containerd
+    - It is the interface for controlling runC
 * Containerd
   - Industry standard core container runtime
   - manage complete container lifecycle of its host system

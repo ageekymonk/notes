@@ -52,3 +52,6 @@
 * Terminal
   [[https://github.com/xtermjs/xterm.js][xterm.js]]
   [[https://mitmproxy.org/][mitmproxy]]
+* API Tools
+  - https://mockoon.com/
+  - https://github.com/cristianoliveira/ergo

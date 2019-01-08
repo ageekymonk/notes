@@ -78,6 +78,15 @@
      - Manifest file (yaml or json) specifies desired state
    - Pods
    -
+* Minikube
+** Start Minikube
+  #+BEGIN_SRC
+  minikube start --bootstrapper=localkube
+  #+END_SRC
+** Install Ingress
+   #+BEGIN_SRC 
+   minikube addons enable ingress
+   #+END_SRC
 * GCP
   - Everything in google is in containers. Even the VM.
   - Borg: Internal Container Scheduler. It was followed by Omega. Finally kubernetes
@@ -105,7 +114,7 @@
   - EKS Network Plugin
     - Each pod is going to get AWS IP Routable Address
     - Secondary ENI ??
-    - 
+    -
 * To Research
   - Prometheus
   - sysdig
@@ -120,4 +129,187 @@
    #+END_SRC
 * Links
   [[https://stevesloka.com/2017/05/19/access-minikube-services-from-host/][Access Minikube services from Host on OSX]]
-  
+* API 
+** Notes
+   - client-go
+   - Run inside the Cluster or Outside the cluster
+   - clientcmd uses rest client underneath
+
+** Examples
+*** Print all Pods using clientcmd
+   #+BEGIN_SRC go
+package main
+
+import (
+	"flag"
+
+	"github.com/golang/glog"
+	"k8s.io/client-go/kubernetes"
+	"path/filepath"
+	"os"
+	"k8s.io/client-go/tools/clientcmd"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	corev1 "k8s.io/api/core/v1"
+)
+
+// optional - local kubeconfig for testing
+var kubeconfig = filepath.Join(os.Getenv("HOME"), ".kube", "config")
+
+func main() {
+
+	// send logs to stderr so we can use 'kubectl logs'
+	flag.Set("logtostderr", "true")
+	flag.Set("v", "3")
+	flag.Parse()
+
+	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	if err != nil {
+		glog.Errorf("Failed to load client config: %v", err)
+		return
+	}
+
+	// build the Kubernetes client
+	client, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		glog.Errorf("Failed to create kubernetes client: %v", err)
+		return
+	}
+
+	// list pods
+	pods, err := client.CoreV1().Pods("").List(metav1.ListOptions{})
+	if err != nil {
+		glog.Errorf("Failed to retrieve pods: %v", err)
+		return
+	}
+
+	for _, p := range pods.Items {
+		glog.V(3).Infof("Found pods: %s/%s", p.Namespace, p.Name)
+	}
+
+
+}
+
+   #+END_SRC
+*** Print all pods using rest client
+    #+BEGIN_SRC go
+package main
+
+import (
+	"flag"
+
+	"github.com/golang/glog"
+	"k8s.io/client-go/kubernetes"
+	"path/filepath"
+	"os"
+	"k8s.io/client-go/tools/clientcmd"
+	rest "k8s.io/client-go/rest"
+	"k8s.io/client-go/kubernetes/scheme"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/runtime/serializer"
+)
+
+// optional - local kubeconfig for testing
+var kubeconfig = filepath.Join(os.Getenv("HOME"), ".kube", "config")
+
+func main() {
+	// send logs to stderr so we can use 'kubectl logs'
+	flag.Set("logtostderr", "true")
+	flag.Set("v", "3")
+	flag.Parse()
+
+	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	if err != nil {
+		glog.Errorf("Failed to load client config: %v", err)
+		return
+	}
+
+	gv := corev1.SchemeGroupVersion
+	config.GroupVersion = &gv
+	config.APIPath = "/api"
+	config.NegotiatedSerializer = serializer.DirectCodecFactory{CodecFactory: scheme.Codecs}
+
+	if config.UserAgent == "" {
+		config.UserAgent = rest.DefaultKubernetesUserAgent()
+	}
+
+	restClient, err := rest.RESTClientFor(config)
+	if err != nil {
+		glog.Errorf("Err %v", err)
+		return
+	}
+
+	result := &corev1.PodList{}
+
+	restClient.Get().Namespace("").Resource("pods").Do().Into(result)
+
+	for _, p := range result.Items {
+		glog.V(3).Infof("Found pods: %s/%s", p.Namespace, p.Name)
+	}
+}
+    
+    #+END_SRC
+*** Print all pods using dynamic pkg
+    #+BEGIN_SRC go
+package main
+
+import (
+	"flag"
+
+	"github.com/golang/glog"
+	"k8s.io/client-go/kubernetes"
+	"path/filepath"
+	"os"
+	"k8s.io/client-go/tools/clientcmd"
+	rest "k8s.io/client-go/rest"
+	"k8s.io/client-go/kubernetes/scheme"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/runtime/serializer"
+	"k8s.io/client-go/dynamic"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+)
+
+// optional - local kubeconfig for testing
+var kubeconfig = filepath.Join(os.Getenv("HOME"), ".kube", "config")
+
+func main() {
+	// send logs to stderr so we can use 'kubectl logs'
+	flag.Set("logtostderr", "true")
+	flag.Set("v", "3")
+	flag.Parse()
+
+	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	if err != nil {
+		glog.Errorf("Failed to load client config: %v", err)
+		return
+	}
+
+	gv := corev1.SchemeGroupVersion
+	config.GroupVersion = &gv
+	config.APIPath = "/api"
+	config.NegotiatedSerializer = serializer.DirectCodecFactory{CodecFactory: scheme.Codecs}
+
+	if config.UserAgent == "" {
+		config.UserAgent = rest.DefaultKubernetesUserAgent()
+	}
+
+	client, err := dynamic.NewForConfig(config)
+	if err != nil {
+		glog.Errorf("Err %v", err)
+		return
+	}
+
+	got, err := client.Resource(schema.GroupVersionResource{Group: "", Version: "v1", Resource: "pods"}).List(metav1.ListOptions{})
+	if err != nil {
+		glog.Errorf("Err %v", err)
+		return
+	}
+
+	for _, item := range(got.Items) {
+		glog.Infof("%s/%s", item.GetNamespace(),item.GetName())
+	}
+
+
+} 
+    #+END_SRC
