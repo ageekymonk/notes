@@ -1,13 +1,10 @@
-* Docker 
+* Docker
 ** Components
    In the beginning, docker was a monolithic implementation but with the moby project it has been split into several components. Many of the components are community driven.
    The components are
    1. Docker CLI
    2. dockerd
    3. containerd
-   4. runc
-   5. containerd-ctr
-   6. containerd-shim
 *** Docker CLI
     It is the cli for docker. Docker cli communicates with the dockerd, which is the docker daemon using the api. All the logic is implemented inside the dockerd.
 *** dockerd
@@ -25,11 +22,19 @@
       - containerd-shim
       - RunC
 
+
+    #+ATTR_ORG: :width 400
+    #+ATTR_ORG: :height 400
     [[file:Containerd/chart-c_2018-06-12_22-17-14.png]]
 
+
+    #+ATTR_ORG: :width 400
+    #+ATTR_ORG: :height 400
     [[file:Containerd/chart-a_2018-06-12_22-16-28.png]]
 
 
+    #+ATTR_ORG: :width 400
+    #+ATTR_ORG: :height 400
     [[file:images/containerd.png]]
 
 
@@ -55,7 +60,7 @@
      3. This also helps to get exit status of containers without docker being parent for the containers.
 
 *** Debugging
-    Looking at the process history using ==ps fxa==
+    Looking at the process history using ~ps fxa~
       #+BEGIN_SRC
       4141 ?        Ssl   41:36 /usr/bin/containerd
       4418 ?        Sl     0:52  \_ containerd-shim -namespace moby -workdir /var/lib/containerd/io.containerd.runtime.v1.linux/moby/15004a1a166df7e6e4060fce6d2f806d817a943a90572dd357c996f70a59e98b -address /run/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
