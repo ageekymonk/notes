@@ -1,28 +1,78 @@
-* Ecosystem
-  - OCI Project (Open Container Interface)
-    - Industry standard container interface
-  - RunC
-    - It is the reference implementation for the runtime spec of OCI
-  - Containerd
-    - It is the interface for controlling runC
-* Containerd
-  - Industry standard core container runtime
-  - manage complete container lifecycle of its host system
-  - Components
-    - CTR (containerd CLI)
-    - A daemon exposing gRPC API over a local unix socket
-    - Protobuf specs between components
-  - Where docker sits
-#+DOWNLOADED: https://containerd.io/img/chart-c.png @ 2018-06-12 22:17:14
-  [[file:Containerd/chart-c_2018-06-12_22-17-14.png]]
-    - Architecture
-#+DOWNLOADED: https://containerd.io/img/chart-a.png @ 2018-06-12 22:16:28
-[[file:Containerd/chart-a_2018-06-12_22-16-28.png]]
+* Docker
+** Components
+   Earlier it docker was a monolithic implementation but with the moby project it has been split into several components. Many of the components are community driven.
+   The components are
+   1. Docker CLI
+   2. dockerd
+   3. containerd
+   4. runc
+   5. containerd-ctr
+   6. containerd-shim
+*** Docker CLI
+    It is the cli for docker. Docker cli communicates with the dockerd, which is the docker daemon using the api. All the logic is implemented inside the dockerd.
+*** dockerd
+    It is the docker daemon which exposes docker api. It manages container lifecycle by utilizing containerd. It can expose api in three sockets
+    1. unix
+    2. tcp
+    3. fd
+*** containerd
+    Containerd is the industry standard container runtime. It is the container runtime that docker engine uses.
+    containerd is the api facade for various runtimes and OS. This abstracts away the syscalls or OS specific functionality to run containers.
+    It manages the complete container lifecycle of its hostsystem
 
-  - containerd cli can be used to pull and push images
-  - containerd cli can be used to run an image
-  - You can plug in any container runtimes like runc
-  - containerd does not do build. Does not have docker compose
+    Components
+      - Ctr
+      - containerd-shim
+      - RunC
+
+    [[file:Containerd/chart-c_2018-06-12_22-17-14.png]]
+
+    [[file:Containerd/chart-a_2018-06-12_22-16-28.png]]
+
+
+    [[file:images/containerd.png]]
+
+
+
+    Things it can do
+      - containerd cli can be used to pull and push images
+      - containerd cli can be used to run an image
+      - You can plug in any container runtimes like runc
+
+    Things it cannot do
+      - containerd does not do build. Does not have docker composeS
+
+**** runc
+    runc is a cli for running applications packaged to the OCI format.
+
+**** ctr
+     It is a cli for containerd for debugging and development purpose.
+
+**** shim
+     This allows for daemonless containers. It is the parent process for all the containers. It helps to
+     1. Allows runtimes (runc) to exit after start.
+     2. Keeps stdio and other fds open, in case containerd / docker restarts. This way container can keep running even if docker restarts.
+     3. This also helps to get exit status of containers without docker being parent for the containers.
+
+
+*** Debugging
+    Looking at the process history using ==ps fxa==
+      #+BEGIN_QUOTE
+      4141 ?        Ssl   41:36 /usr/bin/containerd
+      4418 ?        Sl     0:52  \_ containerd-shim -namespace moby -workdir /var/lib/containerd/io.containerd.runtime.v1.linux/moby/15004a1a166df7e6e4060fce6d2f806d817a943a90572dd357c996f70a59e98b -address /run/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+      4435 ?        Ss     0:20      \_ /sbin/tini -- /usr/local/bin/jenkins.sh
+      4469 ?        Sl    93:39          \_ java -Duser.home=/var/jenkins_home -Djenkins.model.Jenkins.slaveAgentPort=50000 -jar /usr/share/jenkins/jenkins.war
+      4142 ?        Ssl    6:04 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+      4410 ?        Sl     0:00  \_ /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8090 -container-ip 172.17.0.2 -container-port 8080
+      #+END_QUOTE
+
+      containerd-shim is root for the jenkins container. It can survive containerd restart and docker restart.
+* Ecosystem
+** Open Container Initiative
+   OCI has two specifications
+   1. Runtime specifications
+   2. Image specifications
+
 * Networking
   - Three pillars of networking
     1. CNM
@@ -126,7 +176,7 @@
   - funktion
   - parse
   - calico
-    - 
+    -
 * Namespaces
 ** PID
 ** Mount
@@ -166,3 +216,41 @@
 ** Buildkit
    [[https://github.com/genuinetools/img][img]]
    [[https://github.com/moby/buildkit][buildkit]]
+* Docker for windows
+  - There is an option for isolating containers using hyperv
+  - Windows team implemented Compute services which runs and exposes apis for docker to talk to
+  - Containers run on container user mode which is different from user mode for windows.
+  - Each container will also have additional processes along with the one being started to support containerization.
+  -
+* Networking
+  - All containers have unique ip address in a cluster and they should be able to talk to each other without NAT
+  - All nodes can communicate with containers without NAT
+  - Commands
+    https://www.youtube.com/watch?v=6v_BDHIgOY8
+    1. Create a namespace
+       sudo ip netns add $CON
+    2. Create a veth pair
+       sudo ip link add veth1 type veth peer name veth2
+    3. Set one end of the pair to the namespace
+       sudo ip link set veth2 netns $CON
+    4. Configure with ip address
+       sudo ip netns exec $CON ip addr add $IP dev veth2
+    5. Enable the interface to be up
+       sudo ip netns exec $CON ip link set dev veth2 up
+    6. Enable the interface on the node
+       sudo ip link set dev veth1 up
+    7. Set the loopback interface on container
+       sudo ip netns exec $CON ip link set lo up
+    8. Set route on the node
+       sudo ip route add $IP/32 dev veth1
+    9. Set route on the container
+       sudo ip netns exec $CON ip route add default via $IP dev veth2
+    10. Create a bridge
+        sudo ip link add name br0 type bridge
+    11. Add veth to bridge
+        sudo ip link set dev veth10 master br0
+    12. Add ip address to bridge
+        sudo ip addr add $BRIDGE_IP/24 dev br0
+    13. Enable the bridge
+        sudo ip link set dev br0 up
+    14.
