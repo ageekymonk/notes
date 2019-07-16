@@ -1,0 +1,68 @@
+* Docker 
+** Components
+   In the beginning, docker was a monolithic implementation but with the moby project it has been split into several components. Many of the components are community driven.
+   The components are
+   1. Docker CLI
+   2. dockerd
+   3. containerd
+   4. runc
+   5. containerd-ctr
+   6. containerd-shim
+*** Docker CLI
+    It is the cli for docker. Docker cli communicates with the dockerd, which is the docker daemon using the api. All the logic is implemented inside the dockerd.
+*** dockerd
+    It is the docker daemon which exposes docker api. It manages container lifecycle by utilizing containerd. It can expose api in three sockets
+    1. unix
+    2. tcp
+    3. fd
+*** containerd
+    Containerd is the industry standard container runtime. It is the container runtime that docker engine uses.
+    containerd is the api facade for various runtimes and OS. This abstracts away the syscalls or OS specific functionality to run containers.
+    It manages the complete container lifecycle of its hostsystem
+
+    Components
+      - Ctr
+      - containerd-shim
+      - RunC
+
+    [[file:Containerd/chart-c_2018-06-12_22-17-14.png]]
+
+    [[file:Containerd/chart-a_2018-06-12_22-16-28.png]]
+
+
+    [[file:images/containerd.png]]
+
+
+
+    Things it can do
+      - containerd cli can be used to pull and push images
+      - containerd cli can be used to run an image
+      - You can plug in any container runtimes like runc
+
+    Things it cannot do
+      - containerd does not do build. Does not have docker composeS
+
+**** runc
+    runc is a cli for running applications packaged to the OCI format.
+
+**** ctr
+     It is a cli for containerd for debugging and development purpose.
+
+**** shim
+     This allows for daemonless containers. It is the parent process for all the containers. It helps to
+     1. Allows runtimes (runc) to exit after start.
+     2. Keeps stdio and other fds open, in case containerd / docker restarts. This way container can keep running even if docker restarts.
+     3. This also helps to get exit status of containers without docker being parent for the containers.
+
+*** Debugging
+    Looking at the process history using ==ps fxa==
+      #+BEGIN_SRC
+      4141 ?        Ssl   41:36 /usr/bin/containerd
+      4418 ?        Sl     0:52  \_ containerd-shim -namespace moby -workdir /var/lib/containerd/io.containerd.runtime.v1.linux/moby/15004a1a166df7e6e4060fce6d2f806d817a943a90572dd357c996f70a59e98b -address /run/containerd/containerd.sock -containerd-binary /usr/bin/containerd -runtime-root /var/run/docker/runtime-runc
+      4435 ?        Ss     0:20      \_ /sbin/tini -- /usr/local/bin/jenkins.sh
+      4469 ?        Sl    93:39          \_ java -Duser.home=/var/jenkins_home -Djenkins.model.Jenkins.slaveAgentPort=50000 -jar /usr/share/jenkins/jenkins.war
+      4142 ?        Ssl    6:04 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+      4410 ?        Sl     0:00  \_ /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 8090 -container-ip 172.17.0.2 -container-port 8080
+      #+END_SRC
+
+      containerd-shim is root for the jenkins container. It can survive containerd restart and docker restart.
