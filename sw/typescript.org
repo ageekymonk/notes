@@ -1,0 +1,13 @@
+* Features
+  1. Works on any browser
+  2. Superset of javascript and can coexist
+  3. Provides static typing
+  4. Supports interfaces
+  5. Lambda support
+* Grammar
+  1. Any is the parent type for all the types
+  2. Ambient Declarations
+     Type declarations for external libraries
+  3. class 
+     public members
+  4. 

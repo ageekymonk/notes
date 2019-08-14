@@ -1,6 +1,24 @@
 * golang
-** Features
-   1. Compiled & Statically Typed language
+** Concepts
+*** Types
+    Concrete Types
+    Abstract Types
+    - There is only one in go
+    - Interface
+*** Interfaces
+    - Interface is the only abstract type in go
+    - We use interface for
+      1. Writing Generic algorithms
+      2. Hiding Implementation Details
+      3. Providing Interception Points
+    - Bigger the interface, weaker the abstraction - Rob Pike
+    - Empty interface says nothing - Rob Pike
+    - Be conservative in what you send, but be liberal in what you accept - Robustness principle
+    - Define interfaces where you use them
+    - Remove dependencies between two packages
+    - Can do type assertions using interfaces to extend behaviours
+    - Evolve interfacese without breaking backward compatibility
+    -
 ** Concurrency
    - concurrency is not parallelism
    - Well written concurrent program run efficiently on multiple processors
@@ -19,4 +37,4 @@
   - go-skel
   - trash
   - dapper
-    - 
+  - go-prompt

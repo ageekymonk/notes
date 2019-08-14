@@ -1,0 +1,12 @@
+* Concepts
+  1. sum [1,2,3] 'div' 2
+  2. python like indentation
+  3. Type inference precedes evaluation of expression
+  4. Tuples of arity one is not allowed as it interferes with brace
+  5. List can be infinite but tuples cant be
+  6. Functions which take one argument and returns a function is called curried functions
+  7. if condition should always have else.
+  8.
+* Questions
+  1. Emacs Haskell
+  2.

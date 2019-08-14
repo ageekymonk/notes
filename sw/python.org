@@ -265,6 +265,13 @@ print(sys.meta_path)
      1. Threads using multiple CPUs for computation.
      2. Uninterruptible instruction (in python VM)
      3. Bad behaviour of CPU bound threads
+* Concepts
+** Single dispatch
+   https://bmwlog.pp.ua/post/method-overloading-in-python
+** Console Scripts
+   https://amir.rachum.com/blog/2017/07/28/python-entry-points/
+** Loaders and Finders
+   https://blog.quiltdata.com/import-almost-anything-in-python-an-intro-to-module-loaders-and-finders-f5e7b15cda47
 * Things to when you write python code
   - Export decorator
     #+BEGIN_SRC python
@@ -293,9 +300,69 @@ print(sys.meta_path)
    python3 -m twine upload dist/*
    #+END_SRC
 * Libraries
-  - Requests
-  - pandas
-  - BeautifulSoup
+  - airflow
+  - beautifulSoup
   - click
   - dataset
-  - pathlib 
+  - datasette
+  - envparse
+  - pandas
+  - pathlib
+  - pluggy
+  - requests
+  - slugify
+* Commands
+  py.test --setup-show
+
+* Snippets
+** Popen
+   #+BEGIN_SRC python
+import os
+import subprocess
+
+def popen(*args, **kwargs):
+    output      = kwargs.get('output', False)
+    directory   = kwargs.get('dir')
+    environment = kwargs.get('env')
+    shell       = kwargs.get('shell', True)
+    raise_err   = kwargs.get('raise_err', True)
+
+    environ     = os.environ.copy()
+    if environment:
+        environ.update(environment)
+
+    command     = " ".join([str(arg) for arg in args])
+
+    proc        = subprocess.Popen(command,
+        stdin   = subprocess.PIPE if output else None,
+        stdout  = subprocess.PIPE if output else None,
+        stderr  = subprocess.PIPE if output else None,
+        env     = environ,
+        cwd     = directory,
+        shell   = shell
+    )
+
+    code       = proc.wait()
+
+    if code and raise_err:
+        raise subprocess.CalledProcessError(code, command)
+
+    if output:
+        output, error = proc.communicate()
+
+        if output:
+            output = output.decode('utf-8')
+            if output.count('\n') == 1:
+                output = output.strip('\n')
+
+        if error:
+            error  =  error.decode('utf-8')
+            if  error.count('\n') == 1:
+                error  =  error.strip('\n')
+
+        return code, output, error
+    else:
+        return code
+Usage
+>>> popen('touch foobar.txt')
+   #+END_SRC

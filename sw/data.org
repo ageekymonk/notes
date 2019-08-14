@@ -55,3 +55,6 @@
   - arrays() are n dimensional
   - Functions
     - 
+* Notes
+  - Import -> Tidy -> (Transform -> Visualize -> Model -> Transform) ->
+    (Communicate | Automate)

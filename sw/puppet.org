@@ -49,6 +49,8 @@
  puppet apply --confdir etc/puppet --modulepath modules --debug --verbose manifests/site.pp
 
 #+end_src
+*** Get non reporting nodes
+    
 ** Syntax
 *** Data Types
     Data type of literal data type is 'Type'

@@ -7,43 +7,6 @@
    sudo ifdown eth0 && sudo ifup eth0
 
    #+end_src
-** Locale
-*** Set locale
-    locale
-    sudo locale-gen "en_US.UTF-8"
-    sudo dpkg-reconfigure locales
-
-** NTP                                                                  :ntp:
-*** Setup
-**** Centos
-     #+begin_src bash
-       #!/bin/bash
-       yum install ntp
-       systemctl start ntpd
-       systemctl enable ntpd
-     #+end_src
-*** Set Timezone
-**** Centos
-     #+begin_src bash
-       #!/bin/bash
-       rm -f /etc/localtime
-       ln -s /usr/share/zoneinfo/Australia/Sydney /etc/localtime
-     #+end_src
-**** Ubuntu
-     #+begin_src bash
-       #!/bin/bash
-       sudo rm /etc/localtime
-       sudo ln -s /usr/share/zoneinfo/America/New_York /etc/localtime
-       dpkg-reconfigure --frontend noninteractive tzdata
-     #+end_src
-**** Alpine
-     #+begin_src bash
-     cp /usr/share/zoneinfo/Europe/Brussels /etc/localtime
-     #+end_src
-*** Set time behind proxy
-    #+begin_src bash
-      10 6,7,19,20 * * * date -s "$(curl -x http://fwdpxyl001:3128 -sD - google.com | grep '^Date:' | cut -d' ' -f3-6)Z"
-    #+end_src
 ** Others
 *** How to set Microsoft Core Font is Linux
     Install liberation fonts
@@ -201,14 +164,14 @@
     command_not_found_handler() {
     # Check if there is a container image with that name
     if ! docker inspect --format '{{ .Author }}' "$1" >&/dev/null; then
-	echo "$0: $1: command not found"
-	return
+  echo "$0: $1: command not found"
+  return
     fi
 
     # Check that its really the name of the image, not a prefix
     if docker inspect --format '{{ .Id }}' "$1" | grep -q "^$1" ;then
-	echo "$0: $1: command not found"
-	return
+  echo "$0: $1: command not found"
+  return
     fi
 
     docker run -i -t "$@"
@@ -771,6 +734,7 @@ as-describe-scaling-activities --show-long
 *** Export cert from website
     #+BEGIN_SRC bash
     echo | openssl s_client -connect yoursever:port 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > yourcert.pem l l
+    openssl s_client -showcerts -connect website.com:443 </dev/null 2>/dev/null|openssl x509 -outform PEM > ~/Downloads/website.pem
     #+END_SRC
 ** Volumes
    Physical Volumes
@@ -789,22 +753,6 @@ as-describe-scaling-activities --show-long
      lvextend -L +2G /dev/volname/logical_vol_name
      lvreduce -L -2G /dev/volname/logical_vol_name
    mkfs.ext4 /dev/volname/logical_vol_name
-** cron
-*** Generic Format
-    ENV_VAR=value
-    MAILTO=xyz@xxx.com
-    min hour day month year username flock -nx /var/somelockfile.lock task
-*** How to make cron job to dump to a file with name contains date     :cron:
-    run at every minute
-    */1 * * * * ls >> /somefolder/$(date '+\%Y\%m\%d_\%H\%M\%S').txt
-    run at 2 AM every day
-    00 02 * * * ls >> /somefolder/$(date '+\%Y\%m\%d_\%H\%M\%S').txt
-*** How to set cron job in script                                      :cron:
-    echo "*/5 * * * * rsync -aq from to" > /tmp/mycron
-    crontab /tmp/mycron
-    rm /tmp/mycron
-*** How to remove all cron jobs                                        :cron:
-    crontab -r
 ** selinux httpd
    chcon -Rv --type=httpd_sys_content_t /html
 ** Kernel
@@ -1006,6 +954,51 @@ nslookup
   final       -> cloud-init modules -m final
 
 * Commands & Snippets
+** apk
+*** Install package from testing repository without changing configuration files
+    #+begin_src bash
+    apk add logwatch --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted
+    #+end_src
+** apt
+*** How to find which package the file belongs to
+    apt-file update
+    apt-file search filename
+
+*** Proxy for apt
+    Add these two lines to /etc/apt/apt.conf
+    #+BEGIN_SRC bash
+    Acquire::http::Proxy "http://proxy:8080/";
+    Acquire::https::Proxy "http://proxy:8080/";
+    #+END_SRC
+
+*** update package
+    #+BEGIN_SRC bash
+    apt-get install --only-upgrade <packagename>
+    #+END_SRC
+** cron
+*** Generic Format
+    ENV_VAR=value
+    MAILTO=xyz@xxx.com
+    min hour day month year username flock -nx /var/somelockfile.lock task
+*** How to make cron job to dump to a file with name contains date     :cron:
+    run at every minute
+    */1 * * * * ls >> /somefolder/$(date '+\%Y\%m\%d_\%H\%M\%S').txt
+    run at 2 AM every day
+    00 02 * * * ls >> /somefolder/$(date '+\%Y\%m\%d_\%H\%M\%S').txt
+*** How to set cron job in script                                      :cron:
+    echo "*/5 * * * * rsync -aq from to" > /tmp/mycron
+    crontab /tmp/mycron
+    rm /tmp/mycron
+*** How to remove all cron jobs                                        :cron:
+    crontab -r
+** fstab
+   sudo blkid
+** locale
+*** Set locale
+    locale
+    sudo locale-gen "en_US.UTF-8"
+    sudo dpkg-reconfigure locales
+
 ** lsof
 *** kill all process by user
     #+BEGIN_SRC bash
@@ -1055,6 +1048,52 @@ nslookup
     nc -zv somehost 1000-65535
     nc -zv somehost 22 80 8080
     #+END_SRC
+** ntp
+*** Setup
+**** Centos
+     #+begin_src bash
+       #!/bin/bash
+       yum install ntp
+       systemctl start ntpd
+       systemctl enable ntpd
+     #+end_src
+*** Set Timezone
+**** Centos
+     #+begin_src bash
+       #!/bin/bash
+       rm -f /etc/localtime
+       ln -s /usr/share/zoneinfo/Australia/Sydney /etc/localtime
+     #+end_src
+**** Ubuntu
+     #+begin_src bash
+       #!/bin/bash
+       sudo rm /etc/localtime
+       sudo ln -s /usr/share/zoneinfo/America/New_York /etc/localtime
+       dpkg-reconfigure --frontend noninteractive tzdata
+     #+end_src
+**** Alpine
+     #+begin_src bash
+     cp /usr/share/zoneinfo/Europe/Brussels /etc/localtime
+     #+end_src
+*** Set time behind proxy
+    #+begin_src bash
+      10 6,7,19,20 * * * date -s "$(curl -x http://fwdpxyl001:3128 -sD - google.com | grep '^Date:' | cut -d' ' -f3-6)Z"
+    #+end
+** openssl
+*** Create a self signed certificate for localhost
+   #+BEGIN_SRC
+openssl req -x509 -out localhost.crt -keyout localhost.key \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj '/CN=localhost' -extensions EXT -config <( \
+   printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+
+   #+END_SRC
+** parted
+   yum install parted
+  parted /dev/xvdb
+ mklabel gpt
+mkpart docker ext4 0% 50%
+
 ** socat
 *** Connect System command to STDOUT
     #+BEGIN_SRC bash
@@ -1070,3 +1109,58 @@ nslookup
     #+END_SRC
 ** wget
    --no-check-certificate
+** yum
+*** Install epel repo in centos
+    yum install epel-release
+
+*** Dump and restore all the versions of software installed
+    yum-debug-dump
+    yum-debug-restore
+
+*** Lock the version of an installed software
+    yum install yum-plugin-versionlock
+    yum versionlock package
+
+*** sync epel repo
+    reposync --repoid=epel --download_path=epel
+
+*** check whether the package installed
+    yum list installed pkgname
+
+*** check which package provides files
+    yum provides file-name
+*** List all Repository configured
+    yum repolist
+    yum repolist enabled
+    yum repolist disabled
+
+*** Enable Repo
+    #+begin_src bash
+    yum-config-manager --enable epel
+    #+end_src
+** redhat
+*** Check for redhat 6 or 7
+   #+BEGIN_SRC sh
+   if grep -q -i "release 6" /etc/redhat-release ; then
+    rhel6only=1
+    elif grep -q -i "release 7" /etc/redhat-release ; then
+    rhel7only=1
+    else
+    echo "Running neither RHEL6.x nor RHEL 7.x !"
+    fi
+
+   #+END_SRC
+** Service
+*** Redhat 6
+    service puppet stop
+    service puppet start
+    chkconfig --list
+    chkconfig puppet off
+    chkconfig puppet on
+*** Redhat 7
+    systemctl start puppet
+    systemctl stop puppet
+    systemctl disable puppet
+    systemctl enable puppet
+** install
+   command use to install binaries.

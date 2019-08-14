@@ -1,0 +1,63 @@
+Topic Title:
+    Writing Professional quality Bash scripts
+1-3 Sentence Summary:
+Bash scripting are single most versatile way of automation in software development.
+In spite of its omnipresence, writing reusable, readable and debuggable code is a challenge.
+We will discover how following these standards will result in professional quality bash scripts.
+
+Outline:
+- Introduction
+  - Why it is important
+  - When to use and when not to use bash scripting
+  - Importance of consistency in a script
+- Structure of a script
+  1. Header
+  2. Variable Declaration
+  3. Function Declaration
+  4. Function Invocation
+- Components of a script
+  1. Help and Usages
+  2. Error Handling
+  3. Logging
+  4. Locking
+  5. Variable Scoping
+  6. OS Checks
+- Styling guide for readability and compatibility
+- Existing Predefined templates
+- Tools to use in bash scripts
+- Summary
+- References
+  - do we need set -e http://mywiki.wooledge.org/BashFAQ/105
+  - do we need set -u http://mywiki.wooledge.org/BashFAQ/112
+  - http://mywiki.wooledge.org/ArithmeticExpression
+  - https://google.github.io/styleguide/shell.xml
+  - https://mywiki.wooledge.org/BashWeaknesses
+
+
+Bricks:
+1) Every developer at some point in his career would have written a shell script. Bash is most highly used among all the flavours of shell scripts.
+2) Bash or similar shell scripting language is 9th largest in terms of number of repositories as well as number of commits as of 2019
+3) All the Top 10 repositories rated by number of stars in github, had a shell script in their repository.
+4) Bash should not be used if you require speed, handling xml, json or html, exception handling and if you have to write 1000s of lines of bash code.
+5) Writing professional quality bash scripts involves practising best practices that the community has found out by trial and errors over the years of using it.
+6) The first sign of a professional work is the documentation and support that the tool provides. So having a help for your script that shows how to use your script is a tell tale sign of quality work.
+7) Having different levels of logging which provides meaningful logs which could be tuned at runtime with a flag showcases the high quality work.
+8) Variable scoping helps to limits the usage of global variables and avoid accidental overwrite of variables.
+9) Having a style guide helps to be in the same page as rest of the community, Google's https://google.github.io/styleguide/shell.xml is a good standard to follow.
+10) Avoiding multiple scripts to run at the same time becomes a necessity at times, having a locks to prevent it, is a high quality output.
+11) References
+    https://mywiki.wooledge.org/BashWeaknesses
+
+
+Topic Title:
+    Why you should consider Azure DevOps for CI/CD
+1-3 Sentence Summary:
+Azure DevOps is collection of tools for teams to implement CI/CD.
+It is the most feature rich, extensible, easy to use tool among all the CI/CD tools currently in the market.
+In this article i will explore some of its features and hopefully convince you to give it a second thought.
+
+Topic Title:
+    ` pulumi
+1-3 Sentence Summary:
+Pulumi is a tool to build your infrastructure using your favourite programming language and there by unifying the workflows for developers and operators.
+In this article we will look at how to automate the creation of typical 3 tier architecture using pulumi.

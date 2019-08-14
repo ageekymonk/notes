@@ -607,4 +607,8 @@ var hello = React.createClass({
      2. Connect Function
         - mapStateToProps
         - mapDispatchToProps
-        -
+* Animation
+  greensock
+  animate.js
+  Gooey Menu
+  https://codepen.io/lbebber/pen/LELBEo

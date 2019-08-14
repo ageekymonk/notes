@@ -287,7 +287,6 @@
     - Supports both batch and stream
 *** Cloud DataProc
     - Google Managed Hadoop, HDFS, Pig, Hive and Spark
-    -
 *** Cloud Dataprep
     - Explore, clean, and prepare data for analysis
 *** Cloud PubSub

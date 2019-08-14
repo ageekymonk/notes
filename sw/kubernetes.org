@@ -1,8 +1,133 @@
 * Kubernetes
-** What is it
-   - Orchestration tool for managing containers across hosts
-   - Declarative not procedural
-   - Auto scales and self healing
+  K8s is the container orchestration system. It helps in automating deployment, scaling and management of container applications.
+
+** Components
+   k8s cluster has two types of nodes.
+   1. Master
+   2. Worker
+
+    [[file:Kubernetes/serveimage_2019-07-15_15-00-48.png]]
+
+*** Master Node
+    Master has all the control plane components. Master has three components
+    1. Api Server
+    2. scheduler
+    3. Controller Manager
+    4. etcd
+    5. Cloud Controller Manager
+
+**** API Server
+     K8s exposes its api through the api server. Users talk to k8s through the api server. It is the only one which communicates with the etcd store.
+**** Scheduler
+     This is the component that schedules the pods on the nodes. It takes into account myriad of factors
+     1. Node affinity
+     2. Policies
+     3. Data locality
+     4. Deadlines
+
+        - Process for deciding a node is suitable for scheduling a pod
+          1. Check if node has adequate resources
+          2. Is the node running out of resources
+          3. Has the pod requested for specific node
+          4. Does the node have matching label
+          5. If the pod requests for port, is it available
+          6. If the pod requests for volume, is it available
+          7. Does the pod tolerate the taints of the node
+          8. Does the pod specified node or pod affinity
+        - Can create a custom scheduler and use it
+        - To schedule a pod to a tained node, pods should have specified a toleration for unschedulable in the yaml file.
+        - Can have hard or soft limit for the cpu and memory.
+        - Daemonsets run the pods in each node. No scheduling is needed.
+        - ~kubectl get events -n kube-system~ to get all the events
+
+
+**** Controller Manager
+     This is the component that runs controllers. Controllers are controlled loops that looks for changes in the cluster and move the cluster to desired states.
+     Some of the controllers are
+     1. Node controller
+        Responsible for noticing and responding to node going down
+     2. Replication controller
+        Responsible for maintaining correct number of pods
+     3. Endpoints controller
+        Responsible for populating endpoints
+     4. Service account and token controller
+        Responsible for creating default accounts and API access tokens for new namespaces
+**** Cloud Controller Manager
+     This is the component is similar to controller manager as it runs controllers. Only caveat is this runs only cloud specific controllers.
+     1. Node controller
+        Checks cloud provider whether the node has been deleted
+     2. Route controller
+        Setup routes in cloud provider
+     3. Service controller
+        For setting up cloud provider loadbalancers
+     4. Volume controller
+        For setting up cloud provider storage for volumes
+
+*** Worker Node
+    Each Worker node has following components
+       1. kubelet
+       2. kube-proxy
+       3. Container runtime
+**** kubelet
+     This is the agent that runs on all worker nodes. It is the one that talks to the master and makes sure the containers are running inside a pod.
+**** Container Runtime
+     It is responsible for running containers on the nodes. Kubernetes supports the following runtime
+     1. docker
+     2. containerd
+     3. cri-o
+     4. rklet
+**** kube-proxy
+
+    1. Nodes
+       1. kubelet
+          - kubernetes agent
+          - registers node with cluster
+          - watches apiserver
+          - instantiates pods
+          - exposes endpoint on :10255. /healthz, /spec, /pods
+       2. Container Engine
+          - Pluggable, can use rkt or docker
+       3. kube-proxy
+          - kubernetes networking
+          - Loadbalances all pods behind a service
+    2. kubelet
+       It is an agent on every node
+    3. kubeproxy
+       Sends request to right kube regardless of which ever node receives
+    4. Pods
+       - Fundamental Unit of deployment in kubernetes
+    5. Services
+       - only send to healthy pods
+       - can be configured for session affinity
+       - can point to things outside cluster
+       - Random Loadbalancing
+       - TCP/UDP
+    6. Deployments
+    7. Replication Sets
+    8. Replication Controller
+    9. Node Pools
+       - Non homogenous machines grouped together
+       - Even can have different versions of k8s
+    10. Labels vs annotations
+        - Labels can be used to query and optimised for quick retrieval.
+        - Annotations are not used by k8s but by external tools. There can be large amount of annotations.
+    11. For HA, kube-scheduler, api-server, controller manager can be replicated but they will be in standby mode.
+    12. The master node will periodically update the endpoint that it is alive
+    13. Etcd could be stacked or external.
+
+** Installation
+*** Kubeadm
+** Resources
+*** Deployments
+** Application configuration
+   1. Rolling update
+   2. pause and resume deployment
+   3. scale
+   4. readiness probe
+   5. configmaps and secrets
+   6. replicaset
+   7. statefulset
+   8. 
 ** Features
    - Scheduling
    - Lifecycle health
@@ -22,69 +147,62 @@
    - Helm Package Manager
    - Stateful Sets
    - Alpha Clusters
-** Components
-   1. K8s Master
-      1. kube-apiserver
-         - Exposes REST API
-         - Front end to the control plane
-         - Consumes JSON (via manifest files)
-      2. Cluster Store
-         - Persistent Storage
-         - Stores Cluster State and config
-         - uses etcd
-         - Source of truth of the cluster
-      3. kube-controller-manager
-         - Controller of Controllers
-           - Node controller
-           - Endpoint controller
-           - Namespace controller
-      4. kube-scheduler
-         - Watches apiserver for new pods
-         - Assigns work to nodes
-   2. Nodes
-      1. kubelet
-         - kubernetes agent
-         - registers node with cluster
-         - watches apiserver
-         - instantiates pods
-         - exposes endpoint on :10255. /healthz, /spec, /pods
-      2. Container Engine
-         - Pluggable, can use rkt or docker
-      3. kube-proxy
-         - kubernetes networking
-         - Loadbalances all pods behind a service
-   3. API Server
-   4. kubelet
-      It is an agent on every node
-   5. kubeproxy
-      Sends request to right kube regardless of which ever node receives
-   6. Pods
-      - Fundamental Unit of deployment in kubernetes
-   7. Services
-      - only send to healthy pods
-      - can be configured for session affinity
-      - can point to things outside cluster
-      - Random Loadbalancing
-      - TCP/UDP
-   8. Deployments
-   9. Replication Sets
-   10. Replication Controller
-   11. Node Pools
-       - Non homogenous machines grouped together
-       - Even can have different versions of k8s
-       -
-** Terminology
-   - Declarative Model & Desired State
-     - Manifest file (yaml or json) specifies desired state
-   - Pods
-   -
+** Upgrade
+   - update kubeadm, then update components, then kubelet and then finally kubelets
+   - Node upgrade
+     - drain
+       kubectl drain nodename --ignore-daemonset
+     - put it back
+       kubectl uncorodon nodename
+   - Backup
+     - etcdctl command is used to snapshot. Also save the certs in /etc/kubernetes/pki/etcd
+     - Should have the same ip address to restore
+     -
+** Snippets
+*** Affinity
+    #+BEGIN_SRC
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: pref
+spec:
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: pref
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 80
+            preference:
+              matchExpressions:
+              - key: availability-zone
+                operator: In
+                values:
+                - zone1
+          - weight: 20
+            preference:
+              matchExpressions:
+              - key: share-type
+                operator: In
+                values:
+                - dedicated
+      containers:
+      - args:
+        - sleep
+        - "99999"
+        image: busybox
+        name: main
+    #+END_SRC
 * Minikube
 ** Start Minikube
   #+BEGIN_SRC
   minikube start --bootstrapper=localkube
   #+END_SRC
 ** Install Ingress
-   #+BEGIN_SRC 
+   #+BEGIN_SRC
    minikube addons enable ingress
    #+END_SRC
 * GCP
@@ -121,15 +239,42 @@
   - datadog
   - stackdriver
   - App Armour
-
+  - minishift
+  - Ubuntu on LXD
+  - How to create custom schedulers
+  - Resource Limits and requests
+  - 
+* Side notes
+  - net.bridge.bridge-nf-call-iptables=1 is to enable packets from bridge to traverse through iptables.
+  - pause container
+    https://www.ianlewis.org/en/almighty-pause-container
 * Commands
+** Kubectl
+   #+BEGIN_SRC bash
+     kubectl get componentstatus
+     kubectl get pods -L labelname=value
+     kubectl exec busybox -- curl google.com
+    kubectl cluster-info
+    kubectl config view
+    kubectl api-resources
+    kubectl get endpoints kube-scheduler
+
+
+    To generate token for joining node
+    kubeadm generate token
+    kubeadm token create xxxx --print-join-command --ttl 2h
+
+   #+END_SRC
 ** To get the kube dns ip
    #+BEGIN_SRC bash
-   kubectl get svc --namespace=kube-system
+     kubectl get svc --namespace=kube-system
+
    #+END_SRC
+
+
 * Links
   [[https://stevesloka.com/2017/05/19/access-minikube-services-from-host/][Access Minikube services from Host on OSX]]
-* API 
+* API
 ** Notes
    - client-go
    - Run inside the Cluster or Outside the cluster
@@ -141,15 +286,15 @@
 package main
 
 import (
-	"flag"
+  "flag"
 
-	"github.com/golang/glog"
-	"k8s.io/client-go/kubernetes"
-	"path/filepath"
-	"os"
-	"k8s.io/client-go/tools/clientcmd"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	corev1 "k8s.io/api/core/v1"
+  "github.com/golang/glog"
+  "k8s.io/client-go/kubernetes"
+  "path/filepath"
+  "os"
+  "k8s.io/client-go/tools/clientcmd"
+  metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+  corev1 "k8s.io/api/core/v1"
 )
 
 // optional - local kubeconfig for testing
@@ -157,34 +302,34 @@ var kubeconfig = filepath.Join(os.Getenv("HOME"), ".kube", "config")
 
 func main() {
 
-	// send logs to stderr so we can use 'kubectl logs'
-	flag.Set("logtostderr", "true")
-	flag.Set("v", "3")
-	flag.Parse()
+  // send logs to stderr so we can use 'kubectl logs'
+  flag.Set("logtostderr", "true")
+  flag.Set("v", "3")
+  flag.Parse()
 
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-	if err != nil {
-		glog.Errorf("Failed to load client config: %v", err)
-		return
-	}
+  config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+  if err != nil {
+    glog.Errorf("Failed to load client config: %v", err)
+    return
+  }
 
-	// build the Kubernetes client
-	client, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		glog.Errorf("Failed to create kubernetes client: %v", err)
-		return
-	}
+  // build the Kubernetes client
+  client, err := kubernetes.NewForConfig(config)
+  if err != nil {
+    glog.Errorf("Failed to create kubernetes client: %v", err)
+    return
+  }
 
-	// list pods
-	pods, err := client.CoreV1().Pods("").List(metav1.ListOptions{})
-	if err != nil {
-		glog.Errorf("Failed to retrieve pods: %v", err)
-		return
-	}
+  // list pods
+  pods, err := client.CoreV1().Pods("").List(metav1.ListOptions{})
+  if err != nil {
+    glog.Errorf("Failed to retrieve pods: %v", err)
+    return
+  }
 
-	for _, p := range pods.Items {
-		glog.V(3).Infof("Found pods: %s/%s", p.Namespace, p.Name)
-	}
+  for _, p := range pods.Items {
+    glog.V(3).Infof("Found pods: %s/%s", p.Namespace, p.Name)
+  }
 
 
 }
@@ -195,121 +340,129 @@ func main() {
 package main
 
 import (
-	"flag"
+  "flag"
 
-	"github.com/golang/glog"
-	"k8s.io/client-go/kubernetes"
-	"path/filepath"
-	"os"
-	"k8s.io/client-go/tools/clientcmd"
-	rest "k8s.io/client-go/rest"
-	"k8s.io/client-go/kubernetes/scheme"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/runtime/serializer"
+  "github.com/golang/glog"
+  "k8s.io/client-go/kubernetes"
+  "path/filepath"
+  "os"
+  "k8s.io/client-go/tools/clientcmd"
+  rest "k8s.io/client-go/rest"
+  "k8s.io/client-go/kubernetes/scheme"
+  metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+  corev1 "k8s.io/api/core/v1"
+  "k8s.io/apimachinery/pkg/runtime/serializer"
 )
 
 // optional - local kubeconfig for testing
 var kubeconfig = filepath.Join(os.Getenv("HOME"), ".kube", "config")
 
 func main() {
-	// send logs to stderr so we can use 'kubectl logs'
-	flag.Set("logtostderr", "true")
-	flag.Set("v", "3")
-	flag.Parse()
+  // send logs to stderr so we can use 'kubectl logs'
+  flag.Set("logtostderr", "true")
+  flag.Set("v", "3")
+  flag.Parse()
 
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-	if err != nil {
-		glog.Errorf("Failed to load client config: %v", err)
-		return
-	}
+  config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+  if err != nil {
+    glog.Errorf("Failed to load client config: %v", err)
+    return
+  }
 
-	gv := corev1.SchemeGroupVersion
-	config.GroupVersion = &gv
-	config.APIPath = "/api"
-	config.NegotiatedSerializer = serializer.DirectCodecFactory{CodecFactory: scheme.Codecs}
+  gv := corev1.SchemeGroupVersion
+  config.GroupVersion = &gv
+  config.APIPath = "/api"
+  config.NegotiatedSerializer = serializer.DirectCodecFactory{CodecFactory: scheme.Codecs}
 
-	if config.UserAgent == "" {
-		config.UserAgent = rest.DefaultKubernetesUserAgent()
-	}
+  if config.UserAgent == "" {
+    config.UserAgent = rest.DefaultKubernetesUserAgent()
+  }
 
-	restClient, err := rest.RESTClientFor(config)
-	if err != nil {
-		glog.Errorf("Err %v", err)
-		return
-	}
+  restClient, err := rest.RESTClientFor(config)
+  if err != nil {
+    glog.Errorf("Err %v", err)
+    return
+  }
 
-	result := &corev1.PodList{}
+  result := &corev1.PodList{}
 
-	restClient.Get().Namespace("").Resource("pods").Do().Into(result)
+  restClient.Get().Namespace("").Resource("pods").Do().Into(result)
 
-	for _, p := range result.Items {
-		glog.V(3).Infof("Found pods: %s/%s", p.Namespace, p.Name)
-	}
+  for _, p := range result.Items {
+    glog.V(3).Infof("Found pods: %s/%s", p.Namespace, p.Name)
+  }
 }
-    
+
     #+END_SRC
 *** Print all pods using dynamic pkg
     #+BEGIN_SRC go
 package main
 
 import (
-	"flag"
+  "flag"
 
-	"github.com/golang/glog"
-	"k8s.io/client-go/kubernetes"
-	"path/filepath"
-	"os"
-	"k8s.io/client-go/tools/clientcmd"
-	rest "k8s.io/client-go/rest"
-	"k8s.io/client-go/kubernetes/scheme"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/runtime/serializer"
-	"k8s.io/client-go/dynamic"
-	"k8s.io/apimachinery/pkg/runtime/schema"
+  "github.com/golang/glog"
+  "k8s.io/client-go/kubernetes"
+  "path/filepath"
+  "os"
+  "k8s.io/client-go/tools/clientcmd"
+  rest "k8s.io/client-go/rest"
+  "k8s.io/client-go/kubernetes/scheme"
+  metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+  corev1 "k8s.io/api/core/v1"
+  "k8s.io/apimachinery/pkg/runtime/serializer"
+  "k8s.io/client-go/dynamic"
+  "k8s.io/apimachinery/pkg/runtime/schema"
 )
 
 // optional - local kubeconfig for testing
 var kubeconfig = filepath.Join(os.Getenv("HOME"), ".kube", "config")
 
 func main() {
-	// send logs to stderr so we can use 'kubectl logs'
-	flag.Set("logtostderr", "true")
-	flag.Set("v", "3")
-	flag.Parse()
+  // send logs to stderr so we can use 'kubectl logs'
+  flag.Set("logtostderr", "true")
+  flag.Set("v", "3")
+  flag.Parse()
 
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-	if err != nil {
-		glog.Errorf("Failed to load client config: %v", err)
-		return
-	}
+  config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+  if err != nil {
+    glog.Errorf("Failed to load client config: %v", err)
+    return
+  }
 
-	gv := corev1.SchemeGroupVersion
-	config.GroupVersion = &gv
-	config.APIPath = "/api"
-	config.NegotiatedSerializer = serializer.DirectCodecFactory{CodecFactory: scheme.Codecs}
+  gv := corev1.SchemeGroupVersion
+  config.GroupVersion = &gv
+  config.APIPath = "/api"
+  config.NegotiatedSerializer = serializer.DirectCodecFactory{CodecFactory: scheme.Codecs}
 
-	if config.UserAgent == "" {
-		config.UserAgent = rest.DefaultKubernetesUserAgent()
-	}
+  if config.UserAgent == "" {
+    config.UserAgent = rest.DefaultKubernetesUserAgent()
+  }
 
-	client, err := dynamic.NewForConfig(config)
-	if err != nil {
-		glog.Errorf("Err %v", err)
-		return
-	}
+  client, err := dynamic.NewForConfig(config)
+  if err != nil {
+    glog.Errorf("Err %v", err)
+    return
+  }
 
-	got, err := client.Resource(schema.GroupVersionResource{Group: "", Version: "v1", Resource: "pods"}).List(metav1.ListOptions{})
-	if err != nil {
-		glog.Errorf("Err %v", err)
-		return
-	}
+  got, err := client.Resource(schema.GroupVersionResource{Group: "", Version: "v1", Resource: "pods"}).List(metav1.ListOptions{})
+  if err != nil {
+    glog.Errorf("Err %v", err)
+    return
+  }
 
-	for _, item := range(got.Items) {
-		glog.Infof("%s/%s", item.GetNamespace(),item.GetName())
-	}
+  for _, item := range(got.Items) {
+    glog.Infof("%s/%s", item.GetNamespace(),item.GetName())
+  }
 
 
-} 
+}
     #+END_SRC
+* Service Mesh
+  - Routing and discovery
+  - Service Identity
+** Istio
+   1. Load Balancing
+   2. Fine grained access control
+   3. Logging & Monitoring
+   4.

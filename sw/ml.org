@@ -4,13 +4,18 @@
     - A computer program is said to learn from experience E with respect to some
       class of tasks T and performance measure P, if its performance at tasks in
       T, as measured by P, improves with experience E.
-  - Two types of algorithms
+  - Three Classes of ml algorithms
     1. Supervised Learning
     2. Unsupervised Learning
+    3. Reinforced learning
   - Supervised Learning Algorithm
-    1. Linear Regression
-    2. Logistic Regression
-    3. Support Vector Machine
+    Has two classes
+    1. Classifier
+    2. Regressor
+       1. Linear Regression
+
+    3. Logistic Regression
+    4. Support Vector Machine
   - Unsupervised Learning Algorithm
     1. Clustering
   - Gradient Descent Algorithm
@@ -19,7 +24,7 @@
     - derivative of J is slope at the point
     - Batch Gradient Descent, if we use all training samples for each
       calculation
-    - Jθⱼ := θⱼ - α (1/m) ∑ (h(x) - y) * xⱼ 
+    - Jθⱼ := θⱼ - α (1/m) ∑ (h(x) - y) * xⱼ
     - Feature Scaling
       - if different features are on a similar scale then the algorithm can
         converge quickly
@@ -40,7 +45,7 @@
     - Univariate Linear Regression
       - There is a single feature
       - h(x) = θ₀ + θ₁x
-      - Cost Function 
+      - Cost Function
         - J(θ⁰, θ¹)
         - Why we include 1/2 in (1/2m) ∑(h(x) - y)² ? To make math easier
           for what ?
@@ -55,7 +60,7 @@
       - h(x) = θᵀ x (both θ and x are vectors)
       - Cost Function
         - J(θ) = 1/2m ∑ (h_θ(x) - y)²
-      - 
+      -
     - Normal Equation
       - Solving Linear Regression
       - This is analytical method and not iterative
@@ -67,7 +72,7 @@
         multiplication is O(n³)
       - if n is 100 or 1000 then this will perform well, Sometimes even with
         10000 but beyond that gradient descent is the right choice over normal equation
-      - If Xᵀ X is non invertible that means there are 
+      - If Xᵀ X is non invertible that means there are
         1. Redundant Features
         2. Too many features (m <= n) m is number of training samples and n is
            number of features
@@ -99,12 +104,12 @@
     - These above 3 algorithm does not need α and converge much faster.
     - For these advanced algorithm, we need to provide a cost function which
       returns j(θ) and gradient (partial derivative)
-    - Multiclass 
+    - Multiclass
       - Instead of binary, multiple outcomes (sunny, cloudy, rainy, etc)
       - Use one vs all
   - Overfitting
     - Also called high variance
-    - Can be avoided by 
+    - Can be avoided by
       1. Reduce number of features
       2. Regularization
          - Keep all features but reduce the magnitude / values of parameters
@@ -124,7 +129,7 @@
     - Each Neuron has input called dendrite and output called axon.
     - Activation Function is the hypotheis function h(x)
     - θ is called weights. In Linear and Logistic Regression it was called
-      parameters. 
+      parameters.
     - First Layer is called input layer, Last layer is called output layer and
       anything in between is called hidden layer. There can be multiple hidden
       layer.
@@ -133,7 +138,7 @@
     - Cost Function ???
   - Back propagation algorithm
   - If there are more errors in prediction, we can improve it by one of the
-    following 
+    following
     1. Getting more training samples
     2. Getting more features
     3. Reducing the number of features
@@ -143,4 +148,22 @@
   - Machine Learning Diagnostic is a test to run to check what is working or not
     working in a learning algorithm and to gain guidance as to how to improve
     its performance
-  - 
+  -
+* Deep Learning
+  - Facts about Deeplearning
+    - It is not a blackbox
+    - It does not need much data
+    - It does not need PHD to do it
+    - It can be used not only for vision but also for speech, structured data, ..
+    - Does not need lots of GPUs
+  - Pytorch
+    - Better than Tensorflow
+    -
+  - Neural Networks
+    - Input, Hidden and Output layers
+    - Training data is passed through the neural networks to minimize errors
+    - Errors are minimized by adjusting weights and biases
+    - 2+ Hidden layers of Neural Networks is called Deep Neural Networks
+** keras
+   - High Level Neural Network API
+   -

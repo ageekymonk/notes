@@ -1,0 +1,9 @@
+* Software Project
+  - Five dimensions we have to manage on a software project
+    1. Features
+    2. Quality
+    3. Cost
+    4. Schedule
+    5. Staff
+  - Find out the constraints and drivers among the five dimensions
+  - [[https://medium.com/swlh/rethinking-the-triple-constraint-five-project-dimensions-b3593c364b11]]

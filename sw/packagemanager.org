@@ -45,7 +45,8 @@
     Acquire::https::Proxy "http://proxy:8080/";
     #+END_SRC
 
-
+*** Lock the package and do not update
+    apt-mark hold docker-ce kubelet kubectl
 *** update package
     #+BEGIN_SRC bash
     apt-get install --only-upgrade <packagename>

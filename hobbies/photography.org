@@ -73,9 +73,44 @@
     3. AI Focus
        - Combination of single shot and AI Servo. Behaves single shot on still
          subject and AI Servo when there is movement
+** Lens
+   - Components of lens
+     1. Focus Switch
+        To toggle between auto focus and manual focus
+     2. Macro focus ring
+     3. Micro focus ring
+     4. Stabilizer
+        Helps smooth movement from holding your camera
+   - Types of lens
+     1. Prime Lens
+        - one focal length
+        - Better image quality
+        - Need to move to change your photo
+        - Takes faster photos
+     2. Telephoto lens
+     3. Wide angle lens
+   - When zoomed at the wider angle there is barrel distortion. This means there will be darker edges (vinette), there will be curving in your photo.
+   - Sensors
+     1. Full Frame
+        35 mm
+     2. APSC
+     3. 4/3
+   - Smaller the sensor, more closer yor are to the subject
+   - Zooming in increases the focal length and zooming out decreases the focal length
+   - Shorter focal length make the person face in portrait looks narrow and longer focal length makes the person face flattened
+   - For portraits use 50 or 85 mm lens
+   - For object photography, 24-70mm is good with lot of versatality, or 100mm macro lens
+   - For street photography, 70-200 mm if you need stealth or use 24 to 70mm.
+   - STM (Stepper Motor) vs USM (Ultrasonic motor)
+     - STM is smooth but slow focus.
+     - USM is fast focus. It can focus on sports movement faster but video will feel jerky.
 * Photography
 ** Rules
 *** Rule of Thirds
+*** Sunny 16
+    On a sunny day set aperture to f/16 and shutter speed to the [reciprocal of the] ISO film speed [or ISO setting] for a subject in direct sunlight.
+*** Loone 11
+    For astronomical photos of the Moon's surface, set aperture to f/11 and shutter speed to the [reciprocal of the] ISO film speed [or ISO setting].
 ** Aperture
    - It is the size of the shutter opening to let the light in. Higher the value lower the size, as it is 1/something.
 ** Shutter Speed
@@ -91,6 +126,16 @@
 ** Techniques
 *** Recomposing the shot
     - Focus first and move to recompose the shot.
+* Photoshop
+** Basic
+   - Lens Correction
+   - Transform for angle correction
+   - Tone Curve for making it S curve
+   - Basic Components
+     1. Light
+     2. Focus and Depth
+     3. Emotion
+     4. Subject is flattered
 * How to Improve
 ** Get a Decent Camera
 ** Start Using Program Mode

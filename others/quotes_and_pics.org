@@ -6,6 +6,18 @@
    [[http://www.commitstrip.com/en/2015/10/27/one-of-the-coders-hardest-problems/][Hardest Problem in Programming - Naming Variables]]
 ** Editors
    [[http://irreal.org/blog/?p=4971][Editors]]
+** Productivity
+#+DOWNLOADED: https://tech.paulcz.net/blog/future-of-kubernetes-is-virtual-machines/hype-cycle.png @ 2019-01-13 08:08:00
+[[file:Programming/hype-cycle_2019-01-13_08-07-59.png]]
+** Data structures
+   Rob Pike: Data dominates. If you’ve chosen the right data structures and organized things well, the algorithms will almost always be self-evident. Data structures, not algorithms, are central to programming.
+
+   Linus Torvalds: Bad programmers worry about the code. Good programmers worry about data structures and their relationships.
+** Problem
+   #+BEGIN_QUOTE
+       It is foolish to answer a question that you do not understand. It is sad to work for an end that you do not desire.
+       - Polya
+   #+END_QUOTE
 * War                                                                   :war:
 ** Infantry Journal                                           :attack:ambush:
    #+begin_quote
@@ -36,6 +48,20 @@
    lived well
    - Ralph Waldo Emerson
    #+END_QUOTE
+
+   #+BEGIN_QUOTE
+   fallor ergo sum -- I err therefore I am
+   #+END_QUOTE
+
+   #+BEGIN_QUOTE
+   “Life is really simple, but we insist on making it complicated.”
+   — Confucius
+   #+END_QUOTE
+   #+BEGIN_QUOTE
+   In life the challenge is not so much to figure out how best to play the game; the challenge is to figure out what game you’re playing
+     -- Kwame Anthony Appiah
+
+   #+END_QUOTE
 ** Success
    #+begin_quote
    Don't measure yourself by what you have accomplished, but by what you should have accomplished with your ability. -- John Wooden
@@ -51,14 +77,38 @@
    The great teacher inspires
    #+end_quote
 ** Mind
-*** shoshin / Beginners Mind                                  :BeginnersMind:
-   #+BEGIN_QUOTE
-   In the beginner's mind there are many possibilities,
-   but in the expert's there are few.
-   #+END_QUOTE
-*** Knowing
+    #+BEGIN_QUOTE
+    In the beginner's mind there are many possibilities,
+    but in the expert's there are few.
+    #+END_QUOTE
+
+    #+BEGIN_QUOTE
+    “Simplicity is a great virtue but it requires hard work to achieve it and education to appreciate it. And to make matters worse: complexity sells better.”
+    — Edsger W. Dijkstra
+    #+END_QUOTE
+
     #+BEGIN_QUOTE
     The most dangerous thought you can have as a creative person is to think you know what you're doing.
+    #+END_QUOTE
+
+    #+BEGIN_QUOTE
+    “Most geniuses—especially those who lead others—prosper not by deconstructing intricate complexities but by exploiting unrecognized simplicities.”
+    — Andy Benoit
+    #+END_QUOTE
+
+    #+BEGIN_QUOTE
+    Human beings are pattern-seeking animals. It’s part of our DNA. That’s why conspiracy theories and gods are so popular: we always look for the wider, bigger explanations for things.
+    - Adrian McKinty, The Cold Cold Ground
+    #+END_QUOTE
+
+    #+BEGIN_QUOTE
+    “Any intelligent fool can make things bigger, more complex, and more violent. It takes a touch of genius — and a lot of courage — to move in the opposite direction.”
+    — Ernst F. Schumacher
+    #+END_QUOTE
+
+    #+BEGIN_QUOTE
+    I have always been of the opinion that unpopularity earned by doing what is right is not unpopularity at all but glory.
+    - Marcus Tullius Cicero
     #+END_QUOTE
 ** Flow
    #+BEGIN_QUOTE

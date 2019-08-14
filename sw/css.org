@@ -191,4 +191,47 @@
       3. css modules
       4. styleint
 ** Methodologies
-   1. 
+   1. CSS in JS
+      1. emotion.sh
+      2. glamor
+      3. JSS
+      4. Styled Components
+      5. 
+* Tools 
+** Typography.js
+** Bulma
+   https://bulma.io/
+* Blog
+** World of CSS
+   For a beginner entering the world of CSS, it would be daunting to stare at
+   bottomless pit of libraries and frameworks. This post is help a newbie to
+   face CSS without fear. 
+
+   Writing plain CSS is error prone and not reusable. To solve this CSS
+   ecosystem is evolving with solutions like 
+
+   1. Preprocessors
+      Sass / Less  -> Preprocessors -> Plain CSS
+      This helps to modularise the code, keeping it simple and elegant
+   2. Libraries
+      Pre packaged component libraries which you can take and use it in your
+      frontend. Less time to create your frontend with added advantage of
+      working in all devices.
+   3. Post Processors
+      CSS -> Post Processors -> Modified / Improved CSS
+      This is used to solve problems like 
+      1. Prefixing with browser prefixes
+      2. Minification
+      3. linting
+      4. Creating Image sprites (multiple images in single one)
+         and many more.
+   4. CSS in JS
+      New upcoming and more positive trends is CSS in JS. Writing CSS in JS and
+      rendering it at runtime. 
+
+** Some Basic Tools 
+   1. FontAwesome
+   2. material-ui
+   3. JSS
+   4. 
+      

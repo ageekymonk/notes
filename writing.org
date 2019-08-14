@@ -1,0 +1,103 @@
+* Some Best Practices
+** Tone of Voice
+   1. Conversational vs Authoritative
+      - Use third person pronouns to show authritative aspect
+      - First person is good for sharing personal or emotional stories
+   2. Descriptive vs Simplified
+   3. Respectful vs Casual
+   4. Enthusiastic vs Restrained
+
+      - Think about yourself
+      - Think about the readers
+
+** How to research a topic
+   1. Find industry known experts and interview them
+      - why ?
+        - Lends more credibility
+        - Can lead to additional sources and avenues for promotion and further learning and research
+      - Where
+        - Try industry known experts
+        - Experts within your network
+        - Twitter and LinkedIn
+        - HelpAReporter
+
+   2. Find reputable secondary sources to verify experts claim
+      - Institutions
+      - Google's related search
+      - Wikipedia
+      - Books, podcasts
+   3. Set a time limit for research
+   4. Make a list to stay focused
+** Writing outline
+   1. Who is the article for ?
+   2. What is their pain point and how are you trying to solve the problem ?
+   3. Why are you uniquely able to help them ?
+   4. How can they use the information you are giving immediately
+   5. What questions will you audience have ?
+   6. Basic Structure
+      1. Introduction
+      2. Body Point 1
+      3. Body Point 2
+      4. Body Point 3
+      5. Conclusion
+   7. Look at sources like wikipedia, other blog posts for structure
+   8. Main Section includes distinct points you are making
+   9. Subsection should support the main section
+   10. If stuck
+       1. Visualize using mindmaps
+       2. Post it notes for organizing points
+       3.
+** Writing First draft
+   1. Writers dread the first draft because
+      1. Limited knowledge of the topic
+      2. Too much knowledged of the topic
+      3. Fear of getting it wrong
+      4. Anticipating criticism
+      5. Pursuing perfection and polishing too early (early optimization)
+   2. Outline to first draft
+      1. Write quickly and conversationally
+         1. Write like you talk
+         2. It will not be same as final edit
+      2. Embrace Cliches
+      3. Jump around
+         - Do random/predefined section in a day
+      4. Add fragments to sparse sections
+      5. Rank importance of information
+   3. Avoiding Writer block = writing as you edit
+      1. 200 Words Daily
+      2. Time boxes
+      3. No readers
+      4. Chill zone
+         Find the best time which best works for you where you can write better
+      5. Use bullet points
+         do not worry about sentences flowing together
+      6. No transitions
+         do not worry about section transition
+      7. Forget grammar
+      8. Use voice recorder
+   4. How to overcome writers block
+      1. Get Feedback
+      2. Minimal Writing apps
+         All you work will be lost when you stop writing for 5 mins [[https://www.squibler.io/writing-prompts]]
+      3. Step Away
+      4. Tell a story
+      5. Write by hand
+      6. opposing views
+      7. Old photos
+         look at anecdotes, articles, phrases etc will spark
+      8. Be bored
+   5. Fresh Perspective
+      - Writing isn't for professional alone. It is for all people
+        - Appropriate expections is not equal to lowered expections
+      - Writing is decpetively difficult because it is familiar
+        - Good writing is a skill and it needs practice
+      - Unplanned free flowing first drafts are rare
+        - Writing is methodical. Writing is designed
+      - Writing is daily discipline and sometimes it is a struggle
+        - 
+         
+   6. 
+
+* Tools
+  Keywords Everywhere
+  Helpareporter.com

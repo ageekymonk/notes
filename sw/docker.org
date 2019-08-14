@@ -71,3 +71,17 @@
       #+END_SRC
 
       containerd-shim is root for the jenkins container. It can survive containerd restart and docker restart.
+** Dockerfile
+   1. Order matters for caching
+      So download before copying your source code. That way cache could be utilized
+   2. More specific COPY to limit cache busts
+   3. Identify cacheable units such as apt-get update & install and make it into a single entry
+   4. Remove unnecessary dependencies
+   5. Remove package manager cache
+   6. Use official images when possible
+   7. Use more specific tags, this way no breaking functionality
+   8. Look for minimal flavors
+   9. Build from source in a consistent environment using multistage build
+   10. Fetch dependencies in a separate step. copy just pom.xml and build dependencies before copying the source code. This way cache will be utilized
+   11. Use multi-stage builds to remove build dependencies
+   12. 

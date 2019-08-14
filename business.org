@@ -1,0 +1,184 @@
+* Business
+** Define
+   A successful business is something that provides value that people
+   want or need at a price that people are willing to pay that satisfies
+   the customer's needs and it can bring in enough profit so that the
+   owners can continue running its operation.
+** Value Creation
+   - Business is all about
+     1. Value creation
+     2. Marketing
+     3. Sales
+     4. Value Delivery
+     5. Finance
+   - Theories of Core Human Drives
+     1. Maslow hierarchy of needs
+        1. Physiological
+        2. Safety
+        3. Social
+        4. Self Esteem
+        5. Self Actualisation
+     2. ERG Theory
+        1. Existence
+        2. Readiness
+        3. Growth
+        4.
+   - 4 Core human Drives (Book: Driven)
+     1. Drive to Acquire
+        Desire to acquire physical objects, status, influence
+        Example: Retailers, Political Consulting Companies
+     2. Drive to Bond
+        Desire to forming relationship with others
+        Example: Restaurants, Conferences, Dating Services
+     3. Drive to learn
+        Desire to satisfy our curiosity
+        Example: Academic Programs, Book Publishers, Training Workshops
+     4. Drive to Defend
+        Desire to protect our loved ones, property
+        Example: Home alarm, insurance, defense systems
+     5. Drive to feel (missed in book)
+        Desire to feel new senses, excitement,
+        Examples: Restaurants, movies, games
+   - More drives your product connects to more attractive the product is
+   - Status Seeking drives most of our decisions
+   - Include status symbols in your product
+   - 10 Ways to evaluate a market (Rate between 0 to 10)
+     For a score of <50 do not do the product
+     For a score between 50 and 75, it can pay the bills but more effort required.
+     For a score of >75, it is a very promising idea
+     1. Urgency
+        - How badly people need this right now
+     2. Market Size
+        - How many people need this
+     3. Pricing Potential
+        - What is the highest price that purchaser will be willing to pay
+     4. Cost of customer acquisition
+        - How easy is to acquire a new customer.
+     5. Cost of value delivery
+        - How much cost to deliver the project in money and effort
+     6. Uniqueness of offer
+        - How hard is to copy by other businesses
+     7. Speed to market
+     8. Upfront investment
+     9. Upsell potential
+        Are there related secondary offers that you can present it to customers
+     10. Evergreen potential
+         Can be sold as it is continuously. Like book once produced can be sold forever.
+   - Hidden benefits of competition
+     1. There is a market for the product
+     2. Become a consumer of the competitor to know about their offerings
+   - Mercenary Rule
+     1. Do not enter the market just because you think there is money
+   - 12 Standards forms of value
+     1. Product
+        Create a tangible entity and sell it at more than the cost to make
+     2. Service
+        1. Have skill that others dont or cant have
+        2. Deliver with high quality
+     3. Shared Resource
+        1. Create a Durable resource and charge for access
+        2. Serve many users
+        3. Improve the resource
+     4. Subscription
+        1. Predefined benefit for subscribe base
+        2. Get more subscribers
+     5. Resale
+        1. From wholesale seller and sell for retail
+     6. Lease
+     7. Agency
+     8. Audience aggregation
+        1. Identify a group of people with common characteristics
+        2. Attract the group
+        3. Find third party that want to reach the group
+        4. Provide access to the group
+     9. Loan
+     10. Option
+         Offer the ability to take action for predefined time for a fee
+     11. Insurance
+     12. Capital
+   - Hassle Premium. More hassle faced by customer, there is a potential market
+   - Perceived Value
+     1. Satisfy one or more of the prospects one of four human drive
+     2. Offer easy to visualise end results
+     3. Remove Hassle for prospect to the most
+     4. Satisfy prospects status seeking tendancy
+   - Bundling (mobile phones + subscription)
+   - Prototype
+   - Iteration Cycle (6 steps)
+     1. Watch
+        Whats working and whats not
+     2. Ideate
+        What could you improve
+     3. Guess
+        Which ideas will make great impact
+     4. Which
+        Decide which change to make
+     5. Act
+        Make the change
+     6. Measure
+        Was the change positive or negative ?
+   - Iteration Velocity
+   - Feedback
+     1. Get feedback from real customers rather than friends and family
+     2. Ask open ended question
+     3. Steady yourself and develop thick skin
+     4. Take what you hear with grain of salt
+     5. Give customer an opportunity for preorder
+   - Consider Alternatives that customers face
+   - Tradeoffs
+   - Economic Values (Convienience vs High Fidelity)
+     1. Efficacy
+        How well does it work
+     2. Speed
+     3. Reliability
+     4. Ease of use
+     5. Flexibility
+     6. Status
+     7. Aesthetic
+     8. Emotion
+     9. Cost
+   - Relative Importance Testing
+     - During market research ask the customers to make a tradeoff among the 9 economic values
+     - Pioneered by Jordan Luviere in 1960
+   - Find Critical Assumptions of a Business and test it
+   - Shadow Testing
+     - Selling an offering before it even exists
+     - Minimal Viable Offer
+       - Smallest number of benefits required in the offer to make a sell
+     - Incremental Augmentation
+       - Use Iteration Cycle to increase the benefits
+     - Field Testing
+       - Example: Kifaru Pack
+       - Example: Bulletproof suit worn by CEO to show its effectiveness
+** Marketing
+   - Without Marketing no product can survive
+   - Marketing and selling are two different things
+   - Marketing is about getting noticed
+   - Sales is about closing the deal
+   - Attention
+     - Attention is limited
+   - Receptivity
+     - Is the measure of how open the listener is to your message
+     - Two components of receptivity are what and when
+* Books
+  https://personalmba.com/best-business-books/
+** Finance
+   1. Financial intelligence for entrepreuners
+   2. Simple Numbers, Straight Talk, Big Profits
+   3. Accounting made simple by Mark Piper
+   4. How to read a financial report by John A Tracy
+   5. [[https://www.mbamath.com/][mba math]]
+   6. [[https://www.bionicturtle.com/][Bionic Turtle]]
+** Statistical Analysis
+   1. Thinking Statistically by Uri Bram
+   2. How to lie with statistics by Darrell Huff
+   3. Turning Numbers into Knowledge by Jonathan G Koomey
+   4. Principles of Statistics by Bulmer
+** Value Creation
+   1. Rework
+   2. The New Business Road Test
+   3. How To Make Millions With Your Ideas
+
+** Psychology
+   1. Driven: How Human Nature Shapes our Choices
+   2.
